@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_534732406300400ea44488ec",
+  "agent_id": "ses_e48065482ffel9AqxzKEgVHAYw",
+  "subagent_type": "00-planner",
+  "task_description": "Brainstorm product names",
+  "token_usage": {
+    "input_tokens": 15165,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 51456,
+    "output_tokens": 3169,
+    "api_call_count": 5
+  },
+  "started_at": "2026-11-07T16:45:55.31-05:00",
+  "completed_at": "2026-11-07T16:50:28.074637-05:00"
+}

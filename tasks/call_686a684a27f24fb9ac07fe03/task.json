@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_686a684a27f24fb9ac07fe03",
+  "agent_id": "ses_e480fc735ffep6H83s9HlgBxW1",
+  "subagent_type": "02-tech-lead",
+  "task_description": "Document Gemini add-on in architecture",
+  "token_usage": {
+    "input_tokens": 20082,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 51456,
+    "output_tokens": 2473,
+    "api_call_count": 4
+  },
+  "started_at": "2026-11-07T16:35:36.137-05:00",
+  "completed_at": "2026-11-07T16:38:08.596857-05:00"
+}
