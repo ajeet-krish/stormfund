@@ -1,0 +1,5 @@
+Review the state of the repo, current project progress/health. Verify that Entire is working properly.
+
+---
+
+i deleted the mock folder as we dont need these files anymore
