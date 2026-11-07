@@ -1,9 +1,9 @@
 {
-  "name": "ledger-odyssey",
+  "name": "stormfund",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Ledger Odyssey: findings-first report over a personal finance ledger, with the Balance River exploration layer next (datathon web app)",
+  "description": "Storm Fund: A resilience weather station for bank customers (Sheridan Datathon 2026)",
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.build.json --noEmit && vite build",
@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "react": "~19.2.0",
-    "react-dom": "~19.2.0"
+    "react-dom": "~19.2.0",
+    "zustand": "^5.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

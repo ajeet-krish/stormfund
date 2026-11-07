@@ -20,6 +20,17 @@ export default {
         ink: '#dce6f5',
         'ink-dim': '#8b9bb4',
         'ink-faint': '#55657f',
+        // Console verdict bands (cp): one hue per band, reused from the
+        // report palette (rp-stamp, rp-money, rp-verified) plus the two
+        // accents already in this config, so the console and the report
+        // read as one system instead of a second palette.
+        cp: {
+          critical: '#ff6a4d',
+          storm: '#f4b740',
+          watch: '#8b7cf6',
+          fair: '#39c2e0',
+          clear: '#35d0ae',
+        },
       },
       fontFamily: {
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],

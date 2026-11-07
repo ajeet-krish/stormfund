@@ -251,3 +251,35 @@ if the span changes; status C or D for P can diverge from the amortization
 schedule on future data (the disagreement counter is the tripwire);
 plans.py stays a dormant draft until E4, keeping E1 to the precompute
 contract only.
+
+## Nov 07 2026, Phase E2: Console shock contract and verdict bands
+
+**Context**: the console must reproduce the judge's shocked numbers
+exactly, and a brief shorthand (one-off cost in spending_after)
+conflicts with the challenge doc formula.
+
+**Decision**: follow docs/tangerine-challenge.md exactly: billsDeltaPct
+adds scaleCents(H, pct) to spending (line 71), one-off costs subtract
+from the buffer only (line 64), extraMonthlyCost is recurring spending;
+income_after is the EI replacement fraction of I (line 71). Shock
+scalings round half up via an integer scaleCents twin of
+metrics.round_half_up. Verdict bands read integer deci months (10, 30,
+60, 120), so Clear means 12.0 months and up (user confirmed). Duration
+is display only in E2 (steady state formula, labeled on screen). Runway
+and twist math live in src/lib/shocks.ts, validated by vitest against
+scripts/engine/golden_fixtures.json, the same fixtures pytest asserts,
+plus a 4500 profile baseline cross-check. State is a Zustand store
+(src/state/consoleStore.ts) with atomic actions and a reserved E6 key
+map (R reset, 1 to 4 presets) but no listeners yet. cp- visual tokens
+extend the existing rp- palette; one hue per verdict band with
+redundant encoding (glyph, label, color, number).
+
+**Rationale**: the judge answer key is the challenge doc; integer
+rounding pinned to fixtures makes cross-language drift a failing test
+instead of a booth argument.
+
+**Trade-offs**: E2 plan text is honest template text only (E4 owns goal
+math and levers); FindingsView and PlayView are unmounted but kept for
+machinery reuse; zustand re-added to package.json; provenance stamp
+says recorded, never verified, because the browser cannot recompute a
+check_sum without row data.
