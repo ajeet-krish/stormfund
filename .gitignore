@@ -1,0 +1,43 @@
+# OS junk
+.DS_Store
+
+# Per-user Claude Code hook settings written by `entire graph setup`
+.claude/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node and web build output
+node_modules/
+dist/
+build/
+
+# Raw sponsor dataset: never committed. SHA256 manifest in
+# data/tangerine/SHA256SUMS is the committable record (decisions.md
+# decision 4: aggregates only unless the license says otherwise).
+data/tangerine/*.csv
+data/tangerine/ingest_report.json
+
+# Solana key material, never commit (CLI keypair lives outside the repo at
+# ~/.config/solana/id.json; these patterns also catch any scratch keypair
+# dropped under scripts/solana/). Evidence JSONs stay committable.
+id.json
+*-keypair.json
+keypair.json
+scripts/solana/**/id.json
+scripts/solana/**/*-keypair.json
+
+# Memo program binary dumped from devnet, regenerable with
+# solana program dump (see localnet_selftest.py)
+scripts/solana/programs/*.so
+
+# Entire session state (regenerated locally; settings.json and .gitignore
+# inside .entire/ are committed by entire enable, these are not)
+.entire/tmp/
+.entire/logs/
+.entire/metadata/
+.entire/settings.local.json
+.entire/redactors/local/
