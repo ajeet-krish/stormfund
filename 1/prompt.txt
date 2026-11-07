@@ -1,0 +1,17 @@
+Lets brainstorm names for this project/product. there is a prize for best godaddy site name, so brainstorm product names 
+
+E2 is currently being worked on by another agent. Can we proceed with scaffolding for E3-E7?
+
+---
+
+E2-E7 is being worked on by another agent. without touching their work, Lets rename/rebrand the project repo to Storm Fund (github repo name to stormfund). set the full project name in the Github readme (Storm Fund: A resilience weather station for bank customers)
+
+---
+
+reduce this elevator pitch draft by 65 characters:
+
+See your money move like weather. Storm Fund is a resilience financial engine that visualizes a bank account as a real-time weather forecast. It takes real anonymized bank data and maps runway and buffer to a pixel sky. Inject a shock and watch the forecast change.
+
+---
+
+commit work that has been done
