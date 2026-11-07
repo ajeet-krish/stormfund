@@ -1,0 +1,65 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6W330NS358DCRFMHPKVV3D8",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-07T22:46:56.86811Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "docs/decisions.md",
+    "package-lock.json",
+    "package.json",
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/components/console/AccountLookup.tsx",
+    "src/components/console/BaselineCard.tsx",
+    "src/components/console/ConsoleView.tsx",
+    "src/components/console/PlanCard.tsx",
+    "src/components/console/ShockPanel.tsx",
+    "src/components/console/VerdictBadge.tsx",
+    "src/data/profiles.test.ts",
+    "src/data/profiles.ts",
+    "src/index.css",
+    "src/lib/format.ts",
+    "src/lib/metrics.ts",
+    "src/lib/planText.test.ts",
+    "src/lib/planText.ts",
+    "src/lib/shockPresets.ts",
+    "src/lib/shocks.golden.test.ts",
+    "src/lib/shocks.ts",
+    "src/lib/verdict.ts",
+    "src/state/consoleStore.ts",
+    "tailwind.config.js"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "ad655d3733c0",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 1147,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 231296,
+    "output_tokens": 255,
+    "api_call_count": 1
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 13
+  }
+}
