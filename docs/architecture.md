@@ -173,3 +173,133 @@ once per session (the same pattern as loadSharedFindingsReport).
   culling.
 - Everything bundled for offline booths; no runtime network calls
   required (network allowed as a bonus, never a dependency).
+
+## Gemini shock input (gated add-on, post E2)
+
+This section settles the natural language shock input listed under
+Considered enhancements above and supersedes its placeholder field
+names. It is a gated add-on, not a phase: it ranks with the Solana and
+Entire secondary tracks, is funded only from slack, and starts only
+after E2 console base is green. Hard abort at 00:30 Saturday: if it is
+not live on the deployed origin by then, the Best Use of Gemini API
+track checkbox stays unchecked at the Devpost draft and the preset
+twist cards carry the demo. It must never touch the findings freeze
+(Saturday 6:00 PM) or the code freeze (Sunday 9:00 AM).
+
+### Purpose and prize lane
+
+A judge or presenter types a shock sentence in their own words (for
+example "they lose their job, EI covers half, and the furnace dies
+next month") instead of picking a preset twist card. Gemini maps it to
+structured shock parameters that feed the same runway formula the
+presets feed. Best Use of Gemini API is an active MLH prize category
+for this event (prize: MLH Swag Kit), so this is a fifth prize lane
+alongside Tangerine, Entire, Solana, and GoDaddy.
+
+### Request shape
+
+- Plain fetch to
+  https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
+  with the x-goog-api-key header. No SDK: the newer JS client sends an
+  Api-Revision header that fails CORS preflight with 403.
+- Model gemini-3.5-flash-lite or 3.6-flash with thinkingLevel minimal
+  and store false. store true adds about 2.7 seconds; 3.8 Flash
+  thinking can take 10 to 25 seconds.
+- Structured output: responseMimeType application/json with a strict
+  responseSchema, all fields required, additionalProperties false. The
+  schema returns intent (enum job_loss, bills_up, one_off_cost, mixed,
+  no_shock), incomeFactor (number 0 to 1), billsPct (number 0 to 1),
+  oneOffMonths (number 0 to 12), durationMonths (integer 0 to 120,
+  display only), confidence (enum high, medium, low), and summary
+  (string, at most 90 characters).
+- Prompt payload (user decision, recorded honestly): the request
+  carries the twist sentence, the account_id string, and the account's
+  six judge baseline metrics as plain numbers (I, F, S, B, H, P and
+  baseline runway). It does not carry raw rows, transaction history, or
+  any other customer data. The competition privacy rule is respected
+  at the row level; the account identifier and aggregate metrics do
+  leave the browser, which the user explicitly approved on Nov 07
+  2026.
+
+### Shared ShockSpec
+
+Exactly three math fields (incomeFactor, billsPct, oneOffMonths) plus
+display only durationMonths. They map one to one onto the judge
+formula: income_after = incomeFactor x I, spending_after = S + billsPct
+x H, one_off_costs = oneOffMonths x S. Preset twist cards produce the
+same ShockSpec, so one consumer handles both the typed path and the
+preset path.
+
+### Validation before state change
+
+TypeScript validation runs before any state change:
+
+1. JSON.parse in try/catch, then a hand written type guard (no zod; the
+   repo uses pure functions plus vitest).
+2. Percent detection: if a value is greater than 1 and at most 100,
+   divide by 100 and flag autoCorrected.
+3. Clamping to the schema ranges, flagged when clamped.
+4. Rounding for display: incomeFactor 2 dp, billsPct 2 dp, oneOffMonths
+   1 dp.
+5. Reject to fallback when intent is no_shock, confidence is low, or
+   every field sits at its neutral value (1, 0, 0).
+
+### Confirmation before apply
+
+Nothing writes to app state until the presenter confirms the parsed
+chips with one explicit click or Enter. The chips show each parameter
+with a one click stepper for correction, plus a formula strip showing
+income and spending in dollars so the presenter can verify against the
+judge's hand calculation. The runway number does not exist until
+confirmation. This is mandatory, not polish: a misparse visible to a
+judge computing by hand is the worst failure mode.
+
+### Failure mode and timeout
+
+- Timeout is AbortSignal.timeout(3000), a hard 3 seconds, then
+  automatic fallback to preset cards.
+- Preset twist cards are always rendered and always clickable. A mode
+  badge next to the input reads "typed shock Gemini" or "preset
+  cards".
+- On 429, 403, abort, or network error: no retry on 429, the mode
+  badge flips to preset cards, an inline note reads "Gemini
+  unavailable, using preset cards", the storm animation continues into
+  the preset apply, and total delay stays under 3 seconds.
+- A hash cache makes repeated identical sentences free.
+
+### Key management
+
+The key is already created with $25 of credits on the paid tier, so
+free tier quota limits do not apply and content is not used for
+product improvement under paid terms. It is stored as
+import.meta.env.VITE_GEMINI_KEY, inlined into the bundle as expected
+for a static site, never in a file under public/, and never printed in
+the UI. HTTP referrer restriction is recommended: github.io, localhost,
+and the final custom domain. Delete the key after Sunday submission.
+
+### UX timing budget (3 minute live twist)
+
+The input row sits directly above the preset twist cards, labeled "Say
+the shock". The storm front rolling in is the loading state (no
+spinner, label "reading the sky"). Target latency is about 1 second,
+hard cap 3 seconds. Stretch after P0 ships: the judge speaks the shock
+via the browser Web Speech API at no extra API cost.
+
+### Effort and testing
+
+- Core effort 5.5 to 7.5 hours: parser module 1.5 to 2, UI input row
+  and chips 2 to 2.5, loading state 0.5 to 1, tests 1, key setup and
+  smoke test 0.5 to 1. Stretch mic input adds 1 to 1.5 hours.
+- Testing: vitest for the clamp table, percent detection, fallback on
+  429 and abort, and the chip correction path, with mocked fetch. Log
+  every response (sentence hash, latency ms, raw JSON, clamped JSON)
+  to console.info so the write-up can quote a measured p50.
+
+### Fit with hard constraints
+
+This is the "network allowed as a bonus, never a dependency" pattern
+made concrete: the console is fully usable offline with preset cards,
+and the typed path is the only code that touches the network. The
+Gemini path reuses the E2 shock math unchanged, so the judge
+definitions contract and the integer cents rule are untouched, and a
+misparse can never reach state without the confirmation step.
