@@ -1721,3 +1721,374 @@ professionals from banks and tech, not an anime audience.
       because .co was not in the recommended priority anyway
 - [ ] Sheridan GoDaddy promo code and free TLD list still unknown; the TLD
       pick must be confirmed against mlh.link/GoDaddyRegistry at check in
+
+## 2026-11-07: Resilience weather station visualization research
+
+Research date: 2026-11-07. Scope: visualization research only for the
+"resilience weather station" re-skin (financial health as weather over the
+same judge numbers). Out of scope: scripts/engine, pipeline planning, judge
+metrics. This section continues the pivot research rank 5 verdict (pixel or
+Terraria skin, DO AS SKIN ONLY): the weather station becomes the chosen
+identity layer, and the honesty rules 1 to 8 from that section apply to it
+unchanged. Citations 230 to 250 do not repeat 1 to 229.
+
+### Key findings
+
+| Finding | Source | Confidence | Application |
+|---------|--------|------------|-------------|
+| Meteograms (multi-panel time series over a shared time axis) are the canonical station plot; any weather variable graphed against time counts | Wikipedia meteogram (230), meteoblue (231) | High | Meteogram strip for the 12 month balance_series plus income and spending bars |
+| Canada moved to colour coded alerts (yellow, orange, red) on Nov 26 2025, with impact based wording | Environment Canada (232) | High | Warning banner uses the local, Canadian severity ladder judges will recognise |
+| NWS publishes an exact hazard hex table (tornado FF0000, severe thunderstorm FFA500, flash flood 8B0000) | weather.gov help map (233) | High | Anchor for red and orange storm fills; cite in the legend |
+| Okabe-Ito 8 color palette is the default colorblind safe categorical set (E69F00, 56B4E9, 009E73, F0E442, 0072B2, D55E00, CC79A7, 000000) | figcanvas (234), arXiv accessible sequences (235), thenode CUD summary | High | Sky blue, vermillion, reddish purple pulled from it; the rest of the palette reuses existing tokens so report and station stay one system |
+| Severity ladders must be read by luminance plus icon shape plus label, never hue alone, under red green CVD | Okabe-Ito CUD, arXiv 2107.02270 (235) | High | Every weather state ships redundant coding: icon silhouette, text label, luminance step |
+| SVG degrades with object count (exponential on Safari per Smus); comfortable under about 1,000 to 2,000 nodes; canvas is flat cost and degrades with pixel area | Smus (246), yWorks (245), Lawrentz (244), ApexCharts benchmark (247) | High | Station chrome stays SVG (one badge, gauge, strip all under 400 nodes); only rain particles go Canvas 2D |
+| Canvas particle guidance: 100 to 200 particles enough for effects, JS holds about 1,700 before fps drops, constant fillStyle with globalAlpha changes about 25x faster, rAF plus viewport pause | desarrollolibre (249), Source True (248), canvasparticles (250) | Medium (lab numbers) | Rain layer budget of 150 drops, one fillStyle, pause on hidden tab and reduced motion |
+| Stardew themed dashboard study: players missed interactivity and struggled with labels; fixes were a fixed key facts column and explicit labels; authors wished they leaned further into the aesthetic | amarah.work (prior citation 103) | Medium (single study) | Station gets a fixed left facts column, explicit axis labels, and full commitment to the weather skin |
+| github-farm proves a game skin stays honest with a published mapping table; BetterFly keeps conventional charts inside pixel chrome | prior citations 101, 102 | High | Mapping legend printed in the UI is mandatory, charts remain charts |
+| CARROT Weather won an Apple Design Award by leading with color for condition and a few key numbers | Apple behind the design (236) | High | State color reads first, exact runway number second, everything else on demand |
+| CSS animated SVG weather icons need no JavaScript (amCharts CC-BY pack as reference) | amCharts (237) | High | Sun rays and cloud drift as CSS keyframes on transform only |
+
+### Weather idiom inventory with fit ratings
+
+| Idiom | Real world example | Financial data fit | Rating | Verdict |
+|-------|--------------------|--------------------|--------|---------|
+| Current conditions icon state machine | WMO symbols, every weather app | runway state plus flags as one badge | 5/5 | P0 build |
+| Meteogram multi panel time strip | meteoblue, Wikipedia (230, 231) | 12 month balance_series plus money in and out | 5/5 | P1 build |
+| Warning banner alert tape | NWS hex table, Canada yellow orange red (232, 233) | shock recompute crossing a threshold | 5/5 | P0 build |
+| Forecast outlook card row | 7 day forecast rows | baseline versus each twist, before and after | 5/5 | P0 build (shock strip) |
+| Analog gauge dial (barometer style) | station barometers | runway months with severity arc | 3.5/5 | P0 build with printed number always |
+| Seasonal almanac calendar grid | farmer almanac, Stardew calendar | per month weather state from that month numbers | 4.5/5 | P1, reuses calendar heatmap work |
+| Trend arrow (pressure tendency) | rising or falling pressure | runway delta versus prior month | 4.5/5 | cheap add next to badge |
+| Thermometer column | min max thermometer | buffer fill level | 4/5 | alternate to gauge, not both |
+| Fog as data quality | visibility reports | thin_history flag as fog, low confidence chip | 5/5 | P0 honesty layer |
+| Severity heat grid for many accounts | drought monitor mosaic, radar mosaic | portfolio or district overview | 4/5 | P2 conditional |
+| Storm cone of uncertainty | hurricane track cone | months until buffer depletion band on timeline | 3.5/5 | P2 optional |
+| Day night sky gradient | game skyboxes | sky hue as severity, declared decoration | 4/5 | ambience layer with legend line |
+| Radar sweep map | Doppler radar | only with geographic framing | 3/5 | skip, districts are not a radar |
+| Wind rose | met stations | no directional variable exists | 1/5 | skip |
+
+### Metric to weather mapping table
+
+Primary axis: judge runway (parity number from profiles.json, never
+recomputed in the UI). Secondary axis: gap and buffer. Flags are honesty
+modifiers.
+
+| Metric value | Weather state | Palette color | Icon | Motion |
+|--------------|---------------|---------------|------|--------|
+| runway_state = no_shortfall, or runway >= 12 months, gap <= 0 | Clear | sky #56B4E9, sun #F4B740 | pixel sun | rays rotate 60 s, no precipitation |
+| runway 8 to 12 | Fair | sky blue plus parchment cloud | sun behind cloud | cloud drift 40 s |
+| runway 4 to 8 | Cloudy | slate #46617c | stacked cloud | slower drift, grayer sky gradient |
+| runway 2 to 4, or buffer under 3 months of spending | Drought watch | amber #F4B740 with drought #d97b3f | cracked sun, heat rays | subtle heat shimmer |
+| runway 1 to 2 | Storm watch (yellow orange advisory) | orange #e69f00 | dark cloud | sparse rain streaks |
+| runway under 1 month, or buffer_depleted with gap > 0 | Storm warning | stamp red #ff6a4d, deep #d55e00 | thunderhead with bolt | 60 to 150 rain drops, lightning flash every 4 to 8 s |
+| gap > 0 while buffer stays above 8 months of spending | Flood risk (water rising) | water lit #2f7f7c over deep #10333f | rising water line | water level animates to flood line |
+| one off shock cost above 20 percent of buffer | Flood watch chip | water teal | burst pipe drop | ripple on impact |
+| flag thin_history | Fog overlay, low confidence chip | fog #cc79a7 at 35 percent over slate | fog bank | slow drift, no data claim |
+| flag zero_income | Eclipse modifier, permanent storm risk | deep red | blocked sun | sun never fully out |
+| flag negative_buffer | Red alert, below zero, matches rv-drought | drought #d97b3f | cracked ground | existing drought line reused |
+| flag defaulted_loan | Hail warning chip | vermillion | ice pellets | short burst on shock only |
+
+Severity ladder follows the Canadian colour coded order (yellow advisory,
+orange watch, red warning) so the banner vocabulary matches what Canadian
+judges see in real life. Red and green are never the sole distinction: each
+state also carries a unique icon silhouette and a printed label.
+
+### Palette (all on existing dark grounds)
+
+| Role | Hex | Origin |
+|------|-----|--------|
+| Sky clear | #56B4E9 | Okabe-Ito sky blue |
+| Fair teal | #35d0ae | existing --rp-verified |
+| Sun and watch amber | #f4b740 | existing --rp-money |
+| Drought orange | #d97b3f | existing --rv-drought |
+| Storm vermillion | #ff6a4d | existing --rp-stamp |
+| Deep storm red | #d55e00 | Okabe-Ito vermillion |
+| Advisory yellow text | #f0e442 | Okabe-Ito yellow |
+| Cloud slate | #46617c | existing --rv-ridge |
+| Grounds | #070c18, #0a1220 | existing --rp-void, --rv-sky-ink |
+| Water | #2f7f7c, #10333f | existing --rv-water-lit, --rv-water-deep |
+| Text on dark fills | #e9e0c9 | existing --rv-parchment |
+| Fog | #cc79a7 at 35 percent | Okabe-Ito reddish purple |
+
+New tokens live in a --wx- namespace next to --rp and --rv so the report
+and Money River files never change.
+
+### Terraria and Stardew translation table
+
+| Game element | What it does in the game | Translates to the station | How |
+|--------------|--------------------------|---------------------------|-----|
+| Day night cycle skybox | passage of time and mood | Yes, data bound | sky hue band equals current severity state; declared in legend |
+| Weather particle systems | immersion | Yes if data bound | drop count equals gap magnitude, lightning rate equals shock delta |
+| Stardew TV forecast dialogue box | tomorrow forecast in a bordered box with a portrait | Yes, best single idiom | shock strip styled as forecast box: state icon as portrait, post shock runway as the forecast line |
+| Stardew calendar | month grid with festivals marked | Yes | 12 month almanac grid, each cell a month weather state, shock months marked like festivals |
+| HUD hearts and stamina | discrete pooled health | Partial | buffer pips as secondary, exact dollar and month numbers always printed |
+| Crop health icons | status of each planted thing at a glance | Yes | per account or per metric status icons |
+| Terraria inventory slots with tooltips | item grid, hover detail | Yes | account grid slots; hover shows provenance stamp (existing pattern) |
+| Floating damage numbers | immediate loss feedback | Yes, brief | runway delta tick on shock recompute, tabular numerals, auto fade |
+| Date counter chip | time context | Yes | date range chip from history first and last month |
+| Crafting list and category tabs | filter many recipes | Partial | account picker filter by state, only if the picker is ours |
+| Parallax background layers | depth | No | pure decoration, cost without data |
+| Minimap frame | orientation | No | no geography unless the district map ships |
+| Full tile world with gameplay | play | No | prior research rank 10, DO NOT, 8 to 14 h |
+| Stacking damage and boss bars | threat over time | Yes | shock severity bar over the gauge |
+
+### Required plots with implementation complexity
+
+| Plot | Data it reads | Complexity | 120 s video fit | Offline fit | Verdict |
+|------|---------------|------------|-----------------|-------------|---------|
+| (a) Current conditions state badge | profiles.json runway_state, runway_deci_months, flags via a pure state function | CSS plus SVG, 2 to 3 h including 7 icons and tests | instant read, animates in 1 s | fully bundled | P0 |
+| (b) Meteogram timeline strip | balance_series (12 rows) plus monthly rows through existing loaders | SVG reusing derivedAxis and the charts.tsx kit, 3 to 4 h | 5 s pan B-roll | bundled JSON | P1 |
+| (c) Runway gauge dial | runway_deci_months, buffer_cents | SVG arc, piecewise scale, 2 to 3 h | 2 s needle sweep | bundled | P0 |
+| (d) Shock scenario strip | baseline profile plus per twist post shock values (see Q2) | SVG plus CSS forecast cards, 3 to 5 h | this IS the 3 minute live twist | bundled | P0 |
+| (e) Portfolio weather grid | all profiles in profiles.json | 4,500 SVG nodes is over the comfortable range, so Canvas 2D at 3 to 5 h, or 77 district aggregation in SVG at 2 h | B roll only | bundled | P2 skip by default |
+| (f) Animated weather effects | severity derived from runway and gap | CSS loops 1 to 2 h, Canvas rain 1 to 2 h | background for every shot | zero network | P1 |
+| (g) Warning banner tape | state function output | CSS plus text, 1 h | flashes on shock | bundled | P0 |
+| (h) Printed mapping legend | static text plus bins from the mapping table | 1 to 2 h | reads on screenshot | bundled | P0, mandatory per honesty rules |
+
+### Stack recommendation
+
+Option a: SVG plus CSS plus Tailwind with CSS animations. Option b: Canvas
+2D particle layer for weather effects under SVG UI chrome. Option c: full
+Three.js scene.
+
+Recommendation: option a as the base, adding option b only for the rain
+layer if CSS proves insufficient. Option c is rejected.
+
+Rationale:
+- The design system is hand rolled SVG with CSS tokens (--rp, --rv),
+  monospace display, dark navy ground. SVG inherits tokens, the provenance
+  hover pattern, and the charts.test.ts contract test pattern with zero new
+  dependencies.
+- Station node counts (badge, gauge, strip, cards) stay under about 400,
+  far inside the comfortable SVG range (244, 245, 246, 247). Canvas enters
+  only at 100 plus simultaneously moving rain drops, where per frame SVG
+  DOM writes would thrash (246).
+- CSS animations limited to transform and opacity run on the compositor;
+  sun rays and cloud drift cost nothing measurable on a demo laptop.
+- Three.js is rejected: the Tier T1 3D decision predates the Nov 6 pivot
+  that cancelled the game, WebGL adds a context risk on the projector and
+  booth machine, and prior research already priced a WebGL pipeline at 3 to
+  6 h plus risk with no data viz benefit. Charts must stay DOM and SVG for
+  accessibility, printing, and the screenshot rule.
+- Responsiveness: SVG viewBox scales from a 1366 laptop to a 1080p
+  projector; bump chart label font sizes at large viewports because 8.5 px
+  labels read too small from projector distance; keep the existing
+  horizontal scroll container pattern for narrow screens.
+- Performance budget: 60 fps on integrated GPU (architecture) holds; a 150
+  drop canvas loop is under 1 ms per frame with constant fillStyle (248,
+  249, 250).
+- Offline: zero network, inline SVG icons, ui-monospace stack already
+  declared, all data from public/data JSON.
+- Design system fit: additive --wx tokens only; report and Money River
+  untouched; state function is pure TypeScript with unit tests so the
+  tester gets numeric acceptance criteria.
+
+### MVP scope and hour budget (solo, draft Sat 8:00 PM, final Sun noon)
+
+| Block | Contents | Hours | Priority |
+|-------|----------|-------|----------|
+| A | Pure weather state function, palette tokens, unit tests | 2 | P0 |
+| B | State badge plus warning banner tape | 3 | P0 |
+| C | Shock scenario strip (forecast box styling) | 4 | P0 |
+| D | Printed mapping legend plus provenance hover | 2 | P0 |
+| E | Account picker for judge chosen account_id | 2 | P0, may be shared with engine UI |
+| F | Gauge dial with piecewise severity arc | 3 | P1 |
+| G | Meteogram strip | 4 | P1 |
+| H | Canvas rain plus CSS sky loops | 3 | P1 |
+| I | Portfolio or district grid | 3 to 5 | P2 skip |
+| Total P0 | | 13 | |
+| Total P0 plus P1 | | 23 | |
+
+Cut order if time runs short: I, then G, then H. Never cut D: the printed
+mapping table is what keeps the skin honest under Discovery 35 and Data
+Use 25.
+
+### Relevant equations for this section
+
+| Equation | Description | Variables |
+|----------|-------------|-----------|
+| state = W(r, gapRatio, flags) piecewise | pure weather state function, unit tested | r runway months, gapRatio = (S minus I) over max(I, 1), flags from profiles |
+| r = deci_months / 10, capped at 120 | judge runway read, never recomputed | deci_months from profiles.json |
+| bufferMonths = B / S | secondary gauge scale when S > 0 | B buffer cents, S spending cents |
+| severity = clamp(1 minus r / 12, 0, 1) | drives all motion intensity | r runway months |
+| dropRate = 20 + 180 * severity per second | rain particle spawn rate | severity |
+| flashInterval = 8 minus 6 * severity seconds | lightning cadence | severity |
+| gaugeAngle = piecewise(r; breaks at 3, 8, 24) | needle position so the 0 to 12 month region is not squashed by the 120 cap | r |
+
+### Validation data for this section
+
+| Benchmark | Value | Source | Uncertainty |
+|-----------|-------|--------|-------------|
+| SVG comfortable element count | under about 1,000 to 2,000 nodes | Lawrentz, yWorks, Smus (244, 245, 246) | device dependent |
+| Canvas particle budget | about 1,700 JS particles before fps drop; 100 to 200 enough for effects | Source True, desarrollolibre (248, 249) | lab conditions |
+| fillStyle constant, vary globalAlpha | about 25x faster than reassigning fillStyle | canvasparticles (250) | micro benchmark |
+| Okabe-Ito hex set | 8 values listed above | figcanvas, arXiv, thenode (234, 235) | verified across 3 independent pages |
+| Canadian alert ladder | yellow, orange, red since Nov 26 2025 | Environment Canada (232) | official |
+| WCAG contrast | 4.5 to 1 text, 3 to 1 large text and graphics | AudioEye summary (243) | standard thresholds |
+| Engine runway states | finite, no_shortfall, buffer_depleted, cap 1200 deci | scripts/engine/shocks.py | exact |
+| balance_series length | 12 rows | scripts/engine/build.py BALANCE_SERIES_ROWS | exact |
+| Stardew dashboard usability | label confusion and missed interactivity; fix was fixed fact column | amarah.work (103) | single student study |
+
+### Practical implications
+
+- Mount the station in the EXPLORE nav slot (PlayView placeholder) or as a
+  new section; the findings report and Money River stay untouched either
+  way.
+- The state function is the contract: one pure TypeScript function from
+  profile fields to state, with unit tests as tester acceptance criteria.
+- Read profiles.json values only; the UI never recomputes judge numbers,
+  so formula parity is preserved by construction.
+- Print the mapping legend with month and dollar bins on first render; it
+  is both a Communication asset and the honesty requirement from the
+  pivot research.
+- Gate every animation behind prefers-reduced-motion (pattern already in
+  index.css) and pause the canvas loop on document visibilitychange.
+- Seed any jitter with the existing hash01 pattern so the still frame is
+  deterministic for screenshots and the poster.
+- The live twist demo maps directly: judge reads a twist card, strip
+  recomputes, badge downgrades with a lightning flash, banner flips to red,
+  gauge needle sweeps down. That sequence is the 120 second video spine.
+
+### Citations for this section (230 to 250)
+
+230. Wikipedia, Meteogram: https://en.wikipedia.org/wiki/Meteogram
+231. meteoblue, Meteograms help page: https://content.meteoblue.com/en/private-customers/website-help/forecast/meteograms
+232. Environment Canada, colour coded weather alerts (yellow, orange, red): https://www.canada.ca/en/environment-climate-change/news/2025/11/colour-coded-weather-alerts.html
+233. NOAA National Weather Service, hazards map color table: https://www.weather.gov/help-map
+234. Okabe and Ito palette hex reference (figcanvas): https://figcanvas.com/blog/okabe-ito-palette-hex-rgb-wong-prism
+235. Niederer and others, Accessible Color Sequences for Data Visualization, arXiv: https://arxiv.org/pdf/2107.02270
+236. Apple Developer, Behind the Design: Carrot Weather: https://developer.apple.com/news?id=kf623ldf
+237. amCharts, free animated SVG weather icons (CC BY, CSS only): https://www.amcharts.com/free-animated-svg-weather-icons
+238. Meteopolis pixel art weather app guide: https://meteopolis.app/guides/pixel-art-weather-app
+239. Interface in Game, Stardew Valley interface screenshots: https://interfaceingame.com/games/stardew-valley
+240. Medium, Elevating the gaming experience, a fresh take on Stardew Valley UI: https://medium.com/@n01578837/elevating-the-gaming-experience-a-fresh-take-on-stardewvalleys-ui-ux-91502b82215d
+241. Design Delve, The Anatomy of Stardew Valley (calendar drip feeds goals): https://www.youtube.com/watch?v=A_gvgYCE7DY
+242. Terraria Wiki, Crafting 101 (HUD slots and tooltips): https://terraria.wiki.gg/wiki/Guide:Crafting_101
+243. AudioEye, colorblind friendly palettes (Okabe-Ito, contrast guidance): https://www.audioeye.com/post/colorblind-friendly-palettes
+244. Samuel Lawrentz, Rendering millions of points in the browser: https://samuellawrentz.com/blog/rendering-millions-of-points-in-the-browser
+245. yWorks, SVG, Canvas, WebGL visualization options: https://www.yworks.com/blog/svg-canvas-webgl
+246. Boris Smus, Performance of canvas versus SVG: https://smus.com/canvas-vs-svg-performance
+247. ApexCharts, SVG vs Canvas charts comparison and benchmark: https://apexcharts.com/blog/svg-vs-canvas-charts
+248. Source True, JavaScript vs WebAssembly performance for Canvas particle system: https://medium.com/source-true/javascript-vs-webassembly-performance-for-canvas-particle-system-4c4a526145d8
+249. Desarrollolibre, Creating particles with JavaScript and Canvas: https://www.desarrollolibre.net/blog/javascript/creating-particles-with-javascript-and-canvas
+250. Canvas Particles homepage, renderer optimization notes: https://canvasparticleshomepage.onrender.com
+
+Reused prior citations: 101 github-farm, 102 BetterFly, 103 Stardew Valley
+Dashboard usability study.
+
+### Verification checklist (this section)
+
+- [x] Findings from reputable sources (Wikipedia, Environment Canada, NOAA,
+      Apple Developer, peer reviewed arXiv, established perf writeups)
+- [x] Equations correctly transcribed (runway read from shocks.py, motion
+      formulas are declared design tunables, not claims)
+- [x] Validation data includes uncertainty (particle and SVG thresholds
+      flagged as device or lab dependent; usability study is one sample)
+- [x] Practical implications actionable (MVP hour budget, cut order, mount
+      point, parity rule)
+- [x] All sources cited (230 to 250, no duplicates of 1 to 229)
+- [x] Research supports architecture decisions (SVG plus optional Canvas,
+      Three.js rejected, station as identity layer under pivot rules)
+- [ ] Effort estimates are solo developer guesses without a prototype;
+      flagged, reestimate after the state function and badge land
+- [ ] Shock data path depends on what the engine emits per scenario; open
+      question raised to the orchestrator with a precomputed JSON default
+
+## 2026-11-07: Gemini API natural language shock input (feasibility)
+
+Research date: 2026-11-07. Scope: whether a judge typed sentence can be
+mapped to structured shock parameters that feed the E3 shock engine and the
+judge runway formula, called live from the static site. Runtime network calls
+are allowed for this one feature (user decision, Nov 07), preset twist cards
+stay as the fallback. Citations 251 to 268 do not repeat 1 to 250.
+
+### Key findings
+
+| Finding | Source | Confidence | Application |
+|---------|--------|------------|-------------|
+| Best Use of Gemini API is a live prize category on the Sheridan Datathon 2026 MLH event page (25 categories), prize MLH Swag Kits, description names the Gemini API | MLH event page 255, 256 | High (fetched today) | Fifth prize lane is real; the track text says Gemini API, so a Google AI claim without the Gemini API is risky |
+| Free tier on 2026-11-07 covers gemini-3.8-flash, gemini-3.6-flash, gemini-3.5-flash-lite, gemini-3.1-flash-lite (input and output free of charge); gemini-4-argon and gemini-3.1-pro-preview are paid only | Google pricing docs 251 | High (official page) | Pick a Flash or Flash-Lite model; Pro and Argon are off the table on free |
+| gemini-2.5-flash is deprecated and routes to gemini-3.5-flash-lite from 2026-12-01; gemini-2.0-flash is shut down | Google models docs 253 | High | Do not use 2.5 or 2.0 strings in old snippets |
+| Google no longer publishes per-model RPM and RPD tables; limits are per project, RPD resets midnight Pacific, view them in the AI Studio rate limit page | Google rate limits docs 252 | High (official) | Quota must be read Saturday morning in AI Studio, not from a blog |
+| Aggregators report about 10 RPM and 1,500 RPD for Flash models on free; a forum thread reports Flash cut to 20 RPD in January 2026 | 264 (aggregators), 265 (forum) | Low to medium (conflicting) | Budget under 60 calls for the whole weekend and add a client side request counter |
+| Structured outputs: responseMimeType application/json plus responseSchema guarantees syntactically valid JSON matching a supported JSON Schema subset; supported on 3.5-flash-lite, 3.6-flash, 3.8-flash | Google structured output docs 254, Firebase docs 267 | High (official) | One strict object per parse, no free text parsing |
+| minimum and maximum are supported for number and integer (constrained decoding) but grow the grammar state space; minLength, maxLength, minProperties, maxProperties, uniqueItems, contains are stripped and ignored; minItems and maxItems are enforced | Google structured output docs 254 | High (official) | Bound numeric fields in schema, still clamp in app code (Google's own best practice says validate values) |
+| Google's documented best practice: output is syntactically correct JSON but values still need application validation and error handling for semantically wrong answers | Google structured output docs 254 | High | Confirmation chips and clamping are mandatory, not optional polish |
+| Raw fetch to generativelanguage.googleapis.com works from a browser; the newer Interactions API JS client sends an Api-Revision header that fails the CORS preflight with 403 and no Access-Control-Allow-Origin | GitHub issue 259 (closed 2026-07-28), forum 260 | Medium to high (two independent reports) | Use plain fetch to v1beta/models/...:generateContent, no SDK dependency |
+| Since 2026-06-19 the Gemini API rejects unrestricted API keys; keys made in AI Studio are restricted to the Gemini API by default; HTTP referrer application restrictions exist | Reddit 257, forum 258 | Medium to high | Throwaway key, API restricted, referrer restricted, delete after Sunday |
+| Referrer restrictions are spoofable (a client can omit or forge Referer) and a free tier key carries no billing, so worst case is quota burn and prompt exposure, not money | 258 plus Google key docs | Medium | Honest write-up wording: mitigation, not a guarantee; no customer data in the prompt |
+| Measured latency: gemini-3.5-flash-lite median time to first text 0.625 s and full completion 0.683 s with store false, versus 3.34 s and 4.99 s with store true (2026-10-06, 20 prompts) | Forum 261 | Medium (single measured sample) | Set store false, expect about 1 s, hard timeout 3 s |
+| gemini-3.8 Flash time to first token reported at 10 to 25 s at high thinking effort (2026-10-10); gemini-3 Flash first token 0.5 to 0.91 s | 262, 263 | Medium (third party trackers) | Prefer gemini-3.5-flash-lite or gemini-3.6-flash with minimal thinking for extraction |
+| Free tier terms allow Google to use content to improve products; paid tier does not | Google pricing docs 251 | High | Send only the twist sentence plus unit free numbers, never account ids or dollar values |
+| The E3 shock engine (presets, sliders, twist card mode) does not exist in src yet; scripts/engine/shocks.py is the only runway implementation today | repo scan | High (code) | Gemini input must land in one shared ShockSpec type that E3 defines |
+
+### Relevant equations for this section
+
+| Equation | Description | Variables |
+|----------|-------------|-----------|
+| income_after = incomeFactor x I | parsed EI or job loss maps to the challenge rule income = 0.55 x I | incomeFactor in 0..1 from the model, I from profiles.json |
+| spending_after = S + billsPct x H | parsed bills or rent shock, exactly the challenge rule for a 15 percent bills rise | billsPct in 0..1, H household bills cents |
+| one_off_costs = oneOffMonths x S | parsed one off cost expressed in months of typical spending, matches the furnace example | oneOffMonths in 0..12, S spending cents |
+| buffer_left = B - one_off_costs; gap = spending_after - income_after | unchanged judge branch order from scripts/engine/shocks.py | B, S, H, I from profiles.json |
+| deci = min(1200, (20 x buffer_left + gap) // (2 x gap)) | integer tenths, must be produced by the single TS twin, never by the model | all integer cents |
+| clamp(x, lo, hi) applied after schema parse | percent detection: if 1 < x <= 100 divide by 100 and flag auto corrected | every numeric field |
+
+### Validation data for this section
+
+| Benchmark | Value | Source | Uncertainty |
+|-----------|-------|--------|-------------|
+| Structured output syntactic guarantee | valid JSON matching the schema subset | Google docs 254 | semantic values still wrong sometimes, validate in app |
+| Free tier Flash quota | about 10 RPM and 1,500 RPD, one report of 20 RPD | 264, 265 | conflicting, read AI Studio |
+| 3.5 Flash-Lite round trip | 0.683 s full completion, store false | forum 261 | single measured sample, 10 requests |
+| 3.5 Flash-Lite with store true | 4.99 s full completion | forum 261 | same sample |
+| 3.8 Flash TTFT at high effort | 10 to 25 s | 262 | third party, effort dependent |
+| Gemini 3 Flash first token | 0.5 to 0.91 s | 263, 268 | tracker dependent |
+| MLH category for this event | Best Use of Gemini API, MLH Swag Kits | 255, 256 | category badge window reads Q1 2025 to Q1 2026, recheck Devpost at draft |
+| CORS behavior | raw fetch works, SDK Api-Revision preflight 403 | 259, 260 | two independent reports, smoke test on the Pages origin |
+
+### Practical implications
+
+- Build one ShockSpec type in src/lib owned by E3, and let both preset cards
+  and the Gemini parser produce it. The model never touches the runway math.
+- Use plain fetch, no SDK, no new dependency: keeps the lockfile, CI, and
+  CORS behavior identical to today.
+- Confirm before apply: show parsed chips with steppers, show the formula
+  strip (income and spending arithmetic) before the runway number.
+- Timeout 3 s then automatic preset fallback with a visible mode badge.
+- Free tier quota check Saturday morning in AI Studio, plus a client side
+  counter and a text hash cache so repeated twists cost zero requests.
+- Claim the Gemini track only if a live call works on the deployed Pages
+  origin before the Devpost draft; otherwise uncheck the track.
+
+### Citations for this section (251 to 268)
+
+251. Google AI for Developers, Gemini Developer API pricing: https://ai.google.dev/gemini-api/docs/pricing (fetched 2026-11-07)
+252. Google AI for Developers, Rate limits: https://ai.google.dev/gemini-api/docs/rate-limits (fetched 2026-11-07)
+253. Google AI for Developers, Models: https://ai.google.dev/gemini-api/docs/models (fetched 2026-11-07)
+254. Google AI for Developers, Structured outputs: https://ai.google.dev/gemini-api/docs/structured-output (fetched 2026-11-07)
+255. MLH, Sheridan Datathon 2026 prize categories: https://www.mlh.com/events/sheridan-datathon-2026 (fetched 2026-11-07)
+256. MLH, Best Use of Gemini API category: https://www.mlh.com/events/sheridan-datathon-2026/challenges/01953de4-ee8b-0807-88b1-86bb6abbf410 (fetched 2026-11-07)
+257. r/googlecloud, Gemini API stops accepting unrestricted keys from 2026-06-19: https://www.reddit.com/r/googlecloud/comments/1ucq5tv/
+258. Google AI Developers Forum, securing your Gemini API key (referrer and API restrictions): https://discuss.ai.google.dev/t/securing-your-gemini-api-key-is-crucial/106912
+259. GitHub allenhutchison/obsidian-gemini issue 1023, Api-Revision header fails browser CORS preflight: https://github.com/allenhutchison/obsidian-gemini/issues/1023 (closed 2026-07-28)
+260. Google AI Developers Forum, Interactions API browser 403 while raw fetch works: https://discuss.ai.google.dev/t/interactions-api-javascript-sdk-403-error-when-running-in-browser-but-raw-fetch-request-works/ (2026-07-11)
+261. Google AI Developers Forum, latency increase with store true (measured 2026-10-06): https://discuss.ai.google.dev/t/gemini-api-latency-has-recently-increased-significantly-especially-with-store-true/187106
+262. IntuitionLabs, Gemini 3.8 Flash accuracy and latency review (2026-10-10): https://intuitionlabs.ai/articles/gemini-3-8-flash-research-tasks-review
+263. benchlm.ai, Gemini 3 Flash speed (first token 0.91 s): https://benchlm.ai/models/gemini-3-flash
+264. Aggregator free tier guides (pecollective, cometapi, metacto): about 10 RPM and 1,500 RPD for Flash models, Pro free tier removed 2026-04-01
+265. Google AI Developers Forum, free tier Flash cut to 20 RPD (2026-01): https://discuss.ai.google.dev/t/do-they-really-think-we-wouldnt-notice-a-92-free-tier-quota/111262
+266. Truffle Security research on exposed Google API keys gaining Gemini access (2026-02-25), reported at https://nhimg.org/google-api-keys-exposure-gemini-ai-turns-public-keys-into-data-leak-risk
+267. Firebase AI Logic, generate structured output (supported model list): https://firebase.google.com/docs/ai-logic/generate-structured-output
+268. Google blog, introducing Gemini 3 Flash: https://blog.google/products-and-platforms/products/gemini/gemini-3-flash
+
+### Verification checklist (this section)
+
+- [x] Findings from reputable sources (Google AI docs fetched today, MLH event page fetched today)
+- [x] Equations correctly transcribed (runway branches copied from scripts/engine/shocks.py)
+- [x] Validation data includes uncertainty (quota figures conflict and are flagged low confidence)
+- [x] Practical implications actionable (schema, timeout, fallback, quota check, track gate)
+- [x] All sources cited (251 to 268)
+- [x] Research supports architecture decisions (raw fetch, ShockSpec boundary, confirm before apply)
+- [ ] Free tier quota for the exact model must be read in AI Studio on Saturday morning
+- [ ] Browser CORS smoke test on the deployed Pages origin still to be run by the implementer
+- [ ] Effort estimate is a solo developer guess; reestimate once E3 ShockSpec exists
