@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_5cd2d4a44dc142baba5fca9a",
+  "agent_id": "ses_e48c7461cffeH6pEhoLw5hgd6a",
+  "subagent_type": "00-planner",
+  "task_description": "Plan dataset + Solana integration",
+  "token_usage": {
+    "input_tokens": 43497,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 151424,
+    "output_tokens": 5069,
+    "api_call_count": 6
+  },
+  "started_at": "2026-11-07T13:15:10.557-05:00",
+  "completed_at": "2026-11-07T13:20:12.002485-05:00"
+}
