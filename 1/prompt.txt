@@ -1,0 +1,1 @@
+E2 console has landed and been reviewed. Lets implement the Gemini input addon. @02-tech-lead design the architecture for the Gemini shock input and implement.
