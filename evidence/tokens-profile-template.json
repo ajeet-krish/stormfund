@@ -1,0 +1,30 @@
+{
+  "source": "committed_checkpoints",
+  "usage_scope": "checkpoint_observed",
+  "checkpoints_available": 1,
+  "checkpoints_analyzed": 1,
+  "checkpoints_with_token_data": 1,
+  "missing_token_data": 0,
+  "tokens": {
+    "total": 31220,
+    "input": 29141,
+    "cache_read": 2048,
+    "cache_write": 0,
+    "output": 31,
+    "api_calls": 2
+  },
+  "recommendations": [
+    {
+      "id": "no-repeated-hotspots",
+      "severity": "low",
+      "message": "No repeated token hotspots were visible in committed checkpoint metadata.",
+      "signals": [
+        "checkpoint_token_metadata"
+      ]
+    }
+  ],
+  "limitations": [
+    "Token totals are summed from analyzed checkpoints and may include overlapping checkpoint history; treat them as checkpoint-observed volume, not guaranteed unique session spend.",
+    "Tool-level search/read spend is not captured yet; this profile infers patterns from token totals, cache/context replay, API call counts, and subagent totals."
+  ]
+}
