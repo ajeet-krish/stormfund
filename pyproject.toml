@@ -1,12 +1,25 @@
+# Offline data pipeline for Ledger Odyssey (Sheridan Datathon 2026).
+# Dependencies are pinned exactly; uv.lock is committed alongside this file.
+
 [project]
-name = "sheridan-datathon-2026"
+name = "sheridan-datathon-pipeline"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Offline CSV to public/data JSON builders for the Ledger Odyssey game"
 requires-python = ">=3.14"
 dependencies = [
-    "matplotlib>=3.11.2",
-    "numpy>=2.5.4",
-    "pandas>=3.1.1",
-    "scipy>=1.18.1",
+    "pandas==3.1.1",
+    "numpy==2.5.4",
+    "scikit-learn==1.9.1",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["scripts"]
+python_files = ["test_*.py"]
