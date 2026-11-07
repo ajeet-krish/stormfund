@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_82742f78342646e8b8cf71af",
+  "agent_id": "ses_e489593b8ffeN7cIkc0NssEfkk",
+  "subagent_type": "00-planner",
+  "task_description": "Brainstorm resilience engine ideas",
+  "token_usage": {
+    "input_tokens": 53882,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 273152,
+    "output_tokens": 6261,
+    "api_call_count": 11
+  },
+  "started_at": "2026-11-07T14:09:27.494-05:00",
+  "completed_at": "2026-11-07T14:13:28.934725-05:00"
+}

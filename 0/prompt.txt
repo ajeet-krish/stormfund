@@ -1,0 +1,43 @@
+no coding. @00-planner lets brainstorm ways ideas for the financial resilience engine. 
+
+My understanding:
+In the context of the Sheridan Datathon Tangerine Challenge ("Resilience Rewired"), a financial resilience engine is an interactive analytical tool (built as a dashboard, app, notebook, or AI agent) designed to evaluate, stress-test, and improve a bank customer's ability to weather financial hardships.
+
+Think of it as a "weather forecasting system" for personal finance—it looks at a customer's baseline financial health, simulates severe economic shocks, and generates actionable safety plans.
+
+Core Components of the Engine
+
+To fulfill the challenge requirements, your engine must perform three essential functions:
+
+1. Know the Customer (Financial Diagnostics)
+
+The engine analyzes historical account data (via an account_id) to establish a clear baseline of the customer's financial standing:
+
+⚬ Income: Regular monthly cash inflows.
+⚬ Fixed Costs & Bills: Essential expenses like housing, insurance, and loan payments.
+⚬ Savings Buffer: The typical cash reserve or average daily balance available.
+⚬ Runway: How many months the customer could survive strictly on their buffer if their income stopped or dropped.
+
+2. Take a Shock (Stress Testing)
+
+The engine acts as a simulator where users can inject sudden financial disruptions and instantly see the recalculations:
+
+⚬ Job Loss: e.g., modeling unemployment where Employment Insurance (EI) covers 55% of prior earnings.
+⚬ Inflation/Cost Spikes: e.g., a 15% increase in household rent or utility bills.
+⚬ Emergency Expenses: e.g., a surprise major car or furnace repair costing a full month's spending.
+⚬ Customization: Allowing judges or users to adjust the size and mix of these shocks live during the 3-minute challenge twist.
+
+3. Make a Plan (Prescriptive Guidance)
+
+Instead of just showing doom-and-gloom numbers, the engine provides personalized solutions:
+
+⚬ Goal Plan: Proactive steps to build an adequate emergency fund based on their spending habits.
+⚬ Backup Plan: A concrete mitigation strategy tailored to their specific numbers for if a shock hits.
+
+Why It's Built This Way
+
+In the datathon, this engine isn't just a static report—it's a live interactive tool. During judging, a judge will hand you a random customer ID and a surprise "twist card" (such as a sudden layoff combined with a rent hike), and you must run your engine live to demonstrate whether that customer survives and what financial strategies can save them.
+
+---
+
+delete the old test file since it uses superseded api
