@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_e1671e4332f4470fa7f35586",
+  "agent_id": "ses_e47d4c9e1ffelidl0YWD9z3blM",
+  "subagent_type": "general",
+  "task_description": "Run E2 test suites",
+  "token_usage": {
+    "input_tokens": 6051,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 41472,
+    "output_tokens": 1081,
+    "api_call_count": 6
+  },
+  "started_at": "2026-11-07T17:40:02.075-05:00",
+  "completed_at": "2026-11-07T17:40:43.832465-05:00"
+}

@@ -1,0 +1,43 @@
+{
+  "tool_use_id": "call_a739ac9df0ef40dab7efe618",
+  "agent_id": "ses_e48114cbbffeVyV3AausTVcnNz",
+  "subagent_type": "11-frontend-dev",
+  "task_description": "Implement E2 console base",
+  "files": [
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/components/console/AccountLookup.tsx",
+    "src/components/console/BaselineCard.tsx",
+    "src/components/console/ConsoleView.tsx",
+    "src/components/console/PlanCard.tsx",
+    "src/components/console/ShockPanel.tsx",
+    "src/components/console/VerdictBadge.tsx",
+    "src/components/console/console.smoke.test.ts",
+    "src/dashScan.test.ts",
+    "src/data/profiles.test.ts",
+    "src/data/profiles.ts",
+    "src/index.css",
+    "src/lib/format.ts",
+    "src/lib/metrics.ts",
+    "src/lib/planText.test.ts",
+    "src/lib/planText.ts",
+    "src/lib/shockPresets.ts",
+    "src/lib/shocks.golden.test.ts",
+    "src/lib/shocks.test.ts",
+    "src/lib/shocks.ts",
+    "src/lib/verdict.test.ts",
+    "src/lib/verdict.ts",
+    "src/state/consoleStore.test.ts",
+    "src/state/consoleStore.ts",
+    "tailwind.config.js"
+  ],
+  "token_usage": {
+    "input_tokens": 258779,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 19050176,
+    "output_tokens": 59488,
+    "api_call_count": 106
+  },
+  "started_at": "2026-11-07T16:33:56.417-05:00",
+  "completed_at": "2026-11-07T17:34:16.92658-05:00"
+}

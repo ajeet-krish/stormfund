@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_ec3d259cac8d49e9af114a09",
+  "agent_id": "ses_e47d20d2cffeXvZe7cEzNO62t2",
+  "subagent_type": "general",
+  "task_description": "Append review to docs/reviews.md",
+  "token_usage": {
+    "input_tokens": 7985,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 29568,
+    "output_tokens": 2635,
+    "api_call_count": 4
+  },
+  "started_at": "2026-11-07T17:43:01.453-05:00",
+  "completed_at": "2026-11-07T17:43:26.268515-05:00"
+}
