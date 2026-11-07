@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Phase E6 and E7 console furniture: the judge bar and the Solana
+   receipt badge. The --jg- namespace is local to this file (the --wx-
+   tokens live in ../weather/weather.css and are untouched here), and
+   nothing in this file edits src/index.css.
+
+     jg-grounds    #070c18   archival navy ground
+     jg-panel      #0d1526   raised bar surface
+     jg-parchment  #e9e0c9   primary text (14.9 to 1 on grounds)
+     jg-dim        rgba(233, 224, 201, 0.72)   secondary text
+     jg-key        #1b2740   keycap face
+     jg-flag       #ff6a4d   guard flag warning
+     jg-ok         #35d0ae   verified receipt
+
+   Keyboard focus comes from the global focus-visible rule in
+   src/index.css, so every button this file renders shows a visible
+   outline without a local override. Motion is gated behind
+   prefers-reduced-motion: no-preference, matching the repo pattern.
+   ========================================================================== */
+
+:root {
+  --jg-grounds: #070c18;
+  --jg-panel: #0d1526;
+  --jg-parchment: #e9e0c9;
+  --jg-dim: rgba(233, 224, 201, 0.72);
+  --jg-faint: rgba(233, 224, 201, 0.54);
+  --jg-rule: rgba(233, 224, 201, 0.24);
+  --jg-key: #1b2740;
+  --jg-flag: #ff6a4d;
+  --jg-ok: #35d0ae;
+}
+
+.jg-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  padding: 10px 14px;
+  background: var(--jg-panel);
+  border-top: 1px solid rgba(233, 224, 201, 0.24);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+.jg-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jg-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 10px;
+  color: var(--jg-parchment);
+  background: transparent;
+  border: 1px solid var(--jg-rule);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+button.jg-shortcut {
+  cursor: pointer;
+}
+
+.jg-shortcut-active {
+  border-color: var(--jg-parchment);
+  box-shadow: inset 0 0 0 1px var(--jg-parchment);
+}
+
+.jg-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  min-height: 1.6rem;
+  padding: 0 5px;
+  background: var(--jg-key);
+  border: 1px solid rgba(233, 224, 201, 0.34);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--jg-parchment);
+}
+
+.jg-shortcut__label {
+  color: rgba(233, 224, 201, 0.72);
+  white-space: nowrap;
+}
+
+.jg-guard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.jg-guard__flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jg-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  background: rgba(255, 106, 77, 0.14);
+  border: 1px solid #ff6a4d;
+  border-radius: 3px;
+  color: var(--jg-parchment);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+}
+
+.jg-flag__mark {
+  color: #ff6a4d;
+  font-weight: 700;
+}
+
+.jg-clean {
+  margin: 0;
+  color: rgba(233, 224, 201, 0.54);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Receipt badge (E7): bundled evidence only, never a network call
+   ========================================================================== */
+
+.jg-receipt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: rgba(233, 224, 201, 0.06);
+  border: 1px dashed rgba(233, 224, 201, 0.4);
+  border-radius: 3px;
+  color: rgba(233, 224, 201, 0.74);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.jg-receipt-verified {
+  border-style: solid;
+  border-color: #35d0ae;
+  color: #35d0ae;
+}
+
+.jg-receipt-unverified {
+  border-style: solid;
+  border-color: rgba(233, 224, 201, 0.5);
+}
+
+.jg-receipt__mark {
+  font-weight: 700;
+}
+
+.jg-receipt__label {
+  color: rgba(233, 224, 201, 0.54);
+  font-size: 0.6875rem;
+}
+
+/* Motion: the active keycap breathes once per state change. Only when
+   motion is welcome; the global prefers-reduced-motion: reduce block in
+   src/index.css also zeroes every animation duration. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .jg-shortcut-active .jg-key {
+    animation: jg-key-glow 900ms ease-in-out infinite alternate;
+  }
+}
+
+@keyframes jg-key-glow {
+  from {
+    box-shadow: 0 0 0 0 rgba(233, 224, 201, 0.05);
+  }
+
+  to {
+    box-shadow: 0 0 0 4px rgba(233, 224, 201, 0.16);
+  }
+}
