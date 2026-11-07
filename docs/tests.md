@@ -1,6 +1,58 @@
 # Sheridan Datathon 2026 Test Results
 
-Last updated: Nov 05 2026
+Last updated: Nov 07 2026
+
+## Nov 07 2026 - Mock data removal: obsolete test cleanup
+
+The `data/mock/` folder was deleted as part of the Financial Resilience
+Engine pivot, so two test cases that read the deleted CSVs failed. Only
+those two cases were removed, plus helpers used exclusively by them. No
+live functionality lost coverage and no assertion was weakened.
+
+### Test cases removed
+
+| Test | Why it was mock only |
+|------|----------------------|
+| `scripts/ingest/test_probe.py::test_probe_runs_on_the_mock_ledger` | Ran the probe CLI against `data/mock/tangerine_transactions.csv` and asserted its report output. The file no longer exists, so it failed with "input file not found". The module constant `MOCK_LEDGER` and the now unused `REPO_ROOT` import existed only for this test and were removed with it. Every other test in the file builds its own fixture under `tmp_path`. |
+| `src/data/checksum.test.ts` `it('verifies every shipped player against the source CSV income values')` | Read `data/mock/ibm_hr.csv` through a dedicated helper to cross check all 1200 shipped players. The file no longer exists. The helpers `readIncomeCentsByRowId` (mock CSV reader), `readJson`, and the `PlayerFixture` interface plus the `readFileSync` import were used only by this case and were removed with it, keeping `noUnusedLocals` typecheck clean. |
+
+### Suite results
+
+| Suite | Command | Verdict | Notes |
+|-------|---------|---------|-------|
+| Pytest | `uv run pytest -q` | PASS | 130 passed in 3.76s, 0 failed |
+| Checksum suite | `npx vitest run src/data/checksum.test.ts` | PASS | 2 passed in 1 file (was 3, one removed) |
+| Vitest full | `npx vitest run` | PASS | 328 passed in 34 files, 0 failed |
+| Typecheck | `npx tsc -p tsconfig.build.json --noEmit` | PASS | exit 0, no unused symbol errors |
+
+### Per-test results
+
+| Test | Verdict | Notes |
+|------|---------|-------|
+| `test_probe.py` remaining 41 cases (money parsing, encoding, delimiters, date and sign verdicts, report, friendly failures, excel engines) | PASS | all untouched and green |
+| `checksum.test.ts::accepts the monthlyIncomeCents announcement in valueFieldFromAgg` | PASS | pure function coverage, no file reads |
+| `checksum.test.ts::matches the Python pipeline digest for a players style fixture` | PASS | Python matched fixture digest, generated data, kept |
+
+### Failure analysis
+
+None. Both removed cases failed only because their input CSVs under
+`data/mock/` were intentionally deleted. No other test in either suite
+reads from `data/mock/` (FindingsView.test.ts and report.test.ts only
+assert that the path string appears inside findings.json and rendered
+HTML, so they are unaffected by removing the folder), so no further
+changes were needed.
+
+### Coverage summary
+
+- Pytest: 130 tests, all pass. Probe schema axes (encoding, delimiter,
+  date order, sign convention, friendly failures) remain fully covered
+  with `tmp_path` fixtures; nothing depended on the deleted folder.
+- Vitest: 328 tests in 34 files, all pass at the time of this run. The
+  checksum suite keeps the Python matched digest and the value field
+  announcement coverage; only the mock CSV cross check was dropped.
+- Out of scope: any concurrent session edits to atlas, judge, weather,
+  planMath, stormAtlas, or docs files. No failures were observed in
+  those files during this run.
 
 ## Nov 05 2026 - Phase 0: Zero Byte CSV Fix Re-run
 

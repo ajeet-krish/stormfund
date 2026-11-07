@@ -20,7 +20,7 @@ Full pivot to the Tangerine "Resilience Rewired" Financial Resilience Engine (C-
 | Phase | Description | Status |
 |-------|-------------|--------|
 | E1 | Profile precompute (profiles.json + golden fixtures) | Complete |
-| E2 | Console base (lookup, baseline card, shocks, verdict, plan text) | In review |
+| E2 | Console base (lookup, baseline card, shocks, verdict, plan text) | Complete |
 | E3 | Weather viz (forecast strip, bands, EI-cliff overlay) | Not started |
 | E4 | Plan engine (goal math + backup levers) | Not started |
 | E5 | Storm Atlas (population headline + drill-down) | Not started |
