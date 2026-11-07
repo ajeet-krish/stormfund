@@ -1,0 +1,5 @@
+pause import for now, lets proceed with agent research of the dataset and implementation ideas
+
+---
+
+research task is getting heavy. What are the current findings? how can we build a cleaner pipeline to analyze the data. do we need to setup a backend? can we use python/numpy to speed up data cleaning and analysis process. lets keep working towards comprehensive findings
