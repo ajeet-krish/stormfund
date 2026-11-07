@@ -1,6 +1,6 @@
 # Sheridan Datathon 2026 Reviews
 
-Last updated: Nov 05 2026
+Last updated: Nov 07 2026
 
 ## Nov 05 2026, Phase 0: Full repository code review (pre-build)
 
@@ -128,3 +128,20 @@ Verdict: PASS (2 Low notes, 0 Medium; every devpost number verified against docs
 Verified: lookupFriction reads only parsed findings.json (no recomputation); Travel 100593 cents and Dining 93220 cents match the artifact and the report; null contract (no F4 entry, unloaded report, non F4 section) renders no figure on either surface; single fetch claim holds (loadSharedFindingsReport memo, reused by PlayView, tested at src/components/FindingsView.test.ts:49); 22 new tests (12 friction, 5 option card, 5 reverse note) use the real shipped artifacts and cover the drift cases; every devpost figure (5.08%, $4,268.38 of $83,994.93, 1.80x, 2.94x, AUC 0.590 / 0.957, 62.6%, 86.1%, 86 deficit days, +$1,005.93, 4.6% of $21,884.01, -$80.24 to +$2,286.48, +$2,366.72, +$932.20, seed 20261107, 5,702 rows) traces to docs/findings.md or findings.json; rubric weights and deadlines trace to docs/research.md:352 and :311; track selection matches docs/decisions.md:64; synthetic data notice is prominent; provenance stamps, explore link, and the option card counterfactual line all exist in the built app and are test covered; no em dashes or dash equivalents in devpost prose; all URLs are explicit placeholders.
 
 Recurring patterns: none new this cycle. The conditional wording discipline applied to the option card (sign aware sentences) should also cover the reverse note, so both bridge surfaces share the same honesty rules.
+
+## Nov 07 2026, Phase E1: Profile precompute review (scripts/engine plus profiles.json artifact)
+
+Verdict: PASS (4 Low notes, 0 Medium or higher; all numbers hand verified and all suites green: uv run pytest 130 passed plus the 1 pre-existing unrelated scripts/ingest/test_probe.py failure needing missing data/mock/, uv run pytest scripts/engine 45 passed, uv run python -m scripts.engine.verify PASS with artifact sha256 9ec428bf1a78b35703aa3d36311d4ee061eac7fbd1176cfcbf111acc5c40a858, two consecutive builds byte identical)
+
+| Severity | File:Line | Issue | Fix |
+|----------|-----------|-------|-----|
+| Low | scripts/engine/load.py:142 | int_cents does np.rint(dollars * 100).astype("int64") with an isna guard only (load.py:189), so "inf" or "1e999" dollars would silently corrupt int64 values, the recurring ingestion pattern from the Nov 05 security review; mitigated because every call path runs verify_source_checksums first, so only manifest matching data reaches the cast | Assert np.isfinite and int64 range before the cast inside int_cents |
+| Low | scripts/engine/verify.py:143 versus scripts/engine/load.py:142 | Cents conversion is Decimal ROUND_HALF_EVEN in verify but np.rint on float64 in load; on 3 or more decimal dollar strings the two can diverge (for example "8.675" gives 867 versus 868). The pinned dataset is 2 decimal dollars and verify proves agreement on all 185326 rows | Document the 2 decimal input assumption next to both converters, or parse through Decimal in load too |
+| Low | scripts/engine/__init__.py:21 | The docstring calls plans.py "kept importable" but importing it raises ImportError (plans.py:37 imports the nonexistent scale_cents from shocks.py); the dormant broken state is a documented E4 deferral and nothing imports plans | Reword to "kept dormant", or defer the scale_cents import to the E4 implementation |
+| Low | docs/decisions.md:199 | The new entry heading uses a spaced hyphen as punctuation ("Nov 07 2026 - Phase E1:"), the pattern flagged Nov 05 (reviews.md line 21, use colons per AGENTS.md); it matches the existing heading convention at lines 88, 110, 128, and 173 | Normalize headings to colons in one pass across decisions.md and tests.md |
+
+Verified clean: judge formulas match docs/tangerine-challenge.md exactly (medians over all rows, F is the median of per row sums never a sum of medians, B is the half up mean of the last min(6, n) rows, P is status C or D else 0, runway branch order buffer_left then gap then finite with exact integer ROUND_HALF_UP via (20 * buffer_left + gap) // (2 * gap) capped at 1200); all five golden fixtures hand recomputed (medians, buffer means including a negative half up tie, runway long division, pension sum, gap ties) and they match both metrics output and the shipped artifact; verify.py is a genuine naive csv reimplementation (imports no scripts.engine.metrics, Decimal versus np.rint, own sha256 and row counts) and is non tautological; determinism holds (no timestamps, compact JSON, numeric key order, two builds byte identical and matching the shipped digest); error handling is loud on checksum mismatch, missing columns, multiple loans, and accounts with zero rows; tests pin the half up tie behavior on both signs, all three runway branches with the precedence case and the cap boundary, the P rule, and every flag threshold including thin_history at 18 rows; no em dash, en dash, minus sign, or double hyphen anywhere in the engine code, the artifact (dash scan clean in verify), or the changed docs.
+
+Recurring patterns: numeric ingestion casts without finiteness guards (third cycle, now behind a checksum gate), and one implementation of a rule split across two code paths (np.rint versus Decimal) justified by independence but needing a documented input assumption.
+
+Note: scripts/engine/plans.py is a documented dormant E4 draft with a broken scale_cents import; excluded from this verdict per the phase brief.

@@ -195,3 +195,59 @@ evidence filenames and commands: docs/competition-day-runbook.md Phase 6.
 package passes the single-story and deception tests; it is paid from the
 cut order rather than new budget, so the findings-first primary and the
 video are untouched.
+
+## Nov 07 2026 - Phase E1: Profile precompute contract for the resilience engine
+
+**Context**: live judging needs every judge number for any account_id
+computed before the booth opens, with the exact branch rules of
+docs/tangerine-challenge.md, and the E1 build was resumed from an
+interrupted session. Reviewing the on-disk modules against the checklist
+surfaced two places where the checklist could not hold against the real
+data: the thin_history flag was defined as fewer than 6 monthly rows
+while the shortest real account history is 12 rows (so the flag would
+never fire), and the requested fixture "pensioner with running loan
+status C" cannot exist because all 740 accounts with pension_in above
+zero have no row in loans.csv at all.
+
+**Decision**: ship public/data/engine/profiles.json as the E1 contract:
+compact deterministic JSON (no timestamps, no floats, accounts in
+numeric key order) with a meta block (schema_version, sources with
+sha256 and rows, account_count, date_range, units, rounding, judge
+definitions, checksum recipe, edge flag counts) and one 18 key profile
+per account carrying the judge metrics in integer cents, the baseline
+runway, history, the loan record, the five flags, the last 12 balances,
+and a provenance check_sum. P reads loans.csv status only (C or D pays,
+otherwise 0) and the build report logs the status versus schedule
+disagreement count (448 running by status, 448 by schedule, 0
+disagreements). thin_history is redefined as row_count below 18, a
+quarter of the 72 month dataset span, which fires on 377 accounts and
+makes the flag meaningful for the E2 caveat UI; the B window stays
+min(6, n) rows regardless. Five golden fixture accounts (68257, 23838,
+49900, 98952, 42988) are frozen in scripts/engine/golden_fixtures.json
+with visible workings (sorted cents arrays, median steps, runway long
+division), covering odd and even medians, the half cent tie, thin
+history with zero income, a running loan C, a defaulted loan D, every
+flag, and all three runway branches; the pensioner fixture has no loan
+and the impossibility is recorded in the fixture notes. verify.py
+recomputes all 4500 accounts with the naive csv module (no pandas, no
+numpy, no import of metrics), diffs field by field, scans for dash
+violations, and prints the artifact SHA256; tests pin the fixtures to
+both metrics() and the shipped artifact, recompute check_sum for every
+account, validate the schema, and prove two consecutive builds are byte
+identical.
+
+**Rationale**: judges calculate with these exact definitions, so a
+precomputed artifact is only useful if its numbers are reproducible by
+an independent implementation; the flag threshold change is the smallest
+edit that makes a checklist requirement true on real data instead of
+documenting a flag that never fires; frozen hand computed fixtures make
+any future rule drift fail a test rather than pass review.
+
+**Trade-offs**: the 4.7 MB artifact lives in the repo and must be
+regenerated whenever a source checksum changes (fixtures freeze five
+account ids, so a data refresh means re-deriving them); the thin_history
+threshold is tied to this dataset's 72 month span and must be revisited
+if the span changes; status C or D for P can diverge from the amortization
+schedule on future data (the disagreement counter is the tripwire);
+plans.py stays a dormant draft until E4, keeping E1 to the precompute
+contract only.
