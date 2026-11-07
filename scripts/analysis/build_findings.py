@@ -1,0 +1,273 @@
+"""Build the Tier 0 findings artifacts in one deterministic run.
+
+Writes:
+
+* public/data/findings.json (findings F1 to F5 with chart twins)
+* public/data/model_card.json (F3 model card)
+* docs/findings.md (Devpost structure write up)
+
+Run from the repository root:
+
+    uv run python -m scripts.analysis.build_findings [--verify]
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Sequence
+
+from scripts.analysis import (
+    f1_structural,
+    f2_seasonality,
+    f3_deficit_risk,
+    f4_plane_change,
+    f5_interventions,
+)
+from scripts.analysis.ledger import (
+    FINDINGS_PATH,
+    MODEL_CARD_PATH,
+    REPORT_PATH,
+    SEED,
+    SYNTHETIC_NOTICE,
+    Ledger,
+    TRANSACTIONS_PATH,
+    WORLD_PATH,
+    load_ledger,
+    signed_dollars,
+    simulate_balance,
+)
+from scripts.analysis.markdown_report import render_report
+from scripts.pipeline_lib import cents_to_dollars, rel_to_root
+
+GENERATED_BY: str = "scripts.analysis.build_findings"
+
+
+@dataclass
+class ComputedFindings:
+    """Everything the run produced, in memory, before anything is written."""
+
+    findings: dict[str, Any]
+    model_card: dict[str, Any]
+    report: str
+    console_lines: list[str]
+
+
+def build_headline(
+    f1: dict[str, Any],
+    f2: dict[str, Any],
+    f3: dict[str, Any],
+    f4: dict[str, Any],
+    f5: dict[str, Any],
+) -> dict[str, Any]:
+    """Collect one number per finding for the top of the report and console."""
+    baseline_drawdown = int(f4["numbers"]["baseline"]["drawdownCents"])
+    gain = int(f4["numbers"]["bestAlignedDrawdownImprovementCents"])
+    return {
+        "structuralSharePct": round(float(f1["numbers"]["structuralShareOfAnnualSpend"]) * 100, 2),
+        "structuralCategories": list(f1["numbers"]["structuralCategories"]),
+        "seasonalityVerdict": str(f2["numbers"]["overallVerdict"]),
+        "deficitModelTestAuc": float(f3["numbers"]["testAuc"]),
+        "deficitModelTrainAuc": float(f3["numbers"]["trainAuc"]),
+        "deficitModelSplitDate": str(f3["numbers"]["splitDate"]),
+        "bestAlignedCategory": str(f4["numbers"]["bestAlignedCategory"]),
+        "bestAlignedDrawdownImprovementCents": gain,
+        "bestAlignedDrawdownPctOfBaseline": round(100.0 * gain / baseline_drawdown, 1),
+        "bestInterventionId": str(f5["numbers"]["bestInterventionId"]),
+        "bestInterventionName": str(f5["numbers"]["bestInterventionName"]),
+        "bestInterventionFloorGainCents": int(
+            f5["numbers"]["bestMinMonthEndImprovementCents"]
+        ),
+        "interventionRanking": list(f5["numbers"]["rankingOrder"]),
+    }
+
+
+def compute_all(
+    transactions_path: Path = TRANSACTIONS_PATH,
+    world_path: Path = WORLD_PATH,
+) -> ComputedFindings:
+    """Run F1 to F5 and assemble findings, model card, report, console lines."""
+    ledger = load_ledger(transactions_path, world_path)
+    f1 = f1_structural.run_f1(ledger)
+    f2 = f2_seasonality.run_f2(ledger)
+    f3, model_card = f3_deficit_risk.run_f3(ledger)
+    f4 = f4_plane_change.run_f4(ledger, f1)
+    f5 = f5_interventions.run_f5(ledger, f1, f4)
+
+    baseline = simulate_balance(ledger)
+    baseline_check = _check_against_world(ledger, baseline.monthly_cents)
+
+    headline = build_headline(f1, f2, f3, f4, f5)
+    findings: dict[str, Any] = {
+        "meta": {
+            "schemaVersion": 1,
+            "generatedBy": GENERATED_BY,
+            "seed": SEED,
+            "moneyUnit": "integer cents CAD",
+            "syntheticNotice": SYNTHETIC_NOTICE,
+            "sources": ledger.sources,
+            "dateRange": ledger.sources["dateRange"],
+            "categoryCount": len(ledger.categories),
+            "dayCount": ledger.day_count,
+            "baselineCrossCheck": baseline_check,
+            "verification": (
+                "recompute and compare against public/data/findings.json via "
+                "uv run python -m scripts.analysis.verify_findings"
+            ),
+        },
+        "f1StructuralVsDiscretionary": f1,
+        "f2Seasonality": f2,
+        "f3DeficitRisk": f3,
+        "f4PlaneChangeCost": f4,
+        "f5Interventions": f5,
+        "headline": headline,
+    }
+    report = render_report(findings)
+    console_lines = summarize(findings, ledger)
+    return ComputedFindings(
+        findings=findings, model_card=model_card, report=report, console_lines=console_lines
+    )
+
+
+def _check_against_world(ledger: Ledger, monthly_cents: list[int]) -> dict[str, Any]:
+    """Compare the simulated baseline month ends with world.json (cross artifact)."""
+    world_monthly = [
+        int(point["balanceCents"]) for point in ledger.world["monthly_balance_series"]
+    ]
+    matches = monthly_cents == world_monthly
+    return {
+        "description": (
+            "simulated baseline month end closes equal the "
+            "monthly_balance_series in world.json"
+        ),
+        "matches": bool(matches),
+        "worldMonthlyCents": world_monthly,
+        "simulatedMonthlyCents": monthly_cents,
+    }
+
+
+def summarize(findings: dict[str, Any], ledger: Ledger) -> list[str]:
+    """Format the console summary of every headline number."""
+    headline = findings["headline"]
+    f1 = findings["f1StructuralVsDiscretionary"]["numbers"]
+    f3 = findings["f3DeficitRisk"]["numbers"]
+    f4 = findings["f4PlaneChangeCost"]
+    best_f4_row = next(
+        row
+        for row in f4["categories"]
+        if str(row["name"]) == headline["bestAlignedCategory"]
+    )
+    f5 = findings["f5Interventions"]
+    lines = [
+        "Tier 0 findings summary (SYNTHETIC ledger, seed 20261107)",
+        f"  ledger: {ledger.sources['dateRange']['start']} to "
+        f"{ledger.sources['dateRange']['end']}, {len(ledger.frame)} rows, "
+        f"{len(ledger.categories)} categories, {ledger.day_count} days",
+        f"  F1 structural share of annual spend: "
+        f"{headline['structuralSharePct']:.2f}% "
+        f"({', '.join(headline['structuralCategories'])} structural), "
+        f"discretionary "
+        f"{100.0 - headline['structuralSharePct']:.2f}%",
+        f"  F1 dollars: structural ${cents_to_dollars(int(f1['structuralSpendCents']))} of "
+        f"${cents_to_dollars(int(f1['totalAnnualSpendCents']))} annual spend",
+        f"  F2 seasonality verdict: {headline['seasonalityVerdict']}",
+        f"  F2 strongest calendar: {findings['f2Seasonality']['numbers']['strongestCalendarCategory']} "
+        f"(holiday lift "
+        f"{findings['f2Seasonality']['numbers']['strongestCalendarLift']:.2f}x), "
+        f"strongest behavioral: "
+        f"{findings['f2Seasonality']['numbers']['strongestBehavioralCategory']} "
+        f"(weekly deviation "
+        f"{findings['f2Seasonality']['numbers']['strongestBehavioralDeviation']:.0%})",
+        f"  F3 deficit model: test AUC {f3['testAuc']:.3f} (train "
+        f"{f3['trainAuc']:.3f}), accuracy "
+        f"{f3['accuracyAtHalf']:.1%} vs majority {f3['majorityAccuracy']:.1%}, "
+        f"split {f3['splitDate']}, C={f3['selectedC']}, "
+        f"robustness AUC {f3['robustnessAlternativeTestAuc']:.3f}",
+        f"  F4 plane change: aligning {headline['bestAlignedCategory']} improves "
+        f"drawdown by {signed_dollars(headline['bestAlignedDrawdownImprovementCents'])} "
+        f"({headline['bestAlignedDrawdownPctOfBaseline']:.1f}% of the "
+        f"${cents_to_dollars(int(f4['numbers']['baseline']['drawdownCents']))} drawdown), "
+        f"lifts the trough "
+        f"{signed_dollars(int(best_f4_row['aligned']['troughDeltaCents']))}, "
+        f"floor delta "
+        f"{signed_dollars(int(best_f4_row['aligned']['minMonthEndDeltaCents']))}",
+        "  F5 interventions (ranked by floor, then drawdown):",
+    ]
+    for row in f5["interventions"]:
+        lines.append(
+            f"    {row['rank']}. {row['name']}: floor "
+            f"{signed_dollars(int(row['metrics']['minMonthEndDeltaCents']))}, "
+            f"drawdown {signed_dollars(int(row['metrics']['drawdownImprovementCents']))}"
+        )
+    best = f5["numbers"]
+    lines.append(
+        f"  F5 headline: {best['bestInterventionName']} floor "
+        f"{signed_dollars(int(best['bestMinMonthEndImprovementCents']))} "
+        f"(best dollar amount)"
+    )
+    lines.append(
+        "  baseline cross check vs world.json: "
+        f"{'PASS' if findings['meta']['baselineCrossCheck']['matches'] else 'FAIL'}"
+    )
+    return lines
+
+
+def write_all(
+    computed: ComputedFindings,
+    findings_path: Path = FINDINGS_PATH,
+    model_card_path: Path = MODEL_CARD_PATH,
+    report_path: Path = REPORT_PATH,
+) -> list[str]:
+    """Write the three artifacts and return the write log lines."""
+    findings_path.parent.mkdir(parents=True, exist_ok=True)
+    model_card_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    findings_path.write_text(
+        json.dumps(computed.findings, indent=2) + "\n", encoding="utf-8"
+    )
+    model_card_path.write_text(
+        json.dumps(computed.model_card, indent=2) + "\n", encoding="utf-8"
+    )
+    report_path.write_text(computed.report, encoding="utf-8")
+    return [
+        f"wrote {rel_to_root(findings_path)} "
+        f"({findings_path.stat().st_size / 1024:.1f} kB)",
+        f"wrote {rel_to_root(model_card_path)} "
+        f"({model_card_path.stat().st_size / 1024:.1f} kB)",
+        f"wrote {rel_to_root(report_path)} "
+        f"({report_path.stat().st_size / 1024:.1f} kB)",
+    ]
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """CLI entry: compute, write, print the headline summary."""
+    parser = argparse.ArgumentParser(description="Build the findings report artifacts")
+    parser.add_argument("--findings-out", type=Path, default=FINDINGS_PATH)
+    parser.add_argument("--model-card-out", type=Path, default=MODEL_CARD_PATH)
+    parser.add_argument("--report-out", type=Path, default=REPORT_PATH)
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="run the verification pass instead of writing artifacts",
+    )
+    args = parser.parse_args(argv)
+    if args.verify:
+        from scripts.analysis import verify_findings
+
+        return verify_findings.main([])
+    computed = compute_all()
+    writes = write_all(computed, args.findings_out, args.model_card_out, args.report_out)
+    for line in computed.console_lines + writes:
+        print(line)
+    if not computed.findings["meta"]["baselineCrossCheck"]["matches"]:
+        print("error: baseline cross check against world.json failed", file=sys.stderr)
+        return 1
+    print("build_findings: PASS")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

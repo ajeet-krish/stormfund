@@ -1,0 +1,278 @@
+{
+  "modelName": "Ledger Odyssey deficit day risk",
+  "modelVersion": "1.0",
+  "modelType": "Logistic regression, L2 penalty, scikit-learn 1.9.1 (lbfgs, max_iter 2000, random_state 20261107)",
+  "framework": "scikit-learn 1.9.1 via uv, Python 3.14",
+  "randomSeed": 20261107,
+  "intendedUse": "Educational early warning on this ledger: rank days of the same account by deficit risk so a report reader or a game mechanic can point at the conditions that precede an overdraft. Every feature row uses only information available the night before the day it scores, so a score for day t is issued before day t happens. It is a demonstration artifact for the Sheridan Datathon 2026 entry, not a deployed underwriting tool.",
+  "notIntendedUse": [
+    "Credit, lending, or any decision about a real person or account.",
+    "Scoring customers of a bank or insurance product.",
+    "Transferring the coefficients to a different account, year, or income cadence without refitting and revalidating."
+  ],
+  "data": {
+    "source": "public/data/transactions.json built from data/mock/tangerine_transactions.csv",
+    "syntheticNotice": "The ledger is SYNTHETIC: seed 20261107, generator scripts/generate_mock_ledger.py, no real bank data. The model and its recipe transfer unchanged to the real Tangerine dataset; only the input CSV changes.",
+    "rowCount": 5702,
+    "dateRange": {
+      "start": "2025-11-01",
+      "end": "2026-10-31"
+    },
+    "rowsModeled": 364,
+    "target": "same day deficit: closing balance below 0 CAD on that calendar day (86 events in the ledger)",
+    "alternativeTargetConsidered": "next day closing balance below 1,000 CAD; fit as robustness on the same night before feature rows, so that check reads as a two day ahead screen (test AUC reported in metrics.robustnessAlternativeTestAuc). The same day negative label was chosen because it is threshold free and the data supports it with 86 events.",
+    "features": {
+      "continuous": [
+        "net_flow_7d",
+        "net_flow_30d",
+        "spend_volatility_30d",
+        "days_since_payday"
+      ],
+      "indicators": "day of week (7 levels, Monday reference) and month (12 levels, November reference)",
+      "nightBeforeRule": "every feature row uses only information available the night before day t: trailing windows end at t minus 1, days since payroll is measured through t minus 1, and the day of week and month indicators are calendar facts known in advance; day t itself never enters its own feature row (the first ledger day has no prior night and is not modeled)",
+      "excludedByDesign": "current closing balance; excluding it keeps the model a forward looking screen instead of an identity"
+    }
+  },
+  "split": {
+    "type": "time ordered, no shuffling",
+    "splitDate": "2026-02-01",
+    "trainDays": 91,
+    "testDays": 273,
+    "trainEvents": 48,
+    "testEvents": 38,
+    "splitRule": "latest month start that leaves at least 30 deficit events in the test segment (enforced in code, so the documented date cannot drift from the data)",
+    "hyperparameterSelection": "TimeSeriesSplit on the training window only, scoring roc_auc",
+    "selectedC": 1.0,
+    "cvMeanTestAucByC": {
+      "0.01": 0.896825,
+      "0.1": 0.896825,
+      "1.0": 0.916822,
+      "10.0": 0.791738
+    }
+  },
+  "metrics": {
+    "trainAuc": 0.95688,
+    "testAuc": 0.58981,
+    "accuracyAtHalf": 0.626374,
+    "majorityAccuracy": 0.860806,
+    "precisionAtHalf": 0.144444,
+    "recallAtHalf": 0.342105,
+    "f1AtHalf": 0.203125,
+    "confusion": {
+      "trueNegative": 158,
+      "falsePositive": 77,
+      "falseNegative": 25,
+      "truePositive": 13
+    },
+    "trainEvents": 48,
+    "testEvents": 38,
+    "trainDays": 91,
+    "testDays": 273,
+    "splitDate": "2026-02-01",
+    "targetDefinition": "same day deficit: closing balance below 0 CAD on that calendar day (86 events in the ledger)",
+    "decisionRule": "predicted deficit when probability is at or above 0.5",
+    "robustnessAlternativeTarget": "next day closing balance below 1,000 CAD (threshold variant)",
+    "robustnessAlternativeTestAuc": 0.584729,
+    "selectedC": 1.0,
+    "cvMeanTestAucByC": {
+      "0.01": 0.896825,
+      "0.1": 0.896825,
+      "1.0": 0.916822,
+      "10.0": 0.791738
+    },
+    "randomSeed": 20261107,
+    "featureNames": [
+      "net_flow_7d",
+      "net_flow_30d",
+      "spend_volatility_30d",
+      "days_since_payday",
+      "dow_1",
+      "dow_2",
+      "dow_3",
+      "dow_4",
+      "dow_5",
+      "dow_6",
+      "m_1",
+      "m_2",
+      "m_3",
+      "m_4",
+      "m_5",
+      "m_6",
+      "m_7",
+      "m_8",
+      "m_9",
+      "m_10",
+      "m_12"
+    ],
+    "continuousFeatures": [
+      "net_flow_7d",
+      "net_flow_30d",
+      "spend_volatility_30d",
+      "days_since_payday"
+    ]
+  },
+  "topCoefficients": [
+    {
+      "feature": "spend_volatility_30d",
+      "standardizedCoefficient": 1.622348,
+      "direction": "a one standard deviation increase raises the odds of a deficit day"
+    },
+    {
+      "feature": "days_since_payday",
+      "standardizedCoefficient": 1.554731,
+      "direction": "a one standard deviation increase raises the odds of a deficit day"
+    },
+    {
+      "feature": "m_1",
+      "standardizedCoefficient": 0.77439,
+      "direction": "presence of this indicator raises the odds versus the reference level"
+    },
+    {
+      "feature": "dow_2",
+      "standardizedCoefficient": 0.613909,
+      "direction": "presence of this indicator raises the odds versus the reference level"
+    },
+    {
+      "feature": "net_flow_7d",
+      "standardizedCoefficient": -0.54952,
+      "direction": "a one standard deviation increase lowers the odds of a deficit day"
+    },
+    {
+      "feature": "dow_6",
+      "standardizedCoefficient": -0.481309,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "dow_1",
+      "standardizedCoefficient": -0.465987,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_12",
+      "standardizedCoefficient": -0.280783,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    }
+  ],
+  "allCoefficients": [
+    {
+      "feature": "spend_volatility_30d",
+      "standardizedCoefficient": 1.622348,
+      "direction": "a one standard deviation increase raises the odds of a deficit day"
+    },
+    {
+      "feature": "days_since_payday",
+      "standardizedCoefficient": 1.554731,
+      "direction": "a one standard deviation increase raises the odds of a deficit day"
+    },
+    {
+      "feature": "m_1",
+      "standardizedCoefficient": 0.77439,
+      "direction": "presence of this indicator raises the odds versus the reference level"
+    },
+    {
+      "feature": "dow_2",
+      "standardizedCoefficient": 0.613909,
+      "direction": "presence of this indicator raises the odds versus the reference level"
+    },
+    {
+      "feature": "net_flow_7d",
+      "standardizedCoefficient": -0.54952,
+      "direction": "a one standard deviation increase lowers the odds of a deficit day"
+    },
+    {
+      "feature": "dow_6",
+      "standardizedCoefficient": -0.481309,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "dow_1",
+      "standardizedCoefficient": -0.465987,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_12",
+      "standardizedCoefficient": -0.280783,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "net_flow_30d",
+      "standardizedCoefficient": 0.205165,
+      "direction": "a one standard deviation increase raises the odds of a deficit day"
+    },
+    {
+      "feature": "dow_3",
+      "standardizedCoefficient": -0.052727,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "dow_5",
+      "standardizedCoefficient": -0.05135,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "dow_4",
+      "standardizedCoefficient": 0.030387,
+      "direction": "presence of this indicator raises the odds versus the reference level"
+    },
+    {
+      "feature": "m_2",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_3",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_4",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_5",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_6",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_7",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_8",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_9",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    },
+    {
+      "feature": "m_10",
+      "standardizedCoefficient": 0.0,
+      "direction": "presence of this indicator lowers the odds versus the reference level"
+    }
+  ],
+  "limitations": [
+    "One synthetic account and one year of daily rows (364 samples, 86 events): uncertainty around the test AUC is wide and no confidence interval is claimed.",
+    "Strong concept drift: the account balance rises monotonically after the deficit season, so test months are out of distribution for the training months (train AUC versus test AUC in metrics shows the gap).",
+    "The current closing balance is excluded by design, which keeps the model honest as a forward screen but caps discrimination; an autoregressive balance feature would score much higher and say less.",
+    "Raw accuracy at the 0.5 threshold sits below the majority class baseline because the class balance shifts sharply between train and test; AUC is the headline metric and the confusion matrix is reported in full.",
+    "Correlation, not causation: coefficients describe association inside this ledger. days_since_payday raising the odds does not mean waiting longer causes a deficit.",
+    "Month indicators memorize this ledger's calendar (the November to April deficit season) and carry no meaning for another year."
+  ],
+  "fairnessCaveats": [
+    "The dataset has a single synthetic persona and no demographic fields; results cannot be attributed to any protected group and must not be used to group or rank real people.",
+    "Because the persona is synthetic, any fairness assessment here is a method statement only: applying this recipe to real bank data would require subgroup calibration and a fairness review before use.",
+    "The strong train versus test base rate shift (53 percent versus 14 percent deficit days) means a fixed 0.5 threshold would over warn in the early period and under warn later; deployment would need recalibration, which is out of scope for this entry.",
+    "Deficit labels reflect one account's trajectory; income shocks, employment changes, and emergency expenses are not modeled, so a low score is not evidence of financial wellbeing."
+  ],
+  "correlationNotCausation": "These coefficients are associations observed in one synthetic ledger. They do not establish that changing a feature would change the deficit risk, and they must not be presented as causal effects or used to make decisions about real people."
+}
