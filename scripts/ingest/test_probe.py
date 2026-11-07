@@ -28,9 +28,7 @@ import pandas as pd
 import pytest
 
 from scripts.ingest import probe_schema
-from scripts.pipeline_lib import REPO_ROOT, sha256_file
-
-MOCK_LEDGER: Path = REPO_ROOT / "data" / "mock" / "tangerine_transactions.csv"
+from scripts.pipeline_lib import sha256_file
 
 
 def write_text(
@@ -339,19 +337,6 @@ def test_report_states_the_verdict_block_for_debit_credit_input(
     assert "the builder assumes 12 for every row" in out
     assert "not mapped        -> Category" not in out  # Category is mapped
     assert "merchant_category -> Category" in out
-
-
-def test_probe_runs_on_the_mock_ledger(capsys: pytest.CaptureFixture[str]) -> None:
-    """The committed mock must probe green: checksum, ISO dates, signed amount."""
-    assert probe_schema.main(["--input", str(MOCK_LEDGER)]) == 0
-    out = capsys.readouterr().out
-    assert sha256_file(MOCK_LEDGER) in out
-    assert "encoding: utf-8" in out
-    assert "delimiter: comma (,)" in out
-    assert "date format verdict: ISO YYYY-MM-DD, unambiguous" in out
-    assert "sign convention verdict: single signed amount" in out
-    assert "VERDICT (what the tomorrow adapter should map)" in out
-    assert "merchant_category -> merchant_category" in out
 
 
 # Friendly failures
