@@ -1,0 +1,62 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6VY0EW6M912XCJNYK9FY9NM",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-07T21:18:13.751123Z",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "save_step_count": 6,
+  "files_touched": [
+    "docs/architecture.md",
+    "docs/decisions.md",
+    "docs/profiles-schema.md",
+    "public/data/engine/profiles.json",
+    "scripts/engine/__init__.py",
+    "scripts/engine/build.py",
+    "scripts/engine/golden_fixtures.json",
+    "scripts/engine/load.py",
+    "scripts/engine/metrics.py",
+    "scripts/engine/plans.py",
+    "scripts/engine/shocks.py",
+    "scripts/engine/test_metrics.py",
+    "scripts/engine/verify.py"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "247cfa98c606",
+  "checkpoint_transcript_start": 57,
+  "transcript_lines_at_start": 57,
+  "compact_transcript_start": 57,
+  "token_usage": {
+    "input_tokens": 26193,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1063872,
+    "output_tokens": 9329,
+    "api_call_count": 8,
+    "subagent_tokens": {
+      "input_tokens": 338803,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 4315136,
+      "output_tokens": 31772,
+      "api_call_count": 52
+    }
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 8
+  }
+}

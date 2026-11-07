@@ -3,14 +3,16 @@
   "checkpoint_id": "01M6VY0EW6M912XCJNYK9FY9NM",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 8,
   "files_touched": [
     "docs/architecture.md",
     "docs/decisions.md",
     "docs/profiles-schema.md",
     "docs/reviews.md",
+    "public/data/engine/profiles.json",
     "scripts/engine/__init__.py",
     "scripts/engine/build.py",
+    "scripts/engine/golden_fixtures.json",
     "scripts/engine/load.py",
     "scripts/engine/metrics.py",
     "scripts/engine/plans.py",
@@ -26,31 +28,38 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 101032,
+    "input_tokens": 127225,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 1130560,
-    "output_tokens": 15497,
-    "api_call_count": 30,
+    "cache_read_tokens": 2194432,
+    "output_tokens": 24826,
+    "api_call_count": 38,
     "subagent_tokens": {
-      "input_tokens": 601240,
+      "input_tokens": 940043,
       "cache_creation_tokens": 0,
-      "cache_read_tokens": 11677504,
-      "output_tokens": 66791,
-      "api_call_count": 161
+      "cache_read_tokens": 15992640,
+      "output_tokens": 98563,
+      "api_call_count": 213
     }
   },
   "redaction": {
-    "replacements": 0,
+    "replacements": 8,
     "layers": {
-      "betterleaks": 0,
+      "betterleaks": 4,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 0,
+      "entropy": 4,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0
