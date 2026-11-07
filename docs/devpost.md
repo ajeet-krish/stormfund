@@ -1,153 +1,152 @@
-# Devpost submission draft: Ledger Odyssey (Sheridan Datathon 2026)
+# Devpost submission draft: Storm Fund (Sheridan Datathon 2026)
 
-Created: Thu Nov 05 2026. Source of truth for every number: `docs/findings.md`
-(generated, do not edit). Paste map:
+Created: Sat Nov 07 2026 (replaces the obsolete Ledger Odyssey draft after the
+pivot to the Resilience Weather Station). Source of truth for every number:
+`public/data/engine/aggregates.json` once frozen (findings freeze Sat 6:00 PM).
+Paste map:
 
 | Section below | Goes into |
 |---------------|-----------|
 | 1. Track selection | Devpost "Track selection" checkboxes at draft time |
 | 2. Project name | Devpost "Project name" field |
-| 3. Write-up | Devpost "Description" field (this is also the required short write-up) |
-| 4. Video description | YouTube upload (unlisted), link pasted into Devpost by final deadline |
-| 5. Checklist | Your own runbook, not pasted into Devpost |
+| 3. Elevator pitch | Devpost short pitch field (max 200 characters) |
+| 4. About the project | Devpost "Description" field (the required short write-up) |
+| 5. Video description | YouTube upload (unlisted), link pasted into Devpost by final deadline |
+| 6. Checklist | Your own runbook, not pasted into Devpost |
 
 Deadlines: draft plus track selection Sat Nov 7 8:00 PM (hard), final
 submission Sun Nov 8 12:00 PM, live demos 12:30 PM.
 
 ## 1. Track selection
 
-**Recommendation: select exactly one track, Best Data Visualization and
-Storytelling.** Nothing else is selected unless a condition in the table below
-clears.
+**Recommendation: select Best Data Visualization and Storytelling as primary,
+plus Tangerine (the real dataset is in and used), plus any MLH row whose
+condition has cleared.**
 
 | Track | Select? | One sentence rationale |
 |-------|---------|------------------------|
-| Best Data Visualization and Storytelling | Yes, primary | Our entry is a findings report with chart twins, row level provenance stamps, and a game that reads the identical numbers, which is exactly what this award grades, and it has no Best UI/UX competitor track in 2026. |
-| Podium (1st, 2nd, 3rd) | No track to select, judged automatically | Judges score every submission against Discovery 35, Data Use 25, Communication 25, Impact 15, so the podium comes from the rubric and our findings first hybrid is built for that rubric. |
-| Tangerine | No for now, conditional | Select it only if the real Tangerine dataset lands and is actually used, because today every number runs on a synthetic Tangerine style mock and we would not qualify. |
-| ElevenLabs Best Data Project | No | Narration via ElevenLabs is unconfirmed and would be a tool credit, not a data project built on their platform, so we do not qualify as the track is written. |
-| IBM, Best Hardware, Best Beginner | No | We use none of that hardware or infrastructure, so we do not select tracks we do not qualify for. |
-| MLH tracks (list still TBA) | No, recheck Saturday | Research flags the 2026 MLH list as TBA; only reconsider if a listed track matches something we actually shipped, and Gemini only if the API is actually called, which it is not. |
+| Best Data Visualization and Storytelling | Yes, primary | The weather station is a findings visualization with a printed mapping legend, chart twins, and row level provenance, which is exactly what this award grades. |
+| Podium (1st, 2nd, 3rd) | No track to select, judged automatically | Judges score every submission against Discovery 35, Data Use 25, Communication 25, Impact 15, and the station is built for that rubric. |
+| Tangerine | Yes, conditional cleared | The real Tangerine dataset (4,500 accounts, 1.06M transactions) landed Sat Nov 7 and every engine number runs on it. Select only if it is actually used by 8:00 PM. |
+| Best Use of Gemini API | Conditional | Select only if the typed shock path is live on the deployed origin before the draft (gated add-on, hard abort 00:30 Sat). Prize: MLH Swag Kit. |
+| Best Use of Entire | Conditional | Select only if the Phase 7 evidence set lands (session tokens, profiles, graph stats, trail or abort note). |
+| Best Use of Solana | Conditional | Select only if the memo anchor confirms with an explorer link before 5:30 PM Sat. |
+| Best Domain Name from GoDaddy Registry | Conditional | Select only if the domain is registered and resolving (budget about 15 CAD, fallback is github.io plus verbal claim). |
+| ElevenLabs Best Data Project | No | Narration via ElevenLabs is unconfirmed; not a data project built on their platform. |
+| IBM, Best Hardware, Best Beginner | No | We use none of that hardware or infrastructure. |
+| MLH other rows | Recheck Saturday | Confirm each checkbox against the published MLH list at draft time. |
 
-## 2. Project name candidates
+## 2. Project name
 
-| Candidate | One line tagline | Where it comes from |
-|-----------|------------------|---------------------|
-| **Ledger Odyssey** (recommended) | One year of a Tangerine style ledger, flown as a solar system where every planet traces back to a transaction row. | Internal name used in `docs/decisions.md`, `docs/architecture.md`, and `docs/findings.md`. |
-| Delta-V Budget | What timing costs: burn your spending schedule onto the payday cycle and watch the balance floor move. | Approved primary shortlist name B-1 in `docs/decisions.md`. |
-| Ledger Valley | A findings first flight over the months where the balance runs out, with every number stamped to its source rows. | Data insurance fallback G-1 in `docs/decisions.md`. |
+```text
+Storm Fund: A resilience weather station for bank customers
+```
 
-Recommendation: ship **Ledger Odyssey**, because the repo, the report, and the
-video title draft all already use it, so judges see one name everywhere.
+Domain candidates (runbook rules: never "tangerine", no hyphens, no digits, no
+.io, speakable in one breath, about 15 CAD): `stormfund.site` first choice,
+then `rainyday.site`, `levee.fund`, `raincoat.site`. Recheck availability at
+registration; RDAP is point in time.
 
-## 3. Write-up
+## 3. Elevator pitch (168 characters, max 200)
 
-Paste everything from "The question we asked" through the Links block into the
-Devpost Description field. It uses headings, lists, bold, and links, all
-supported by Devpost markdown.
+```text
+Your rainy day fund, as weather. Storm Fund turns any bank account into a pixel sky where runway, buffer, and shocks are visible at a glance.
+```
 
-### The question we asked
+## 4. About the project
 
-Of one year of Tangerine style transactions, how much spending is locked by
-the calendar rather than by choice, when does the balance actually run out,
-and what would it cost to move spending onto the payday cycle?
+Paste everything from "What inspired us" through the Links block into the
+Devpost Description field. Devpost markdown supports headings, lists, bold,
+links, and LaTeX math between dollar signs.
 
-**Headline finding: only 5.08% of annual spend is calendar locked, so the
-problem is behavioral, not structural, and timing alone cannot fix the balance
-floor (capping the holiday surge category can: +$2,366.72).**
+### What inspired us
 
-**Synthetic data notice:** every number below comes from a synthetic mock
-ledger (seed `20261107`, 5,702 rows, 2025-11-01 to 2026-10-31, Tangerine style
-schema). No real bank data appears anywhere in this repository. Every method
-here transfers unchanged to the real Tangerine dataset: only the input CSV
-path changes, because the pipeline already consumes either file.
+Bank numbers are honest but unreadable. A judge can be told "runway 2.7
+months" and nod, but they feel nothing until the sky goes dark. We took the
+Tangerine challenge (know the customer, take a shock, make a plan) and asked:
+what if financial health had weather? Your savings buffer is a reservoir. Your
+income is rain. Your spending is evaporation. Job loss is a drought front
+rolling in from the left. The name is the idiom itself: everyone knows what a
+rainy day fund is, and finally you can see the rainy day coming.
 
-### What we did
+The pixel art direction comes from Terraria and Stardew Valley: cozy,
+legible, and strangely calming even when the forecast says storm.
 
-One offline, seeded, pinned Python pipeline over the ledger, five analyses
-(F1 to F5), and a verification step that recomputes every published number:
+### What we learned
 
-| Step | What ran |
-|------|----------|
-| Build | `build_world.py` turns the CSV into a row table plus a game world, stamping per entity provenance (row ids, filter, aggregation, SHA256 checksum) |
-| F1 structural share | Day of week and holiday deseasonalized lag autocorrelation at lags 28 to 35 per category, thresholded against a white noise band and control lags |
-| F2 seasonality | Day of week, month, and holiday window decomposition with declared verdict thresholds |
-| F3 risk model | L2 logistic regression on night before features (trailing windows end at t minus 1), time ordered split at 2026-02-01, model card emitted |
-| F4 plane change cost | Counterfactual timing simulation of every category against the income phase, three scenarios each |
-| F5 interventions | Four simulated counterfactuals ranked by floor lift then drawdown improvement |
-| Verify | `verify_findings.py` recomputes every number and compares against the files, wrapped by `uv run pytest` (exit code 0) |
+- **Judge parity is a design constraint, not an afterthought.** Our runway
+  formula matches the answer key to the decimal, in integer cents, with the
+  exact branch order (buffer left wins, then the no-shortfall string state).
+  Every visual reads those numbers; none of them recompute them.
 
-Seeds and versions: mock ledger seed `20261107`, scikit-learn
-`random_state 20261107`, dependencies pinned in `pyproject.toml` with
-`uv.lock`.
+  $$\text{buffer}_{\text{left}} = B - C_{\text{one-off}}, \quad
+    \text{gap} = S' - I', \quad
+    \text{runway} = \min\!\left(\frac{\text{buffer}_{\text{left}}}{\text{gap}},\ 120\right)$$
 
-**Interactive elements, all reading the same `findings.json`:**
+- **A weather skin stays honest only with a printed mapping legend.** Rain is
+  income, evaporation is spending, water level is buffer. Say it on screen or
+  the skin becomes decoration.
+- **AI is a parser, not an oracle.** Gemini maps a typed shock sentence into
+  three numbers; a human confirms the chips before anything moves. The rules
+  engine does the math. The model never touches the runway.
+- **Accessibility and drama are the same problem.** Severity is carried by
+  color and icon and text label, so the storm reads on a projector, on a
+  laptop, and to a colorblind judge.
 
-- **Findings report with row level provenance stamps:** every headline number
-  ships with a conventional chart twin and a "so what" caption, and every
-  entity carries row ids, filter, aggregation, and a checksum that resolve to
-  raw rows.
-- **Ledger Odyssey game:** category planets sized by annual spend over one
-  year in orbit, where every planet, splurge, and income depot traces back to
-  source transactions, and the Inspector shows rows, sum, and a live checksum
-  verification.
-- **Counterfactual bridge:** one shared pure lookup, so the F4 figure a judge
-  reads in the report is the identical figure on the game's transfer option
-  card, with no recomputation and no drift by construction.
+### How we built it
 
-### What we found
+- **Data:** the real anonymized bank dataset (4,500 accounts, 1.06M
+  transactions, 185K monthly summaries, 682 loans), credited to the PKDD'99
+  Financial dataset via the CTU Prague Relational Dataset Repository.
+- **Pipeline:** Python with pandas and numpy, fully vectorized (groupby, no
+  per-account loops), integer cents throughout, `uv` for pinned dependencies.
+  One pass produces profiles.json with the six judge metrics (I, F, S, B, H, P)
+  plus provenance for every number, then a verifier independently recomputes a
+  seeded sample straight from the raw CSVs and diffs against the artifact.
+- **Frontend:** React, Vite, TypeScript, Tailwind. A pure `weatherState`
+  function maps metrics to seven weather states; the forecast strip, bands, and
+  EI-cliff overlay are hand-rolled SVG. All data bundled as JSON: zero runtime
+  network calls, so the booth demo survives bad wifi.
+- **Gemini (gated add-on):** a judge can type the shock in their own words
+  ("EI covers half and the furnace dies"). Structured JSON output with a strict
+  schema, clamped and percent-corrected in TypeScript, shown as confirmation
+  chips with a formula strip. One click applies. Three second timeout, then
+  preset cards. The mode is always visible on screen.
 
-- **F1, structural share:** only **5.08%** of annual spend is structural
-  (Subscriptions, Utilities). The recurrence test leaves $4,268.38 of
-  $83,994.93, so the persona's problem is behavioral, not structural.
-- **F2, seasonality:** **Retail holiday lift 1.80x**, the strongest calendar
-  category; Travel is calendar driven too (2.94x, sparse rows), Groceries is
-  behavioral, and Dining and Transit are mixed.
-- **F3, deficit day model:** night before features reach **test AUC 0.590**
-  (accuracy 62.6% against an 86.1% majority baseline, train AUC 0.957 flags
-  drift) over 86 deficit days, reported with a model card covering intended
-  use, drift, fairness caveats, and correlation not causation.
-- **F4, plane change cost:** aligning Travel to the payday cycle buys
-  **+$1,005.93 of drawdown** (4.6% of the $21,884.01 baseline) and lifts the
-  2025-12-24 trough by the same $1,005.93, while the month end floor stays at
-  -$80.24: timing buys the trough, not the floor.
-- **F5, ranked interventions:** capping the top surge category at its baseline
-  rate lifts the minimum month end balance by **+$2,366.72** (floor moves from
-  -$80.24 to +$2,286.48); Dining realignment improves drawdown by +$932.20;
-  the auto save row is the honest null, moving neither metric.
+### Challenges we faced
 
-Impact and next step: the user is a person paid once a month on the 25th who
-needs to know which dollars are locked and when the balance runs out; the
-realistic next step is running this unchanged pipeline on the real Tangerine
-dataset (only the CSV path changes) and reading the same report against real
-statements.
+- **The dataset was nine relational tables, not the single CSV our pipeline
+  assumed.** We rebuilt the ingest around `monthly_summary.csv` (the judges'
+  actual source) and kept `transactions.csv` at 98MB out of the critical path
+  with chunked reads.
+- **Two implementations of one formula.** Python computes, TypeScript mirrors.
+  Golden fixtures hand-computed in a spreadsheet keep them honest, and a
+  verifier recomputes from raw data so drift fails the build, not the demo.
+- **Live judging is unforgiving.** A judge picks an account_id you have never
+  seen and reads a twist card you cannot rehearse. Edge guards flag thin
+  history, negative buffer, zero bills, and missing loans before the judge
+  finds them; preset cards are always one click away if the network hiccups.
+- **Scope under a 48 hour clock.** Weather particles are data-driven or they
+  do not ship. The cut order is written down, and the findings report, the
+  video, and the write-up are never on it.
 
-### Limitations (summary, full list in the repo)
+### Limits we declare up front
 
-- Synthetic data (seed `20261107`) validated against known construction rather
-  than a real statement; deltas will differ on the real dataset, though the
-  methods are unchanged.
-- One year of daily rows: uncertainty around AUC 0.590 is wide, no confidence
-  interval is claimed, and concept drift between train and test is strong.
-- Classification is per category, not per transaction, and the lag window
-  tests monthly recurrence only; weekly locked behavior is measured separately
-  in F2.
-- Counterfactuals are simulations under fixed behavior, not causal estimates:
-  they bound an opportunity rather than an achievable effect, and the surge cap
-  changes amounts, not only timing.
-- Verdict thresholds (1.25 holiday lift, 0.20 weekend deviation, 30 row floor)
-  are declared design choices, not hypothesis tests; correlation, not
-  causation, everywhere.
+Runway uses the answer key's definitions, including flat 55% EI (no weekly
+maximum, no taxes). Plans are our own declared formulas (goal = 3x spending),
+permitted by the brief and stated on screen. Correlation, not causation,
+everywhere. No customer rows leave the browser; the Gemini prompt carries a
+sentence and aggregate numbers only.
 
 ### Links
 
 - Code and reproduction steps: [GITHUB REPO URL PLACEHOLDER]
 - Live site: [LIVE SITE URL PLACEHOLDER]
 - 2 minute demo video: [YOUTUBE LINK PLACEHOLDER, unlisted]
-- Reproduce: `uv sync`, then `uv run python -m scripts.analysis.build_findings`,
-  `uv run python -m scripts.analysis.verify_findings`, then `uv run pytest`
+- Reproduce: `uv sync`, then `uv run python -m scripts.engine.build`,
+  `uv run python -m scripts.engine.verify`, then `uv run pytest`
 
-## 4. YouTube video description (public unlisted)
+## 5. YouTube video description (public unlisted)
 
 Visibility: **Unlisted** (anyone with the link can watch). Do not use Private,
 judges cannot open it.
@@ -155,44 +154,45 @@ judges cannot open it.
 Title draft:
 
 ```text
-Ledger Odyssey: what one year of a Tangerine style ledger actually says | Sheridan Datathon 2026
+Storm Fund: your rainy day fund, as weather | Sheridan Datathon 2026
 ```
 
 Description draft (paste and fill the bracketed fields):
 
 ```text
-A 2 minute demo walking through our approach and findings for the Sheridan Datathon 2026.
+A 2 minute demo of Storm Fund, a resilience weather station, for the Sheridan Datathon 2026.
 
-The question we asked: of one year of Tangerine style transactions, how much spending is locked by the calendar rather than by choice, when does the balance actually run out, and what would it cost to move spending onto the payday cycle?
+The question we asked: can a bank account's financial health be read as weather, so that a judge feels a shock coming instead of just reading a number?
 
-What we did: one offline pipeline (build_world, five analyses F1 to F5, verify_findings recomputes every published number) over a synthetic Tangerine style ledger (5,702 rows, 2025-11-01 to 2026-10-31, seed 20261107). Every method transfers unchanged to the real dataset.
+How it works: the real anonymized bank dataset (4,500 accounts, 1.06M transactions) feeds a vectorized Python pipeline that computes the exact judge metrics (income, fixed costs, spending, buffer, household bills, loan payment) in integer cents, then a React weather station maps runway and buffer to seven weather states with a printed mapping legend. Pick an account, apply a shock, watch the forecast change.
 
-What we found: only 5.08% of annual spend is calendar locked; Retail holiday lift is 1.80x; the night before deficit model reaches test AUC 0.590; aligning Travel to the payday cycle buys +$1,005.93 of drawdown; capping the holiday surge category lifts the floor by +$2,366.72.
+Built with: Python, pandas, numpy, React, TypeScript, Tailwind, and the Gemini API for typed shock input (parser only, human confirms before apply).
 
 Live site: [LIVE SITE URL]
 Repo: [REPO URL]
 Devpost submission: [DEVPOST SUBMISSION URL]
-All numbers are synthetic. No real bank data appears in this repository.
+Data credit: PKDD'99 Discovery Challenge Financial dataset, CTU Prague Relational Dataset Repository.
 ```
 
-Upload extras from `docs/video/script-template.md`: thumbnail is the F1 chart
-frame with 5.08% readable at 168x94, captions uploaded if not burned in, and a
-logged out playback test at 1080p with sound off before the link goes into
-Devpost.
+Upload extras from `docs/video/script-template.md`: thumbnail is the money
+shot frame (storm boundary mid transition, signpost RUNWAY number legible),
+captions uploaded if not burned in, and a logged out playback test at 1080p
+with sound off before the link goes into Devpost.
 
-## 5. Submission checklist
+## 6. Submission checklist
 
 ### Draft deadline: Sat Nov 7, 8:00 PM (hard)
 
 - [ ] Interactive claims in the write-up confirmed live on the built site
-      (chart twins, Inspector provenance, counterfactual bridge), because
-      `docs/decisions.md` deferred the full report UI and the write-up must
-      not promise what is not shipped
+      (weather station, preset twist cards, provenance), because the write-up
+      must not promise what is not shipped
 - [ ] Devpost draft created, project name set (section 2)
-- [ ] Write-up pasted into Description (section 3, question, what we did, what
-      we found)
-- [ ] Track selected: Best Data Visualization and Storytelling (section 1);
-      no other track unless a condition cleared
+- [ ] Elevator pitch pasted (section 3, 168 of 200 characters)
+- [ ] Write-up pasted into Description (section 4)
+- [ ] Tracks selected: Best Data Visualization and Storytelling (primary),
+      Tangerine (real dataset used), plus cleared MLH rows (Gemini only if the
+      typed path is live, Entire only if evidence landed, Solana only if the
+      memo confirmed, GoDaddy only if the domain resolves)
 - [ ] Draft marked complete with tracks chosen (video link not required yet at
       draft time)
 
@@ -203,12 +203,11 @@ Devpost.
 - [ ] Live site deployed and linked: [LIVE SITE URL PLACEHOLDER]
 - [ ] 2 minute demo video link pasted (at most 120.000s, YouTube unlisted):
       [YOUTUBE LINK PLACEHOLDER]
-- [ ] Short write-up in the required structure: question asked, what you did,
-      what you found (section 3)
+- [ ] Short write-up in the required structure: what inspired, what we
+      learned, how we built it, challenges (section 4)
 - [ ] All team members listed (solo entry, event allows up to 4):
       [YOUR NAME PLACEHOLDER]
-- [ ] Chosen tracks confirmed on the submission (Best Data Visualization and
-      Storytelling; Tangerine only if the real dataset lands and is used)
+- [ ] Chosen tracks confirmed on the submission
 - [ ] One submission per team: confirm this is the team's only entry
 - [ ] Devpost account ready and logged in: [DEVPOST USERNAME PLACEHOLDER]
 
@@ -216,15 +215,17 @@ Devpost.
 
 - [ ] Live demo window Sun Nov 8 12:30 PM, booth machine set up:
       [BOOTH LOCATION PLACEHOLDER]
-- [ ] Video spot check done: first frame is the question card, synthetic data
-      said in the first 15 seconds, last frame holds the URL for 3 seconds
+- [ ] Video spot check done: first frame is the money shot, dataset size said
+      in the first 15 seconds, last frame holds the URL for 3 seconds
+- [ ] Gemini key restrictions verified on the deployed origin (github.io,
+      localhost, final domain), delete the key after submission
 
 ### Open placeholders to fill before paste
 
 | Placeholder | Replace with |
 |-------------|--------------|
-| [GITHUB REPO URL PLACEHOLDER] | public repo URL, set after the first push (no git remote configured yet) |
-| [LIVE SITE URL PLACEHOLDER] | GitHub Pages URL (deploy workflow builds `/<repo>/`) |
+| [GITHUB REPO URL PLACEHOLDER] | https://github.com/ajeet-krish/stormfund |
+| [LIVE SITE URL PLACEHOLDER] | GitHub Pages URL (deploy workflow builds `/<repo>/`) or the registered domain |
 | [YOUTUBE LINK PLACEHOLDER] | unlisted video URL |
 | [DEVPOST SUBMISSION URL] | own submission URL after the draft is created |
 | [YOUR NAME PLACEHOLDER] | solo team member name as it should appear on Devpost |

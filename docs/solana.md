@@ -72,7 +72,7 @@ above 5000 lamports.
 Step 2, hash the frozen findings file and send one memo transaction:
 
 ```bash
-cd "/Users/ajeet/Projects/Hackathons/Sheridan Datathon 2026 draft"
+cd "/Users/ajeet/Projects/Hackathons/Sheridan Datathon 2026"
 shasum -a 256 public/data/findings.json   # record this digest in the notes
 uv run --with solders==0.29.0 python scripts/solana/send_memo.py \
     --file public/data/findings.json \
