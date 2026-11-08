@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6X3EJBX8TQZC7RHFFH4VA97",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T08:12:32.258128Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/atlas/AtlasSection.test.ts",
+    "src/components/atlas/AtlasSection.tsx",
+    "src/components/atlas/Cartogram.test.ts",
+    "src/components/atlas/Cartogram.tsx",
+    "src/dashScan.test.ts",
+    "src/lib/atlasData.test.ts",
+    "src/lib/atlasData.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "5c30b4148ce3",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 26
+  }
+}
