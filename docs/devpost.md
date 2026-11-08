@@ -49,43 +49,20 @@ links, and LaTeX math between dollar signs.
 
 ### What inspired us
 
-The Tangerine track, Resilience Rewired, asks for a financial resilience
-engine for real bank customers: know the customer, take a shock, make a
-plan, demonstrated live against real anonymized bank data. We read that as
-building a weather forecasting system for personal finance. The judging
-ritual set the design: a judge picks a random account id, reads a surprise
-twist card you have never seen, and you answer live in about three
-minutes. So the ask we designed around was plain: can a bank customer see
-whether they survive a shock, and what saves them? Everyone knows what a
-rainy day fund is; nobody has seen the rainy day coming. Bank numbers are
-honest but unreadable, and a sky over the verdict band makes a shock
-something you feel before it is something you calculate.
+The Tangerine track, Resilience Rewired, asks for a financial resilienceengine for real bank customers: know the customer, take a shock, make a plan, demonstrated live against real anonymized bank data. I decided to build a weather forecasting system for personal finance. Everyone knows what a rainy day fund is; nobody sees the rainy day coming. A weather forecast is meant to be easy for anyone of all ages to read, compared to a bank statement.
 
 ### The question we asked
 
-**The question.** How resilient are real account holders actually? We
-asked a version a judge can check by hand: what share of accounts would
-survive a month without income, and what does one surprise twist do to
-that share?
+**The question.** How resilient are real account holders actually? We asked a version a judge can check by hand: what share of accounts would survive a month without income, and what does one surprise twist do to that share?
 
-**What we did.** We precomputed the judge's exact answer key metrics for
-all 4,500 accounts (income, fixed costs, spending, buffer, household
-bills, loan payment, plus gap and runway), built a live stress test
-console with preset twist cards and custom shocks, and attached
-prescriptive plans: an emergency fund goal plan and an ordered backup
-lever ladder, every lever priced by re-running the same runway formula.
+**What we did.** We precomputed the judge's exact answer key metrics for all 4,500 accounts (income, fixed costs, spending, buffer, household
+bills, loan payment, plus gap and runway), built a live stress test console with preset twist cards and custom shocks, and attached prescriptive plans: an emergency fund goal plan and an ordered backup lever ladder, every lever priced by re-running the same runway formula.
 
-**What we found.** At baseline, 1 percent (60 of 4,500) of accounts sit
-under 3 months of runway. Run the same 4,500 accounts through the laid
-off twist (EI at 55 percent) and the share jumps to 10 percent (435 of
-4,500), so the storm zone share (critical plus storm warning, under 3
-months) grows 10 times from one surprise card. The per account stories
-keep the headline honest. Account 42988 already has a negative buffer and
-a defaulted loan, so its baseline reads 0.0 months before any shock
-lands. Account 98952 is a pensioner, so the layoff card is a stress test,
-not a fact: there is no wage to lose. And 377 thin history accounts carry
-medians that rest on fewer than 18 monthly rows, so the console says out
-loud that the window is short.
+**What we found.** At baseline, 1 percent (60 of 4,500) of accounts sit under 3 months of runway. Run the same 4,500 accounts through the laid
+off twist (EI at 55 percent) and the share jumps to 10 percent (435 of 4,500), so the storm zone share (critical plus storm warning, under 3
+months) grows 10 times from one surprise card. The per account stories keep the headline honest. Account 42988 already has a negative buffer and
+a defaulted loan, so its baseline reads 0.0 months before any shock lands. Account 98952 is a pensioner, so the layoff card is a stress test,
+not a fact: there is no wage to lose. And 377 thin history accounts carry medians that rest on fewer than 18 monthly rows, so the console says out loud that the window is short.
 
 ### What we learned
 

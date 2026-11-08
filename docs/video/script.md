@@ -1,5 +1,11 @@
 # Video Script: Storm Fund 2 Minute Demo (about 256 words spoken)
 
+Storm Fund is a financial resilience engine visualized as a weather station. Simulate shock events to see how they impact an entire population, or analyze individual accounts and see their runway forecast.
+
+Before any shocks, 1% of accounts are already in a storm warning or critical stage, which means they have under 3 months of runway. If a major shock event like a job loss impacted every household with EI replacing 55% of income, 10% of accounts would have under 3 months of runway. This can have a catastropic effect on the population. Left unaddressed, this turns into debt, evicton risk, and delayed healthcare for 450 households in this dataset alone. They spend less at local shops and lose bargaining power over wages. When shock events are common, the defaults cluster and banks tighten credit for everyone.  
+
+The cheapest intervention is to build plans to move an account from storm warning back to at least 6 months runway. Take any account, see their financial forecast, and watch what a shock does to it. From here we calculate the required cushion to withstand shock events. We can see how much actions such as deferring loan payments and reduced discretionary spending can save us.
+
 Read this file as one continuous voice over: every narration line is read
 verbatim, in order, over the frame named in the same row. Format follows
 `/Users/ajeet/Projects/Hackathons/Meta Global 2026/docs/VIDEO_SCRIPT.md` (one

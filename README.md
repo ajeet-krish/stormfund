@@ -1,7 +1,5 @@
 # Storm Fund: A resilience weather station for bank customers
 
-![Storm Fund logo](public/logo.svg)
-
 See your money move like weather.
 
 Storm Fund is a resilience financial engine that visualizes a bank account as a real-time weather forecast. Anonymized bank data maps runway and buffer to a pixel sky. Inject a shock and watch the forecast change.
@@ -81,7 +79,7 @@ An extension adds a district storm cartogram (77 districts) and a population rai
 
 ![Storm Atlas population page: the laid off twist headline (435 of 4,500 accounts under 3 months of runway against 60 at baseline), the five band cells, and the district storm cartogram](population.png)
 
-### Solana receipt badge (E7)
+### Solana receipt badge
 
 Three finalized devnet memo transactions anchor the analysis: the findings.json root, the model_card.json hash, and the F1 aggregate fingerprint (aggregates only, no raw rows). Their evidence files are bundled into `public/data/` at build time and read by `ReceiptStamp` in the baseline card through a build-time glob, so the badge never makes a network call and renders the same with the booth wifi off. It reads "Anchored on Solana devnet, verified" when the memo text read back from chain matched byte for byte, "anchored at build time, signature: ..." otherwise, and "no evidence yet" before an anchor exists. Digest honesty tests recompute the SHA256 of the shipped findings and model card bytes and compare them to the bundled digests. Full rationale in the Use of Solana section below.
 
@@ -98,23 +96,12 @@ How it works:
 - **What goes on chain is digests, never data.** Each memo carries the SHA256 hash of a frozen artifact. No account id, no balance, no row of customer data ever appears in a transaction. The chain pins the identity of the artifact; the artifact itself stays in the repo.
 - **The send path is audited, not improvised.** `scripts/solana/send_memo.py` refuses to sign until it has confirmed the endpoint is genuine Solana devnet (genesis hash assertion), sends the memo, confirms the transaction, reads the text back from the chain, verifies it matches byte for byte, and writes an evidence file with the signature and explorer URL. A known test string with a recorded digest lets us self-test the whole path before touching the real file.
 - **The site never touches the network.** The three evidence JSONs are inlined into `public/data/` at build time by `import.meta.glob` and rendered by `ReceiptStamp` in the baseline card, which reads bundled bytes only: zero runtime RPC calls, so the demo works with the booth wifi off, and there is no wallet, no Anchor program, and no tokens anywhere in the project.
-- **Digest honesty is tested.** The vitest suite recomputes the SHA256 of the shipped `findings.json` and `model_card.json` with node crypto and fails if either differs from the digest bundled in its receipt, so an artifact that changed cannot keep an old badge.
-- **Why it earns the track claim.** The findings freeze and the chain anchor happen at the same moment: the number you show a judge and the hash on chain are the same bytes. Anyone can run `shasum -a 256 public/data/findings.json` in our repo and compare it to the explorer transaction to verify we did not quietly recompute after judging.
+- **Digest is tested.** The vitest suite recomputes the SHA256 of the shipped `findings.json` and `model_card.json` with node crypto and fails if either differs from the digest bundled in its receipt, so an artifact that changed cannot keep an old badge.
+- **Track Eligibility** The findings freeze and the chain anchor happen at the same moment: the number you show a judge and the hash on chain are the same bytes. Anyone can run `shasum -a 256 public/data/findings.json` in our repo and compare it to the explorer transaction to verify we did not quietly recompute after judging.
 
 Booth line when a judge asks why the chain: "we anchored the findings themselves on chain because that is the claim that needed the chain; everything else stayed on the honest side of the line."
 
 The labeled future work sentence in the Devpost "Limits we declare up front" reads: "future work: a behavioral score attested on chain could gate a credit line or automate surplus sweeps; not implemented, and the underlying model (F3, AUC 0.590) is not strong enough to gate credit".
-
-## Use of Gemini API
-
-The Gemini API powers the typed shock input, and nothing else. One structured request maps a free-form sentence to the exact shock parameters the calculator uses, through a strict JSON response schema with seven required keys and no extras: intent (job loss, bills up, one-off cost, mixed, or no shock), confidence, income factor, bills percentage, one-off cost in months of spending, duration, and a summary. The model is pinned to `gemini-3.5-flash-lite`.
-
-- **The model is a parser, not an oracle.** It never computes runway. Its output is shape checked, percent corrected, clamped, and rounded in TypeScript (`src/lib/shockParse.ts`), then shown as confirmation chips. A no-shock mapping, low confidence, and an all-neutral mapping are each rejected before anything can apply. The rules engine does all math, and the runway does not move until a human clicks confirm.
-- **The formula strip shows the dollars.** Before confirming, the pending spec is run through the same `applyTwist` the console uses, so the income, bills, spending, one-off, and buffer figures you hand check are exactly the ones the verdict will use.
-- **Graceful failure is designed in.** One fetch attempt with a 3 second `AbortSignal` timeout, no retry on rate limits, a missing `VITE_GEMINI_KEY` that rejects without ever fetching, and preset twist cards that stay clickable at every moment. Every failure lands in a fallback note under the input, and the demo keeps running.
-- **The key never gets printed.** `VITE_GEMINI_KEY` is read from the build environment per call and sent only as the request header; the response log records a sentence hash, latency, and the parse result, never the key.
-- **Privacy boundary.** The prompt carries the sentence, the account id, and six aggregate baseline figures in integer cents plus the current runway. No raw rows, no transaction history, no customer data beyond that ever leaves the browser, and the request is sent with `store: false`.
-- **Honest framing.** This is an optional enhancement. Without a key, or with no network at all, the engine works fully offline, because network is a bonus in this project and never a dependency.
 
 ## Use of Entire
 
@@ -124,6 +111,17 @@ Entire was in place before this repo's first commit. `entire enable -y --agent o
 - **`--head` told committed from in flight.** The flag queries the committed tree from cache while the default reads uncommitted edits, so parallel sessions could tell what had landed apart from what was still on the bench. Query-time Coverage lines name what the indexer skipped rather than leaving a silent gap, and they named the generated files honestly: profiles.json as too large, transactions.json as minified. `entire graph health` reports index state (the rehearsal measured 71 source files indexed in 1204 ms).
 - **Checkpoints and transcripts sit in the git history.** Commits made during agent sessions carry an `Entire-Checkpoint` trailer naming the session checkpoint, checkpoint snapshots are stored as commits under `refs/entire/checkpoints/`, and `entire checkpoint explain HEAD` reconstructs a commit's intent and transcript, so the finished history interleaves the code with the session that wrote it.
 - **Token cost stays visible.** `entire session tokens` reports per-session input, cache read, output, and API calls, and `entire tokens profile --json` aggregates usage across checkpoints, which keeps a multi-agent workflow's cost visible. `entire trail create` offers title-branched trails for review; this project stayed on `main`.
+
+## Use of Gemini API (Feature Scrapped)
+
+The Gemini API powers the typed shock input, and nothing else. One structured request maps a free-form sentence to the exact shock parameters the calculator uses, through a strict JSON response schema with seven required keys and no extras: intent (job loss, bills up, one-off cost, mixed, or no shock), confidence, income factor, bills percentage, one-off cost in months of spending, duration, and a summary. The model is pinned to `gemini-3.5-flash-lite`.
+
+- **The model is a parser, not an oracle.** It never computes runway. Its output is shape checked, percent corrected, clamped, and rounded in TypeScript (`src/lib/shockParse.ts`), then shown as confirmation chips. A no-shock mapping, low confidence, and an all-neutral mapping are each rejected before anything can apply. The rules engine does all math, and the runway does not move until a human clicks confirm.
+- **The formula strip shows the dollars.** Before confirming, the pending spec is run through the same `applyTwist` the console uses, so the income, bills, spending, one-off, and buffer figures you hand check are exactly the ones the verdict will use.
+- **Graceful failure is designed in.** One fetch attempt with a 3 second `AbortSignal` timeout, no retry on rate limits, a missing `VITE_GEMINI_KEY` that rejects without ever fetching, and preset twist cards that stay clickable at every moment. Every failure lands in a fallback note under the input, and the demo keeps running.
+- **The key never gets printed.** `VITE_GEMINI_KEY` is read from the build environment per call and sent only as the request header; the response log records a sentence hash, latency, and the parse result, never the key.
+- **Privacy boundary.** The prompt carries the sentence, the account id, and six aggregate baseline figures in integer cents plus the current runway. No raw rows, no transaction history, no customer data beyond that ever leaves the browser, and the request is sent with `store: false`.
+- **Honest framing.** This is an optional enhancement. Without a key, or with no network at all, the engine works fully offline, because network is a bonus in this project and never a dependency.
 
 ## Project architecture
 
