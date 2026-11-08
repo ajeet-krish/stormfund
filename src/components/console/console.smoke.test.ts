@@ -163,6 +163,17 @@ describe('console boot', () => {
     expect(shocked?.textContent).toContain('$7,806.85')
     expect(shocked?.textContent).toContain('$4,230.06')
 
+    // The weather panel's landfall pin prints the same figure the
+    // verdict badge shows, to the digit, and the job loss marker with
+    // its answer key label is live under the combo twist.
+    const forecast = sectionOf(container, 'forecast-heading')
+    expect(forecast).not.toBeNull()
+    const verdictFigure = shocked?.querySelector('.cp-verdict__runway')?.textContent ?? ''
+    expect(verdictFigure).toBe('1.5 months')
+    expect(forecast?.textContent).toContain(verdictFigure)
+    expect(forecast?.textContent).toContain('Beyond the answer key: EI income stops after month 6')
+    expect(forecast?.textContent).toContain('They lose their job (EI at 55%)')
+
     const plan = sectionOf(container, 'plan-heading')
     expect(plan?.textContent).toContain('Starter cushion: $21,482.52')
     expect(plan?.textContent).toContain(
@@ -172,7 +183,8 @@ describe('console boot', () => {
       'The shocked runway runs out before the 6 month horizon ends.',
     )
 
-    // Reset returns the console to idle conditions, account kept.
+    // Reset returns the console to idle conditions, account kept, and
+    // the job loss marker leaves with the twist.
     const reset = Array.from(container.querySelectorAll('button')).find(
       (button) => button.textContent === 'Reset shock',
     )
@@ -181,5 +193,8 @@ describe('console boot', () => {
     const afterReset = sectionOf(container, 'shock-heading')
     expect(afterReset?.textContent).toContain('Fair skies')
     expect(sectionOf(container, 'baseline-heading')?.textContent).toContain('Account 68257')
+    const idleForecast = sectionOf(container, 'forecast-heading')
+    expect(idleForecast?.textContent).not.toContain('Beyond the answer key')
+    expect(idleForecast?.textContent).toContain('Shock lands this month')
   })
 })

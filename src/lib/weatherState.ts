@@ -1,4 +1,11 @@
 /**
+ * QUARANTINE: not the E3 band vocabulary; E5 rework pending. The E3
+ * surfaces (forecast strip, condition bands, EI cliff overlay, and the
+ * WeatherPanel) read the five verdict bands from src/lib/verdict.ts
+ * instead, and no E3 file imports this module. This seven state ladder
+ * still feeds the Storm Atlas scaffold (src/lib/stormAtlas.ts) and its
+ * own tests until E5 reworks those surfaces onto the verdict bands.
+ *
  * Phase E3 weather vocabulary: the pure mapping from judge metrics to one
  * of seven sky states, plus the 0 to 1 severity helper. This is the judge
  * parity contract for every weather surface (forecast strip, condition

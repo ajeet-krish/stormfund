@@ -23,6 +23,11 @@
    Solid state colors are used for tile fills, swatches, and rules only,
    where no small text sits on them.
 
+   The E3 strip slots do not use these state colors: they read the five
+   verdict bands through their tailwind class and currentColor (see the
+   .wx-slot rule below), so the badge and the strip share one source of
+   band color.
+
    Motion in this file is gated behind prefers-reduced-motion:
    no-preference, matching src/index.css, which also zeroes animation
    durations globally under prefers-reduced-motion: reduce.
@@ -76,47 +81,32 @@
   height: auto;
 }
 
-.wx-tile {
-  fill: var(--wx-rule);
-}
-
-.wx-tile-clear {
-  fill: var(--wx-clear);
-}
-
-.wx-tile-cloudy {
-  fill: var(--wx-cloudy);
-}
-
-.wx-tile-overcast {
-  fill: var(--wx-overcast);
-}
-
-.wx-tile-rain {
-  fill: var(--wx-rain);
-}
-
-.wx-tile-drought {
-  fill: var(--wx-drought);
-}
-
-.wx-tile-storm {
-  fill: var(--wx-storm);
-}
-
-.wx-tile-flood {
-  fill: var(--wx-flood);
+/* Band colored month slots: the verdict band's own tailwind class sets
+   the color, fill picks it up through currentColor, and the 22 percent
+   tint keeps the glyph and the curve legible on top. One source of
+   band color for the badge and the strip (tailwind.config.js cp). */
+.wx-slot {
+  fill: currentColor;
+  fill-opacity: 0.22;
 }
 
 .wx-strip__glyph {
+  fill: currentColor;
   font-family: var(--wx-font-body);
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .wx-strip__month {
   fill: var(--wx-parchment);
   font-family: var(--wx-font-display);
   font-size: 9.5px;
+  letter-spacing: 0.06em;
+}
+
+.wx-strip__horizon {
+  fill: var(--wx-text-faint);
+  font-family: var(--wx-font-display);
+  font-size: 10px;
   letter-spacing: 0.06em;
 }
 
@@ -132,13 +122,112 @@
   stroke-dasharray: 4 4;
 }
 
+/* Curve, grounds, and front ---------------------------------------------- */
+
+.wx-zero-line {
+  stroke: var(--wx-rule);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.wx-history-line {
+  fill: none;
+  stroke: var(--wx-text-faint);
+  stroke-width: 1.5;
+}
+
+.wx-history-dot {
+  fill: var(--wx-text-faint);
+}
+
+.wx-history-legend {
+  fill: var(--wx-text-faint);
+  font-family: var(--wx-font-display);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+}
+
+.wx-projection-line {
+  fill: none;
+  stroke: var(--wx-parchment);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The worst case continuation: dashed storm color so it never reads
+   as the answer key figure on the solid projection line. */
+.wx-continuation-line {
+  fill: none;
+  stroke: var(--wx-storm);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+  stroke-linecap: round;
+}
+
+.wx-front {
+  stroke-width: 2;
+}
+
+.wx-front-active {
+  stroke: var(--wx-storm);
+  stroke-width: 2.5;
+}
+
+.wx-front-idle {
+  stroke: var(--wx-rule);
+  stroke-dasharray: 4 4;
+}
+
+/* Pins ------------------------------------------------------------------- */
+
+.wx-pin-stem {
+  stroke: var(--wx-parchment);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.wx-pin-dot {
+  fill: currentColor;
+  stroke: var(--wx-grounds);
+  stroke-width: 1.5;
+}
+
+.wx-pin__label {
+  fill: var(--wx-parchment);
+  font-family: var(--wx-font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  paint-order: stroke;
+  stroke: var(--wx-grounds);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.wx-pin__label-faint {
+  fill: var(--wx-text-faint);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.wx-ei-pin {
+  fill: var(--wx-storm);
+  stroke: var(--wx-grounds);
+  stroke-width: 1.5;
+}
+
 /* ==========================================================================
-   Condition bands: the sky legend with the printed threshold sentence
+   Condition bands: the sky legend with the printed threshold sentence.
+   One band vocabulary (src/lib/verdict.ts): the band's tailwind class on
+   the list item sets the color, currentColor carries it into the left
+   rule and the label, and the responsive grid keeps five bands readable
+   from a phone up to a judging table.
    ========================================================================== */
 
 .wx-bands {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
   gap: 6px;
   list-style: none;
   margin: 0;
@@ -150,45 +239,11 @@
   align-items: baseline;
   gap: 10px;
   padding: 8px 12px;
-  background: var(--wx-clear-soft);
+  background: rgba(233, 224, 201, 0.05);
   border: 1px solid var(--wx-rule);
-  border-left-width: 6px;
+  border-left: 6px solid currentColor;
   border-radius: var(--wx-radius);
-}
-
-.wx-band-clear {
-  background: var(--wx-clear-soft);
-  border-left-color: var(--wx-clear);
-}
-
-.wx-band-cloudy {
-  background: var(--wx-cloudy-soft);
-  border-left-color: var(--wx-cloudy);
-}
-
-.wx-band-overcast {
-  background: var(--wx-overcast-soft);
-  border-left-color: var(--wx-overcast);
-}
-
-.wx-band-rain {
-  background: var(--wx-rain-soft);
-  border-left-color: var(--wx-rain);
-}
-
-.wx-band-drought {
-  background: var(--wx-drought-soft);
-  border-left-color: var(--wx-drought);
-}
-
-.wx-band-storm {
-  background: var(--wx-storm-soft);
-  border-left-color: var(--wx-storm);
-}
-
-.wx-band-flood {
-  background: var(--wx-flood-soft);
-  border-left-color: var(--wx-flood);
+  min-height: 44px;
 }
 
 .wx-band-active {
@@ -213,7 +268,7 @@
   font-size: 0.8125rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--wx-parchment);
+  color: currentColor;
 }
 
 .wx-band__threshold {
@@ -223,15 +278,23 @@
 }
 
 /* ==========================================================================
-   EI cliff overlay: a marker line that sits over the forecast strip.
-   The wiring view wraps the strip and this overlay in .wx-cliff-wrap,
-   which is the positioning context (ForecastStrip lays monthCount equal
-   width tiles across the full width, so a left percentage lands on the
-   tile boundary the line claims).
+   EI cliff overlay: a marker line that sits over the forecast strip, plus
+   a dotted second line for the worst case pin. The wiring view wraps the
+   strip and this overlay in .wx-cliff-wrap, which is the positioning
+   context; the overlay's own .wx-cliff-set fills that box and the lines
+    position against it with the slot percent the strip's stripLayout
+    shares, so the marker lands on the same x the curve uses.
    ========================================================================== */
 
 .wx-cliff-wrap {
   position: relative;
+}
+
+.wx-cliff-set {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .wx-cliff {
@@ -240,8 +303,13 @@
   bottom: 0;
   width: 0;
   border-left: 2px dashed var(--wx-storm);
-  pointer-events: none;
-  z-index: 2;
+}
+
+/* The worst case continuation line: dotted and dimmer, so it never
+   reads as the answer key marker or the solid projection curve. */
+.wx-cliff-after {
+  border-left-style: dotted;
+  opacity: 0.7;
 }
 
 .wx-cliff__label {
@@ -258,6 +326,74 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+/* On a phone the label is wider than the gap to the strip edge, so it
+   wraps instead of overflowing the panel. */
+@media (max-width: 40rem) {
+  .wx-cliff__label {
+    white-space: normal;
+    max-width: 62vw;
+  }
+}
+
+/* ==========================================================================
+   Weather panel: the full width section that composes the strip, the
+   cliff overlay, the honesty note, and the band key. Local spacing only,
+   nothing here reaches into the cp or rp namespaces beyond the panel
+   classes the console already defines.
+   ========================================================================== */
+
+.wx-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wx-storm-tag {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 6px;
+  border: 1px solid var(--wx-storm);
+  border-radius: 2px;
+  font-family: var(--wx-font-display);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wx-storm);
+  vertical-align: 1px;
+}
+
+.wx-honesty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+  font-family: var(--wx-font-body);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--wx-text-dim);
+}
+
+.wx-honesty__swatch {
+  align-self: center;
+  width: 22px;
+  height: 0;
+  border-top: 2px solid var(--wx-text-faint);
+}
+
+.wx-honesty__legend {
+  font-family: var(--wx-font-display);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wx-text-faint);
+}
+
+.wx-bands__title {
+  margin: 4px 0 0;
 }
 
 /* ==========================================================================

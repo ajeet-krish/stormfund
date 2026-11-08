@@ -1,9 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import type { AccountProfile } from '../../data/profiles'
+import { projectForecast, type ForecastProjection } from '../../lib/forecast'
 import { buildPlanText, type PlanText } from '../../lib/planText'
 import { applyTwist, type ShockResult, type Twist } from '../../lib/shocks'
 import { verdictBand, type VerdictBand } from '../../lib/verdict'
 import { useConsole } from '../../state/consoleStore'
+import WeatherPanel from '../weather/WeatherPanel'
 import AccountLookup from './AccountLookup'
 import BaselineCard from './BaselineCard'
 import PlanCard from './PlanCard'
@@ -12,10 +14,11 @@ import ShockPanel from './ShockPanel'
 /**
  * The engine console shell: boots the profile bundle once, then derives
  * everything the cards show from pure functions in a single useMemo
- * (applyTwist, verdictBand, buildPlanText). Views receive finished
- * numbers and finished sentences, so no component does money math and no
- * two cards can disagree. Three states: loading, an error that says what
- * to do, and the ready layout (lookup, baseline, shock, plan).
+ * (applyTwist, verdictBand, projectForecast, buildPlanText). Views
+ * receive finished numbers and finished sentences, so no component
+ * does money math and no two cards can disagree. Three states: loading,
+ * an error that says what to do, and the ready layout (lookup,
+ * baseline, shock, forecast, plan).
  */
 
 /** One derivation pass over the selected account and the live twist. */
@@ -26,6 +29,7 @@ interface Derivation {
   baselineBand: VerdictBand
   plan: PlanText
   twist: Twist
+  projection: ForecastProjection
 }
 
 export default function ConsoleView() {
@@ -56,7 +60,8 @@ export default function ConsoleView() {
       deciMonths: profile.runway_deci_months,
     })
     const plan = buildPlanText(profile, result, twist, band)
-    return { profile, result, band, baselineBand, plan, twist }
+    const projection = projectForecast(profile, result, twist)
+    return { profile, result, band, baselineBand, plan, twist, projection }
   }, [bundle, selectedId, twist])
 
   if (status === 'error') {
@@ -101,6 +106,7 @@ export default function ConsoleView() {
               activePresetId={activePresetId}
             />
           </div>
+          <WeatherPanel projection={derivation.projection} />
           <PlanCard plan={derivation.plan} />
         </>
       ) : (
