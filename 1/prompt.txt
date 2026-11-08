@@ -1,0 +1,377 @@
+Sheridan Datathon 2026
+Track: Tangerine
+Analyze my draft/sandbox repo for information on this hackathon and my project plan /Users/ajeet/Projects/Hackathons/Sheridan\ Datathon\ 2026\ draft/docs/competition-day-runbook.md
+
+Set up git in this, as well as Entire so we can use/track/document everything from the start. I am in the process of acquiring the datasets still, start setting up repo plumbing
+
+---
+
+Dataset has been added: /Users/ajeet/Projects/Hackathons/Sheridan\ Datathon\ 2026/Tangerine
+
+---
+
+first lets organize the repo, make sure git is set up in current hackathon repo. set up Entire. Then @00-planner @07-product-manager @08-researcher analyze the Tangerine dataset. Plan how we can use this dataset with Solana. What changes from the sandbox repo? what can we reuse/implement? lets work through this together. interview me whenever there are doubts, do not make assumptions or go in circles.
+
+---
+
+once public github is made, i can import/sync the github repo in  entire myself. let me know when to do this
+
+---
+
+pause import for now, lets proceed with agent research of the dataset and implementation ideas
+
+---
+
+research task is getting heavy. What are the current findings? how can we build a cleaner pipeline to analyze the data. do we need to setup a backend? can we use python/numpy to speed up data cleaning and analysis process. lets keep working towards comprehensive findings
+
+---
+
+backend has been working for a while, what is the state of the task and progress?
+
+---
+
+the project direction has shifted to a resilience weather station
+
+---
+
+do not do any engine work, another agent is working on that. @08-researcher @00-planner brainstorm/rsearch ways to build the weather station viz. consider our original 2d terraria/ stardew valley aesthetic, this would be a beautiful/responsive/ vsually striking data viz format. Research what types of plots we would need to add and how they can be implemented into the UI.
+
+---
+
+research the feasibility for adding Gemini API, as a way to communicate / in put shock events. Could be more intuitive to explain a shock event rather than be stuck in preset buttons.
+
+---
+
+Event special credits:
+IBM: Build with IBM AI (great for the Before the Breach track)
+No code, just sign up
+watsonx.ai free trial: https://ca-tor.dai.cloud.ibm.com/registration/stepone?context=wx&preselect_region=true
+No account? Run Granite models locally or in Colab: https://github.com/ibm-granite-community/granite-agent-cookbook
+Set up the trial early, account setup can take a few minutes ⏳
+
+🧡 LOVABLE: Free Pro Plan (100 credits)
+Code: COMM-SHERIDAN-64H9
+Go to lovable.dev and sign up (or Settings > Plans & Credits if you have an account)
+Pick Pro Plan 1 (100 credits), monthly
+Enter the code at checkout
+Checkout must be in USD. It may ask for a card, you can cancel right after it activates. Already paying for Lovable? Make a new workspace first. Redeem before the event ends.
+
+🧠 BACKBOARD: $10 in credits
+Code: SHERIDANDATATHON2026
+Redeem at: https://app.backboard.io/hackathon
+Expires Nov 9.
+
+⚙️ N8N: 1 month free n8n Cloud Pro
+No code to type, they email you one 📩
+Request it here: https://marketing.app.n8n.cloud/form/event-coupons?token=REDACTED
+New n8n Cloud accounts only, redeem by Nov 11. Please don't share this link outside the server
+
+
+Prize subtracks (currently going for tangerine, entire, solana, godaddy)
+Gemini Prize Category Q1 2025 - Q1 2026
+MLH Swag Kits
+
+Best Use of Gemini API
+It’s time to push the boundaries of what’s possible with AI using Google Gemini.
+
+Read more
+Build with Gemini 
+Read more about Best Use of Entire
+Entire Q4 2026 - Q3 2027
+Mini Portable Projector
+
+Best Use of Entire
+Entire is the Git forge for agent-human collaboration.
+
+Read more
+Get a Promo Code via MLH Coach
+Build with Entire 
+Read more about Best Use of Solana
+Solana Q4 2025 - Q4 2026
+Unruggable Hardware Wallets
+
+Best Use of Solana
+The world of development is evolving fast and Solana is leading the charge with a network built to handle all of your infrastructure needs.
+
+Read more
+Build with Solana 
+Read more about Best Use of Tiger Data
+Tiger Data Q3 2026 - Q2 2027
+Stream Deck Mini
+
+Best Use of Tiger Data
+Building high-performance apps under hackathon deadlines shouldn't mean spending half your weekend configuring complex databases or learning obscure query languages.
+
+Read more
+Build with Tiger Data 
+Read more about Best Use of Vultr
+Vultr Q4 2025
+Assorted Prizes
+
+Best Use of Vultr
+Vultr empowers hackers to bring their high-performance projects to life instantly.
+
+Read more
+Build with Vultr 
+Read more about DEV Writing Challenge
+DEV Writing Challenge
+$100
+
+DEV Writing Challenge
+Give your project another chance to shine! Your hackathon may end after the weekend, but your project story is just getting started.
+
+Read more
+Publish on DEV 
+Read more about Best Use of Snowflake API
+Snowflake Q3 2025 - Q1 2026
+Arduino Student Kit
+
+Best Use of Snowflake API
+Play with industry-leading LLMs on a single account using the Snowflake APIs.
+
+Read more
+Build with Snowflake 
+Read more about Best Domain Name from GoDaddy Registry
+GoDaddy Registry 2025
+Digital Gift Card
+
+Best Domain Name from GoDaddy Registry
+GoDaddy Registry is giving you everything you need to be the best hacker no matter where you are.
+
+Read more
+Build with GoDaddy Registry
+
+---
+
+Event special credits:
+IBM: Build with IBM AI (great for the Before the Breach track)
+No code, just sign up
+watsonx.ai free trial: https://ca-tor.dai.cloud.ibm.com/registration/stepone?context=wx&preselect_region=true
+No account? Run Granite models locally or in Colab: https://github.com/ibm-granite-community/granite-agent-cookbook
+Set up the trial early, account setup can take a few minutes ⏳
+
+🧡 LOVABLE: Free Pro Plan (100 credits)
+Code: COMM-SHERIDAN-64H9
+Go to lovable.dev and sign up (or Settings > Plans & Credits if you have an account)
+Pick Pro Plan 1 (100 credits), monthly
+Enter the code at checkout
+Checkout must be in USD. It may ask for a card, you can cancel right after it activates. Already paying for Lovable? Make a new workspace first. Redeem before the event ends.
+
+🧠 BACKBOARD: $10 in credits
+Code: SHERIDANDATATHON2026
+Redeem at: https://app.backboard.io/hackathon
+Expires Nov 9.
+
+⚙️ N8N: 1 month free n8n Cloud Pro
+No code to type, they email you one 📩
+Request it here: https://marketing.app.n8n.cloud/form/event-coupons?token=REDACTED
+New n8n Cloud accounts only, redeem by Nov 11. Please don't share this link outside the server
+
+
+Prize subtracks (currently going for tangerine, entire, solana, godaddy)
+Gemini Prize Category Q1 2025 - Q1 2026
+MLH Swag Kits
+
+Best Use of Gemini API
+It’s time to push the boundaries of what’s possible with AI using Google Gemini.
+
+Read more
+Build with Gemini 
+Read more about Best Use of Entire
+Entire Q4 2026 - Q3 2027
+Mini Portable Projector
+
+Best Use of Entire
+Entire is the Git forge for agent-human collaboration.
+
+Read more
+Get a Promo Code via MLH Coach
+Build with Entire 
+Read more about Best Use of Solana
+Solana Q4 2025 - Q4 2026
+Unruggable Hardware Wallets
+
+Best Use of Solana
+The world of development is evolving fast and Solana is leading the charge with a network built to handle all of your infrastructure needs.
+
+Read more
+Build with Solana 
+Read more about Best Use of Tiger Data
+Tiger Data Q3 2026 - Q2 2027
+Stream Deck Mini
+
+Best Use of Tiger Data
+Building high-performance apps under hackathon deadlines shouldn't mean spending half your weekend configuring complex databases or learning obscure query languages.
+
+Read more
+Build with Tiger Data 
+Read more about Best Use of Vultr
+Vultr Q4 2025
+Assorted Prizes
+
+Best Use of Vultr
+Vultr empowers hackers to bring their high-performance projects to life instantly.
+
+Read more
+Build with Vultr 
+Read more about DEV Writing Challenge
+DEV Writing Challenge
+$100
+
+DEV Writing Challenge
+Give your project another chance to shine! Your hackathon may end after the weekend, but your project story is just getting started.
+
+Read more
+Publish on DEV 
+Read more about Best Use of Snowflake API
+Snowflake Q3 2025 - Q1 2026
+Arduino Student Kit
+
+Best Use of Snowflake API
+Play with industry-leading LLMs on a single account using the Snowflake APIs.
+
+Read more
+Build with Snowflake 
+Read more about Best Domain Name from GoDaddy Registry
+GoDaddy Registry 2025
+Digital Gift Card
+
+Best Domain Name from GoDaddy Registry
+GoDaddy Registry is giving you everything you need to be the best hacker no matter where you are.
+
+Read more
+Build with GoDaddy Registry 
+
+
+Which of these tools would be beneficial for our current direction, continue researching gemini api
+
+---
+
+Online works, so assume online works during the demo too
+
+---
+
+Lets brainstorm names for this project/product. there is a prize for best godaddy site name, so brainstorm product names 
+
+E2 is currently being worked on by another agent. Can we proceed with scaffolding for E3-E7?
+
+---
+
+Devpost entry
+
+Project Name: Storm Fund: A resilience weather station for bank customers
+
+Elevator pitch (craft paragraph max 200 characters)
+
+About the project (in markdown format)
+- Be sure to write what inspired you, what you learned, how you built your project, and the challenges you faced. Format your story in Markdown, with LaTeX support for math.
+
+---
+
+E2-E7 is being worked on by another agent. without touching their work, Lets rename/rebrand the project repo to Storm Fund (github repo name to stormfund). set the full project name in the Github readme (Storm Fund: A resilience weather station for bank customers)
+
+---
+
+reduce this elevator pitch draft by 65 characters:
+
+See your money move like weather. Storm Fund is a resilience financial engine that visualizes a bank account as a real-time weather forecast. It takes real anonymized bank data and maps runway and buffer to a pixel sky. Inject a shock and watch the forecast change.
+
+---
+
+commit work that has been done
+
+---
+
+E2 console has landed and been reviewed. Lets implement the Gemini input addon. @02-tech-lead design the architecture for the Gemini shock input and implement.
+
+---
+
+run the acceptance gate
+
+i got my domain on godaddy/porkbun. how do we deploy to pages and point it to the new custom domain?
+
+---
+
+tried to add the custom domain manually on the github site
+
+DNS check unsuccessful
+
+Both stormfund.work and its alternate name are improperly configured
+Domain does not resolve to the GitHub Pages server. For more information, see documentation (NotServedByPagesError).
+
+---
+
+dns check successful and ticked enfore https
+
+---
+
+while anoher agent works on coding. Let's work on documentation / write-ups / pitch preparation. Priority is to understand / describe all our key features, how they work, and structure our documentation, leading to a straight forward submission.
+
+README structure:
+1. Intro (leave as is)
+2. Screenshot of title page (to show off the pixel sky and UI)
+3. Feature Overview (leave as is)
+4. Demo video
+5. Full Feature breakdown
+6. Use of Solana (to explain how i used it for the prize)
+7. Use of Gemini API (to explain how i used it for the prize)
+8. Use of Entire (to explain how i used it for the prize)
+9. Project Architecture/Map
+10. Explain this was made for Sheridan Datathon 2026, using Tangerine dataset PKDD'99 dataset
+
+Remove everything else not mentioned. If content is missing just put the headers as placeholders until i fill it out.
+
+---
+
+draft the storm, solana sections as per the planned implementations. we can change it later as we build those sections. commit once done
+
+---
+
+use this as the project logo everywhere:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 504.123 504.123" xml:space="preserve">
+<polygon style="fill:#FF9D00;" points="192.386,350.996 192.386,439.091 228.045,439.091 228.045,504.123 314.037,418.115 
+	259.497,418.115 259.497,327.924 "/>
+<polygon style="fill:#FF8500;" points="262.656,435.948 208.116,435.948 208.116,345.75 192.386,351.153 192.386,439.091 
+	228.045,439.091 228.045,470.552 "/>
+<path style="fill:#515B50;" d="M19.763,279.662l42-72.783c3.537-6.128,10.043-9.901,17.14-9.901h46.757l44.016-76.233
+	c5.293-9.153,14.982-14.769,25.568-14.769h125.314c10.531,0,20.267,5.616,25.498,14.769l29.286,50.664h51.208
+	c5.813,0,11.146,3.064,14.029,8.09l34.399,59.613c2.844,5.018,2.844,11.138,0,16.195l-34.399,59.565
+	c-2.883,4.962-8.216,8.066-14.029,8.066h-54.879l-25.616,44.379c-5.23,9.082-14.966,14.722-25.498,14.722H195.237
+	c-6.829,0-12.816-3.025-17.944-7.136c-3.718,4.198-8.657,7.136-14.383,7.136H78.903c-7.089,0-13.603-3.789-17.14-9.854l-42-72.783
+	C16.226,293.281,16.226,285.759,19.763,279.662z"/>
+<path style="fill:#687567;" d="M376.257,171.41h-0.922l-29.286-50.664c-5.23-9.153-14.966-14.769-25.498-14.769H195.237
+	c-10.587,0-20.275,5.616-25.568,14.769l-44.016,76.233H78.895c-7.089,0-13.603,3.773-17.14,9.901l-42,72.783
+	c-3.537,6.097-3.537,13.619,0,19.747l3.34,5.774h39.101c5.734,0,10.665-2.938,14.375-7.144c5.144,4.128,11.106,7.144,17.936,7.144
+	h125.322c10.524,0,20.267-5.632,25.49-14.714l25.616-44.379h54.879c5.813,0,11.169-3.104,14.029-8.074l34.414-59.573
+	C375.517,176.23,376.107,173.836,376.257,171.41z"/>
+<path style="fill:#515B50;" d="M485.998,66.135l-15.99-27.719c-1.339-2.332-3.812-3.773-6.522-3.773h-17.818L428.914,5.608
+	C426.906,2.135,423.211,0,419.194,0h-47.726c-4.033,0-7.735,2.135-9.72,5.616l-11.169,19.298h-19.495
+	c-2.206,0-4.246,1.166-5.341,3.08l-13.091,22.709c-1.079,1.906-1.079,4.246,0,6.16l13.091,22.686c1.095,1.898,3.127,3.08,5.341,3.08
+	h20.905l9.752,16.896c1.985,3.466,5.695,5.616,9.72,5.616h47.726c2.584,0,4.86-1.15,6.829-2.725
+	c1.418,1.599,3.277,2.725,5.474,2.725h31.988c2.71,0,5.183-1.457,6.522-3.757l15.99-27.719
+	C487.361,71.318,487.361,68.45,485.998,66.135z"/>
+<path style="fill:#687567;" d="M350.247,24.915h0.331l11.169-19.298C363.733,2.135,367.435,0,371.468,0h47.726
+	c4.017,0,7.712,2.135,9.72,5.616l16.754,29.034h17.818c2.71,0,5.183,1.449,6.522,3.773l15.99,27.719
+	c1.363,2.316,1.363,5.175,0,7.522l-1.26,2.206h-14.903c-2.174,0-4.064-1.142-5.474-2.741c-1.953,1.575-4.246,2.741-6.829,2.741
+	h-47.718c-4.017,0-7.727-2.143-9.712-5.624l-9.752-16.896h-20.89c-2.229,0-4.261-1.174-5.341-3.08l-13.115-22.693
+	C350.523,26.75,350.318,25.836,350.247,24.915z"/>
+</svg>
+
+---
+
+we are approaching storm atlas and solana. no implementation here. Walk me through the storm atlas idea. @00-planner brainstorm ways to discuss/visualize our population wide findings (weather forecast precipitation style, 3d bar/geo plots, etc.). be creative
+
+---
+
+check on E5 progress
+
+---
+
+check on frontend cartogram progress
+
+---
+
+@04-code-reviewer review E5 with the added features, check if any fixes are needed to E6 or E7 as a result
