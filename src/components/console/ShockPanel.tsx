@@ -14,6 +14,7 @@ import {
 } from '../../lib/shocks'
 import type { VerdictBand } from '../../lib/verdict'
 import { useConsole } from '../../state/consoleStore'
+import TypedShock from './TypedShock'
 import VerdictBadge from './VerdictBadge'
 
 /**
@@ -125,6 +126,8 @@ export default function ShockPanel({
             : 'No preset yet: move a slider to size a custom shock.'}
         </p>
       </header>
+
+      <TypedShock profile={profile} />
 
       <div className="cp-presets" role="group" aria-label="Shock presets">
         {SHOCK_PRESETS.map((preset) => (

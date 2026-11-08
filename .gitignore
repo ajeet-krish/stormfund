@@ -41,3 +41,9 @@ scripts/solana/programs/*.so
 .entire/metadata/
 .entire/settings.local.json
 .entire/redactors/local/
+
+# Gemini key material: local env files never commit, .env.example holds
+# the placeholder only (docs/architecture.md, key management)
+.env
+.env.local
+.env.*.local

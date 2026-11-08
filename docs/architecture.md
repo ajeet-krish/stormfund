@@ -261,10 +261,13 @@ judge computing by hand is the worst failure mode.
 - Preset twist cards are always rendered and always clickable. A mode
   badge next to the input reads "typed shock Gemini" or "preset
   cards".
-- On 429, 403, abort, or network error: no retry on 429, the mode
-  badge flips to preset cards, an inline note reads "Gemini
-  unavailable, using preset cards", the storm animation continues into
-  the preset apply, and total delay stays under 3 seconds.
+- On 429, 403, abort, or network error: no retry on 429, an inline
+  note reads "Gemini unavailable, using preset cards", the storm
+  animation continues into the preset apply, and total delay stays
+  under 3 seconds. The mode badge keeps showing the origin of the
+  shock that is currently applied (user decision Nov 07 2026): a
+  later failed parse does not relabel an applied Gemini shock as
+  preset. The note alone reports the failed attempt.
 - A hash cache makes repeated identical sentences free.
 
 ### Key management
@@ -303,3 +306,24 @@ and the typed path is the only code that touches the network. The
 Gemini path reuses the E2 shock math unchanged, so the judge
 definitions contract and the integer cents rule are untouched, and a
 misparse can never reach state without the confirmation step.
+
+### Implementation layout
+
+- Files: src/lib/shockParse.ts with shockParse.test.ts and
+  shockParse.dash.test.ts; src/components/console/TypedShock.tsx and
+  ShockChips.tsx with typedShock.smoke.test.ts; the consoleStore typed
+  slice with consoleStore.typed.test.ts; the cp- block in src/index.css;
+  and .env.example plus the .env rules appended to .gitignore.
+- Typed boundary: parseShockSentence returns one union (ok, rejected,
+  timeout) and shockSpecToTwist converts the confirmed spec, so the
+  preset path and the typed path converge on one Twist consumer and one
+  runway formula.
+- Confirmation model: pendingShock never writes twist, so the runway
+  cannot move until confirmTypedShock runs; the chips step through
+  applySpecStep, the formula strip shows income and spending in
+  dollars, and the confirm button is auto focused.
+- Failure model: each reject reason maps to one fallback note, the
+  mode badge always shows the origin of the applied shock rather than
+  flipping on a failed parse (user decision Nov 07 2026), and the
+  sentence hash cache is namespaced by account id because a one off
+  cost converts through that account's spending.

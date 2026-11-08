@@ -283,3 +283,28 @@ math and levers); FindingsView and PlayView are unmounted but kept for
 machinery reuse; zustand re-added to package.json; provenance stamp
 says recorded, never verified, because the browser cannot recompute a
 check_sum without row data.
+
+## Nov 07 2026 - Gemini shock input: typed path with mandatory confirm
+
+**Context**: a misparse shown in front of a judge who is computing by
+hand is the worst failure mode of this console, and the network must
+never be a dependency of the demo (docs/architecture.md, Gemini shock
+input).
+
+**Decision**: shockParse owns the parse boundary (envelope, shape
+validation, percent detection, clamping, rounding, reject reasons,
+hash cache), and pendingShock is the only state the typed path writes:
+confirmTypedShock is the single gate into twist. Every failure degrades
+to the preset cards with an inline note per reject reason. The prompt
+carries the sentence plus account_id plus the six baseline metrics as
+integer cents, with user approval on Nov 07 2026.
+
+**Rationale**: the confirm gate makes a misparse structurally unable to
+reach state, and integer cents keep the mapped amounts exact against
+the judge formula.
+
+**Trade-offs**: the sentence cache is namespaced by account id, so the
+same sentence on a different account refetches; percent detection is
+scoped to incomeFactor and billsPct only, because oneOffMonths and
+durationMonths legitimately exceed 1; mic input via the Web Speech API
+is not built.
