@@ -1,0 +1,51 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6WP33B8JB5E3KPZF8KN07RW",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T04:19:04.441081Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "scripts/engine/plans.py",
+    "scripts/engine/shocks.py",
+    "src/components/console/PlanCard.tsx",
+    "src/dashScan.test.ts",
+    "src/index.css",
+    "src/lib/planMath.test.ts",
+    "src/lib/planMath.ts",
+    "src/lib/planText.test.ts",
+    "src/lib/planText.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "61f139a9362d",
+  "checkpoint_transcript_start": 235,
+  "transcript_lines_at_start": 235,
+  "compact_transcript_start": 235,
+  "token_usage": {
+    "input_tokens": 883,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 779136,
+    "output_tokens": 640,
+    "api_call_count": 2
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 21
+  }
+}
