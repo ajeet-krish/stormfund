@@ -1,0 +1,55 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6X6TX0QZGTTHGF334JDJC1V",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/ci.yml",
+    "docs/video/script.md",
+    "scripts/analysis/build_findings.py",
+    "scripts/analysis/markdown_report.py",
+    "scripts/analysis/test_findings.py",
+    "scripts/analysis/verify_findings.py",
+    "scripts/video/README.md",
+    "scripts/video/assemble.sh",
+    "scripts/video/record.sh"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 7708,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 968448,
+    "output_tokens": 2427,
+    "api_call_count": 3,
+    "subagent_tokens": {
+      "input_tokens": 171515,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 2813888,
+      "output_tokens": 16862,
+      "api_call_count": 64
+    }
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 8,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
