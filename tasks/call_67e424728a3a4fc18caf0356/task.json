@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_67e424728a3a4fc18caf0356",
+  "agent_id": "ses_e4455e7d6ffejnBvWhxEQefi0o",
+  "subagent_type": "general",
+  "task_description": "Run gates and git diffs",
+  "token_usage": {
+    "input_tokens": 13468,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 49920,
+    "output_tokens": 2701,
+    "api_call_count": 7
+  },
+  "started_at": "2026-11-08T09:57:29.127-05:00",
+  "completed_at": "2026-11-08T09:58:41.870791-05:00"
+}

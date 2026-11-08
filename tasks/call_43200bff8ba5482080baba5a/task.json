@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_43200bff8ba5482080baba5a",
+  "agent_id": "ses_e4455e7d6ffejnBvWhxEQefi0o",
+  "subagent_type": "general",
+  "task_description": "Shell checks for review",
+  "token_usage": {
+    "input_tokens": 17414,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 75392,
+    "output_tokens": 2805,
+    "api_call_count": 4
+  },
+  "started_at": "2026-11-08T10:01:30.225-05:00",
+  "completed_at": "2026-11-08T10:02:17.08714-05:00"
+}

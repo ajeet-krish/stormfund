@@ -1,0 +1,69 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6XVBCYVM6QFZVSW3YTA8K6R",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "docs/decisions.md",
+    "scripts/map/build_district_geometry.py",
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/assets/fonts/silkscreen-400.woff2",
+    "src/assets/fonts/silkscreen-700.woff2",
+    "src/components/atlas/Cartogram.test.ts",
+    "src/components/atlas/Cartogram.tsx",
+    "src/components/atlas/atlas.css",
+    "src/components/judge/judge.css",
+    "src/components/sky/PixelMascot.tsx",
+    "src/components/sky/PixelSky.test.ts",
+    "src/components/sky/PixelSky.tsx",
+    "src/components/sky/pixelGrid.tsx",
+    "src/components/sky/sky.css",
+    "src/components/weather/weather.css",
+    "src/dashScan.test.ts",
+    "src/index.css",
+    "src/lib/districtNames.test.ts",
+    "src/lib/districtNames.ts",
+    "src/state/consoleStore.ts",
+    "src/state/consoleStore.typed.test.ts",
+    "tailwind.config.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 10255,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2212608,
+    "output_tokens": 2314,
+    "api_call_count": 6,
+    "subagent_tokens": {
+      "input_tokens": 450057,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 26990080,
+      "output_tokens": 79410,
+      "api_call_count": 188
+    }
+  },
+  "redaction": {
+    "replacements": 23116,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 23116,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
