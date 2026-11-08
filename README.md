@@ -40,7 +40,7 @@ Two plans derived from the customer's own numbers: an emergency fund goal plan (
 
 ### Weather station visualization
 
-A pure `weatherState` function maps the judge metrics onto seven weather states (clear, cloudy, overcast, rain, drought, storm, flood) with a printed mapping legend, so the skin stays honest: every visual element has a declared data rule behind it. The forecast strip shows the 12 month outlook with an EI-cliff overlay marking when benefits run out, weather bands render the sky, and the severity ladder follows the Canadian yellow, orange, red alert order. Colors are colorblind safe (Okabe-Ito base), severity is carried by color plus icon plus text label together, and every animation respects prefers-reduced-motion.
+A pure `verdictBand` function maps the judge metrics onto five verdict bands (critical, storm warning, watch, fair skies, clear) at thresholds in tenths of a month, with each band carrying its color, glyph, and label together, so the skin stays honest: every visual element has a declared data rule behind it. The forecast strip shows the 12 month outlook with a storm front and a landfall pin, an EI-cliff overlay marking when benefits run out, and a band key that prints all five bands with their thresholds, lowest runway first. Colors are colorblind safe (Okabe-Ito base), severity is carried by color plus icon plus text label together, and every animation respects prefers-reduced-motion.
 
 ### Typed shock input
 
@@ -48,7 +48,7 @@ Instead of preset buttons, type the shock in plain language ("they lose their jo
 
 ### Storm Atlas
 
-Where the station shows one account, the Storm Atlas shows the whole population. It summarizes all 4,500 profiles into counts and percentages per weather state and renders them as a seven cell grid in severity order, each cell showing how many accounts sit in that condition right now. The headline above the grid names the state the pitch quotes (by default, storm warning) with the count behind it, and a scenario label makes clear whether you are looking at baseline conditions or after a specific shock, so the same grid answers "how many accounts are already in trouble" and "how many does this twist put in trouble".
+Where the station shows one account, the Storm Atlas shows the whole population. It summarizes all 4,500 profiles into counts and percentages and renders them as a grid in severity order, each cell showing how many accounts sit in that condition right now. The headline above the grid names the condition the pitch quotes (by default, storm warning) with the count behind it, and a scenario label makes clear whether you are looking at baseline conditions or after a specific shock, so the same grid answers "how many accounts are already in trouble" and "how many does this twist put in trouble".
 
 Clicking a state drills down to the accounts behind the count (planned as a strip plot of runway within the selected state), which is how the demo moves from one judge-picked account to the population story: the atlas is fed by the same `profiles.json` and aggregates as everything else, so the headline number and the account cards can never disagree. The summary math lives in a pure module (`summarizeStormAtlas`, `accountsInState`) with unit tests, and the grid component is presentational: it reads counts, never recomputes them.
 
@@ -90,7 +90,7 @@ The integration is built to be honest and safe rather than impressive-looking:
 
 ## Project architecture
 
-A vectorized Python pipeline (pandas, numpy, integer cents, no per-account loops) reads the raw CSVs, verifies them against a committed SHA256SUMS manifest, computes the six judge metrics for every account into `public/data/engine/profiles.json`, and an independent verifier recomputes a seeded sample straight from the raw files to catch drift. The React app reads only those published numbers: a pure `weatherState` function maps metrics to weather, the forecast strip and bands are hand-rolled SVG, and everything is bundled as JSON so the booth demo needs no network. A gated Gemini add-on lets a judge type a shock in their own words; the model is a parser only, a human confirms the parsed chips, and the rules engine does the math.
+A vectorized Python pipeline (pandas, numpy, integer cents, no per-account loops) reads the raw CSVs, verifies them against a committed SHA256SUMS manifest, computes the six judge metrics for every account into `public/data/engine/profiles.json`, and an independent verifier recomputes a seeded sample straight from the raw files to catch drift. The React app reads only those published numbers: a pure `verdictBand` function maps metrics to one of five verdict bands, the forecast strip and bands are hand-rolled SVG, and everything is bundled as JSON so the booth demo needs no network. A gated Gemini add-on lets a judge type a shock in their own words; the model is a parser only, a human confirms the parsed chips, and the rules engine does the math.
 
 Project map:
 
