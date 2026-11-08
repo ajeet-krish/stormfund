@@ -1,0 +1,38 @@
+run the acceptance gate
+
+i got my domain on godaddy/porkbun. how do we deploy to pages and point it to the new custom domain?
+
+---
+
+tried to add the custom domain manually on the github site
+
+DNS check unsuccessful
+
+Both stormfund.work and its alternate name are improperly configured
+Domain does not resolve to the GitHub Pages server. For more information, see documentation (NotServedByPagesError).
+
+---
+
+dns check successful and ticked enfore https
+
+---
+
+while anoher agent works on coding. Let's work on documentation / write-ups / pitch preparation. Priority is to understand / describe all our key features, how they work, and structure our documentation, leading to a straight forward submission.
+
+README structure:
+1. Intro (leave as is)
+2. Screenshot of title page (to show off the pixel sky and UI)
+3. Feature Overview (leave as is)
+4. Demo video
+5. Full Feature breakdown
+6. Use of Solana (to explain how i used it for the prize)
+7. Use of Gemini API (to explain how i used it for the prize)
+8. Use of Entire (to explain how i used it for the prize)
+9. Project Architecture/Map
+10. Explain this was made for Sheridan Datathon 2026, using Tangerine dataset PKDD'99 dataset
+
+Remove everything else not mentioned. If content is missing just put the headers as placeholders until i fill it out.
+
+---
+
+draft the storm, solana sections as per the planned implementations. we can change it later as we build those sections. commit once done
