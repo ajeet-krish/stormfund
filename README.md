@@ -1,5 +1,7 @@
 # Storm Fund: A resilience weather station for bank customers
 
+![Storm Fund logo](public/logo.svg)
+
 See your money move like weather.
 
 Storm Fund is a resilience financial engine that visualizes a bank account as a real-time weather forecast. Anonymized bank data maps runway and buffer to a pixel sky. Inject a shock and watch the forecast change.
@@ -86,7 +88,12 @@ The integration is built to be honest and safe rather than impressive-looking:
 
 ## Use of Entire
 
-*[Placeholder: explain the Entire integration for the prize submission, including session tracking, checkpoints, and graph evidence]*
+Entire was in place before this repo's first commit. The Friday dress rehearsal in `docs/entire-rehearsal.md` proved the toolchain end to end in a sandbox repo in 10 minutes, and `entire enable -y --agent opencode` ran before commit `1300799 chore: initial repo with Entire enable files and Tangerine dataset manifest`. The enable files (`.entire/settings.json`, `.entire/.gitignore`, `.opencode/plugin/entire.ts`) and the Graph agent guide (`.entire/agent-guide.md`) ship in the repo.
+
+- **Every session starts with a Graph query.** `.entire/agent-guide.md` is injected into AGENTS.md, so every agent session auto-loads the rule that the first action on a code task must be a Graph query. `entire graph query` finds code for a description, `entire graph def` shows a symbol, `entire graph neighbors` lists callers and callees (`--direction in` or `out`), and `entire graph impact` gives the blast radius before a symbol changes; the guide also covers Graph diff, commit, and checkpoint for semantic comparisons of revisions. The `--head` flag queries the committed tree while the default reads uncommitted edits, so parallel sessions could tell committed code from work in flight.
+- **The index reports what it skipped.** `entire graph health` reports index state (the rehearsal measured 71 source files indexed in 1204 ms), and query-time Coverage lines name the files the indexer skipped, typically minified or generated data, rather than leaving a silent gap.
+- **Every commit names its session.** Commits made during agent sessions carry an `Entire-Checkpoint` trailer naming the session checkpoint, checkpoint snapshots are stored as commits under `refs/entire/checkpoints/`, and `entire checkpoint explain HEAD` reconstructs a commit's intent and transcript.
+- **Token cost stays visible.** `entire session tokens` reports per-session input, cache read, output, and API calls, and `entire tokens profile --json` aggregates usage across checkpoints, which keeps a multi-agent workflow's cost visible. `entire trail create` offers title-branched trails for review; this project stayed on `main`.
 
 ## Project architecture
 

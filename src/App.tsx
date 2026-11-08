@@ -15,14 +15,21 @@ export default function App() {
     <div className="flex min-h-screen flex-col bg-void text-ink">
       <header className="border-b border-grid bg-void-2">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <div>
-            <h1 className="font-mono text-xl font-semibold tracking-widest text-signal">
-              Resilience Weather Station
-            </h1>
-            <p className="mt-1 text-xs text-ink-dim">
-              A weather forecast for personal finance: pick an account, take a shock, read the
-              verdict.
-            </p>
+          <div className="flex items-center gap-3">
+            <img
+              src={`${import.meta.env.BASE_URL}logo.svg`}
+              alt="Storm Fund logo"
+              className="h-9 w-9 shrink-0"
+            />
+            <div>
+              <h1 className="font-mono text-xl font-semibold tracking-widest text-signal">
+                Resilience Weather Station
+              </h1>
+              <p className="mt-1 text-xs text-ink-dim">
+                A weather forecast for personal finance: pick an account, take a shock, read the
+                verdict.
+              </p>
+            </div>
           </div>
           <p className="font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-ink-faint">
             Tangerine track, Sheridan Datathon 2026
