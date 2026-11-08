@@ -18,13 +18,16 @@ Storm Fund is a resilience financial engine that visualizes a bank account as a 
 
 ## Demo video
 
-*[Placeholder: link to the 2 minute demo video]*
+[![Storm Fund demo video](https://img.youtube.com/vi/1mc1r3SXIkU/0.jpg)](https://youtu.be/1mc1r3SXIkU)
+
+Watch the 2 minute demo: https://youtu.be/1mc1r3SXIkU
+
 
 ## Full Feature breakdown
 
 Everything below describes the shipped site, mapped to the seven build phases in AGENTS.md.
 
-### Know the customer: account profile (E1)
+### Know the customer: account profile
 
 Search any of the 4,500 `account_ids` in the dataset and the console loads a precomputed baseline profile: income (I), fixed costs (F), spending (S), savings buffer (B), household bills (H), and loan payment (P). The definitions are the answer key's: I, S, H, and F are medians over all monthly rows (F is the median across months of the per row sum of household bills, insurance, and loan payments), B is the mean of avg_daily_balance over the last 6 recorded rows, and P is the loan's monthly payment only while its status is C or D, otherwise 0. Every money value is an integer in CAD cents and every runway is tenths of a month, rounded half up once at the metric boundary.
 
@@ -36,7 +39,7 @@ The gate around it is `uv run python -m scripts.engine.verify`: an independent n
 
 The artifact publishes its five edge flag counts too: pensioner 740, thin_history 377 (row count under 18), zero_income 14, defaulted_loan 45 (loan status D), negative_buffer 23.
 
-### Take a shock: shock simulator (E2)
+### Take a shock: shock simulator
 
 Four one-click twist cards reproduce the brief's example shocks: Laid off (EI pays 55 percent of usual income for 6 months), Bills up 15 percent, Furnace repair (one full month of typical spending), and the combined Laid off and bills up. Four sliders size any shock by hand: income after shock, household bills change, one-off cost in months of spending, and extra monthly cost.
 
@@ -44,7 +47,7 @@ The runway formula runs in integer cents with the exact branch order from the br
 
 The verdict comes from one pure `verdictBand` function in `src/lib/verdict.ts`: five bands (critical, storm warning, watch, fair skies, clear) cut at 10, 30, 60, and 120 tenths of a month, with buffer depleted always reading Critical and no shortfall always reading Clear. The mode badge always shows where the input came from: preset cards or a typed sentence. The console's honest template plan text comes from the same single derivation, so the words on screen always match the numbers.
 
-### Make a plan (E4)
+### Make a plan
 
 Two plans derived from the customer's own numbers, both printed as the declared definitions the brief allows us to choose.
 
@@ -54,7 +57,7 @@ The shock backup plan judges the shocked runway against a 6 month horizon and na
 
 The frozen plan goldens live in `scripts/engine/golden_plans.json` and are asserted by both vitest and pytest, with `scripts/engine/plans.py` as the Python twin, so a rule change in one language fails the suite in the other.
 
-### Weather station visualization (E3)
+### Weather station visualization
 
 The forecast strip is a projection built from integer cents: a balance curve from the shocked buffer, a storm front at the landing month, and a landfall pin whose printed figure is the same headline runway the verdict badge shows. The horizon starts at 12 months, extends to the landfall month, and is capped at 120. Recorded average balances are drawn muted to the left of the projection as context only, beside the honesty note that the projection starts from buffer B, the mean of the last 6 recorded balances, never from the last recorded balance.
 
@@ -66,21 +69,13 @@ A band key prints all five verdict bands with their thresholds, lowest runway fi
 
 Instead of preset buttons, type the shock in plain language ("they lose their job, EI covers half, and the furnace dies next month"). The Gemini parse maps the sentence to the same structured shock fields the presets use, shows them as confirmation chips you can correct with one click, and prints the dollar arithmetic in a formula strip that delegates to the same shock math, so you can hand verify it before anything applies. The runway never changes until you confirm, and a parse that fails, lacks a key, or times out after 3 seconds falls back to a note while the preset cards stay clickable. The engine runs fully without it. Full details in the Use of Gemini API section.
 
-### Storm Atlas (E5)
+### Storm Atlas
 
 Where the station shows one account, the Storm Atlas shows the whole population. The headline quotes the number the pitch asks for: accounts under 3 months of runway, which is 1 percent (60 of 4,500) at baseline and 10 percent (435 of 4,500) under the laid off twist. The scenario label is derived from the same twist object the counts ran through, so the sentence can never claim a shock the math did not apply, and a scenario mode runs the entire population through `applyTwist` again whenever the live twist changes.
 
 The distribution renders as a strip plot with one dot per account (4,500 circles) on an axis aligned to the verdict bands, with deterministic jitter seeded from the account id (never random) and a labeled 120+ overflow bin for capped readings. Click any dot to drill straight into the console on that account, which is how the demo moves from one judge-picked account to the population story.
 
 An extension adds a district storm cartogram (77 districts) and a population rain gauge, both rendered from `public/data/engine/atlas.json`, precomputed on the five verdict bands by `scripts/engine/atlas.py`. The summary math lives in pure modules with unit tests, and the components read counts, never recompute them.
-
-### Judge mode (E6)
-
-One authoritative key table drives the sticky judge bar, the tests, and the printable sheet: 1 to 4 apply the four twist presets, r resets the twist, Shift + R resets everything, slash focuses the account lookup, Esc dismisses layer by layer (typed gate first, then the lookup query, then the whole console), and N draws a pseudo random safe demo account from a pool with no flags, positive income and bills, and a finite baseline runway between 2.0 and 60.0 months.
-
-Edge guards read the five profile flags plus the no loan and zero bills rules, and the pensioner message changes when a layoff twist is live: pensioner versus layoff, thin history, zero income, defaulted loan status D versus B, negative buffer, no loan, and zero bills all inform the operator in the judge bar and the judges as chips near the verdict, and none of them ever blocks an account selection.
-
-Rehearsal is a timed five step dry run over the golden fixture accounts (68257, 23838, 98952, 49900, 42988) with a 2 second target per step, and `public/judge-sheet.html` is the one-page printable fallback carrying the formula, the band thresholds, a worked example, the twist arithmetic, the guards, and the keys.
 
 ### Solana receipt badge (E7)
 
@@ -109,8 +104,6 @@ The labeled future work sentence in the Devpost "Limits we declare up front" rea
 ## Use of Gemini API
 
 The Gemini API powers the typed shock input, and nothing else. One structured request maps a free-form sentence to the exact shock parameters the calculator uses, through a strict JSON response schema with seven required keys and no extras: intent (job loss, bills up, one-off cost, mixed, or no shock), confidence, income factor, bills percentage, one-off cost in months of spending, duration, and a summary. The model is pinned to `gemini-3.5-flash-lite`.
-
-The integration is built to be honest and safe rather than impressive-looking:
 
 - **The model is a parser, not an oracle.** It never computes runway. Its output is shape checked, percent corrected, clamped, and rounded in TypeScript (`src/lib/shockParse.ts`), then shown as confirmation chips. A no-shock mapping, low confidence, and an all-neutral mapping are each rejected before anything can apply. The rules engine does all math, and the runway does not move until a human clicks confirm.
 - **The formula strip shows the dollars.** Before confirming, the pending spec is run through the same `applyTwist` the console uses, so the income, bills, spending, one-off, and buffer figures you hand check are exactly the ones the verdict will use.

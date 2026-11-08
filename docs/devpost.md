@@ -210,7 +210,7 @@ future work: a behavioral score attested on chain could gate a credit line or au
 
 - Code and reproduction steps: [GITHUB REPO URL PLACEHOLDER]
 - Live site: https://www.stormfund.work/
-- 2 minute demo video: [YOUTUBE LINK PLACEHOLDER, unlisted]
+- 2 minute demo video: https://youtu.be/1mc1r3SXIkU
 - Reproduce: `uv sync`, then `uv run python -m scripts.engine.build`,
   `uv run python -m scripts.engine.verify`, then `uv run pytest`
 
@@ -308,7 +308,7 @@ with sound off before the link goes into Devpost.
       [GITHUB REPO URL PLACEHOLDER]
 - [ ] Live site deployed and linked: https://www.stormfund.work/
 - [ ] 2 minute demo video link pasted (at most 120.000s, YouTube unlisted):
-      [YOUTUBE LINK PLACEHOLDER]
+      https://youtu.be/1mc1r3SXIkU
 - [ ] Short write-up in the required structure: what inspired, what we
       learned, how we built it, challenges (section 4)
 - [ ] All team members listed (solo entry, event allows up to 4):
@@ -332,7 +332,7 @@ with sound off before the link goes into Devpost.
 |-------------|--------------|
 | [GITHUB REPO URL PLACEHOLDER] | https://github.com/ajeet-krish/stormfund |
 | [LIVE SITE URL PLACEHOLDER] | https://www.stormfund.work/ (fallback: https://ajeet-krish.github.io/stormfund/) |
-| [YOUTUBE LINK PLACEHOLDER] | unlisted video URL |
+| [YOUTUBE LINK PLACEHOLDER] | https://youtu.be/1mc1r3SXIkU (unlisted) |
 | [DEVPOST SUBMISSION URL] | own submission URL after the draft is created |
 | [YOUR NAME PLACEHOLDER] | solo team member name as it should appear on Devpost |
 | [DEVPOST USERNAME PLACEHOLDER] | Devpost username |
