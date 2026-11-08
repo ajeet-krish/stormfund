@@ -25,6 +25,23 @@ from scripts.pipeline_lib import checksum
 FIXTURES_PATH: Path = Path(__file__).with_name("golden_fixtures.json")
 ARTIFACT_PATH: Path = build.ENGINE_DIR / build.OUTPUT_NAME
 
+
+def _require_raw_data(*names: str) -> None:
+    """Skip when the gitignored sponsor CSVs are absent (CI, fresh clone).
+
+    data/tangerine/*.csv is deliberately never committed (docs/decisions.md
+    privacy rule), so recompute tests can only run where the raw files were
+    dropped locally. Everything that can be checked from committed artifacts
+    still runs everywhere.
+    """
+    missing = [name for name in names if not (load.DATA_DIR / name).is_file()]
+    if missing:
+        pytest.skip(
+            "raw sponsor CSVs not present (gitignored): "
+            + ", ".join(missing)
+            + "; run locally with data/tangerine/ populated"
+        )
+
 MONEY_FIELDS: tuple[str, ...] = (
     "income_cents",
     "fixed_costs_cents",
@@ -99,6 +116,7 @@ def artifact() -> dict[str, Any]:
 @pytest.fixture(scope="session")
 def grouped() -> dict[str, list[metrics.RowCents]]:
     """All accounts' monthly rows, loaded from the checksum verified CSV."""
+    _require_raw_data("monthly_summary.csv")
     load.verify_source_checksums(load.SOURCE_PATHS, sums_path=load.SUMS_PATH)
     return load.load_monthly_summary(load.MONTHLY_PATH)
 
@@ -106,6 +124,7 @@ def grouped() -> dict[str, list[metrics.RowCents]]:
 @pytest.fixture(scope="session")
 def loans() -> dict[str, load.LoanCents]:
     """All loans keyed by account id."""
+    _require_raw_data("loans.csv")
     return load.load_loans(load.LOANS_PATH)
 
 
@@ -428,6 +447,7 @@ def test_artifact_strings_have_no_dash_violations(artifact: dict[str, Any]) -> N
 
 def test_independent_verification_is_green() -> None:
     """The naive csv recomputation in verify.py reports no drift."""
+    _require_raw_data("monthly_summary.csv", "loans.csv", "accounts.csv")
     assert verify.run_verification() == []
 
 
@@ -435,6 +455,7 @@ def test_independent_verification_is_green() -> None:
 
 def test_two_consecutive_builds_are_byte_identical(tmp_path: Path) -> None:
     """No timestamps, no dict order luck: same input, same bytes."""
+    _require_raw_data("monthly_summary.csv", "loans.csv", "accounts.csv")
     first = tmp_path / "first"
     second = tmp_path / "second"
     assert build.main(["--out-dir", str(first)]) == 0
