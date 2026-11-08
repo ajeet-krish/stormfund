@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_a6fbf231c6d44da5a3c76a78",
+  "agent_id": "ses_e48c74618ffe40lxN5JREX9eYk",
+  "subagent_type": "08-researcher",
+  "task_description": "Analyze real Tangerine dataset",
+  "token_usage": {
+    "input_tokens": 219711,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2284032,
+    "output_tokens": 3291,
+    "api_call_count": 33
+  },
+  "started_at": "2026-11-07T13:15:10.566-05:00",
+  "completed_at": "2026-11-08T05:13:01.662548-05:00"
+}

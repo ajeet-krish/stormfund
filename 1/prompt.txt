@@ -1,0 +1,8 @@
+lets start preparing our demo/pitch discussions. demo structure:
+Pitch: show your engine and your biggest finding (1 min)
+Live twist: a judge picks an account_id and reads a twist card. You run it live and explain the new numbers and plan (3 min)
+Questions from the judges (1 min)
+
+Lets describe our engine, and if time use of solana/entire.
+What is our biggest finding(s)?
+plan responses to questions about backend and math model calculations

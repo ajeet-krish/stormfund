@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6XT8AJJ3ZCJ3ETBC0KKMCHT",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 3,
+  "checkpoints_count": 4,
   "files_touched": null,
   "sessions": [
     {
@@ -12,31 +12,38 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": "/0/prompt.txt"
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 706107,
+    "input_tokens": 1167789,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 4858112,
-    "output_tokens": 7924,
-    "api_call_count": 16,
+    "cache_read_tokens": 7230976,
+    "output_tokens": 12107,
+    "api_call_count": 22,
     "subagent_tokens": {
-      "input_tokens": 85887,
+      "input_tokens": 756779,
       "cache_creation_tokens": 0,
-      "cache_read_tokens": 567680,
-      "output_tokens": 8901,
-      "api_call_count": 14
+      "cache_read_tokens": 8521792,
+      "output_tokens": 81142,
+      "api_call_count": 114
     }
   },
   "redaction": {
-    "replacements": 12,
+    "replacements": 20,
     "layers": {
-      "betterleaks": 0,
+      "betterleaks": 4,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 12,
+      "entropy": 16,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0
