@@ -18,7 +18,7 @@ Modules:
   sequences, the F decomposition, the gap, and edge flag derivation.
 * shocks.py: the judge runway formula as one pure function returning
   state plus tenths of a month.
-* plans.py: goal plan and backup plan draft, deferred to Phase E4 (kept
+* plans.py: goal plan and backup plan, shipped test side twin (kept
   importable, unused by the E1 build).
 * build.py: entry point that writes public/data/engine/profiles.json and
   the stdout report.

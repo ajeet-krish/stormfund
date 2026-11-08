@@ -120,7 +120,7 @@ export const ATLAS_PAD_X = 40
 /** The drawn axis width between the margins (40 to 880). */
 export const ATLAS_PLOT_W = 800
 
-/** Silhouette bars hang from this top line, scaled by ATLAS_BAR_MAX_H. */
+/** Silhouette bars grow up from ATLAS_DOT_TOP, their bar baseline, scaled by ATLAS_BAR_MAX_H. */
 export const ATLAS_BAR_TOP = 8
 export const ATLAS_BAR_MAX_H = 36
 

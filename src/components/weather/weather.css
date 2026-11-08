@@ -3,30 +3,22 @@
    (docs/research.md palette table, "New tokens live in a --wx- namespace
    next to --rp and --rv so the report and Money River files never change").
 
-   The seven state tokens, one per weather state in canonical order:
+   Band vocabulary (src/lib/verdict.ts owns every band): the five verdict
+   bands, Critical, Storm warning, Watch, Fair skies, and Clear, carry all
+   color on these surfaces through their tailwind cp class and
+   currentColor, so the badge and the strip share one source of band
+   color (see the .wx-slot rule below). The seven state ladder from the
+   E3 draft left with weatherState.ts, and its unused palette tokens were
+   deleted with it.
 
-     wx-clear     #56B4E9   sky blue (Okabe-Ito), calm and no shortfall
-     wx-cloudy    #46617c   cloud slate, long runway with a spending gap
-     wx-overcast  #2f4257   deep slate, the darker sibling of cloudy
-     wx-rain      #2f7f7c   water lit, spending driven 3.0 to 11.9 months
-     wx-drought   #d97b3f   drought orange, income covers 65 percent or less
-     wx-storm     #ff6a4d   storm vermillion, runway under 3.0 months
-     wx-flood     #10333f   water deep, buffer depleted or runway at 0.0
+   The one state accent kept is wx-storm #ff6a4d, storm vermillion, used
+   only as a marker: the worst case continuation, the EI cliff line, and
+   the storm tag. It never sets a band.
 
    Plus the two grounds every surface sits on: wx-grounds #070c18 (the
    archival navy, same value as --rp-void but read from its own token so
    this file never depends on --rp-) and wx-parchment #e9e0c9 for text.
-
-   Soft tints (each state color at 26 percent over wx-grounds) carry every
-   printed label, so measured contrast for parchment text stays above
-   WCAG AA on all seven cells (worst case 9.3 to 1 on wx-clear-soft).
-   Solid state colors are used for tile fills, swatches, and rules only,
-   where no small text sits on them.
-
-   The E3 strip slots do not use these state colors: they read the five
-   verdict bands through their tailwind class and currentColor (see the
-   .wx-slot rule below), so the badge and the strip share one source of
-   band color.
+   Parchment on wx-grounds stays above WCAG AA on every surface here.
 
    Motion in this file is gated behind prefers-reduced-motion:
    no-preference, matching src/index.css, which also zeroes animation
@@ -34,14 +26,8 @@
    ========================================================================== */
 
 :root {
-  /* The seven state colors. */
-  --wx-clear: #56b4e9;
-  --wx-cloudy: #46617c;
-  --wx-overcast: #2f4257;
-  --wx-rain: #2f7f7c;
-  --wx-drought: #d97b3f;
+  /* The single state accent: marker only, never a band color. */
   --wx-storm: #ff6a4d;
-  --wx-flood: #10333f;
 
   /* Grounds and text. */
   --wx-grounds: #070c18;
@@ -49,15 +35,6 @@
   --wx-rule: rgba(233, 224, 201, 0.24);
   --wx-text-dim: rgba(233, 224, 201, 0.74);
   --wx-text-faint: rgba(233, 224, 201, 0.54);
-
-  /* Soft tints for any surface that prints text on a state color. */
-  --wx-clear-soft: #1c384e;
-  --wx-cloudy-soft: #172232;
-  --wx-overcast-soft: #111a28;
-  --wx-rain-soft: #112a32;
-  --wx-drought-soft: #3e2922;
-  --wx-storm-soft: #482426;
-  --wx-flood-soft: #091622;
 
   /* Utility, deliberately local so nothing here reaches into --rp-. */
   --wx-font-display: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
@@ -67,7 +44,7 @@
 }
 
 /* ==========================================================================
-   Forecast strip: 12 month tiles, one per weather state
+   Forecast strip: 12 month tiles, one per verdict band
    ========================================================================== */
 
 .wx-strip {

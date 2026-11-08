@@ -23,16 +23,10 @@ import { IDLE_TWIST, normalizeTwist, sameTwist, type Twist } from '../lib/shocks
  * carries a second copy of the math and no selector can drift from the
  * card it renders.
  *
- * E6 judge mode reserves these keys (NOT wired in E2, no listeners here):
- *   R           reset the twist, keep the account
- *   Shift + R   reset everything, account included
- *   1 to 4      play shock preset layoff, cost_spike, emergency_repair, combo
- *   /           focus the account lookup input (id="account-lookup")
- *   Esc         clear the lookup query
- *   N           open a random account from the id index
- * When E6 lands it will read and write this same store, which is why the
- * preset buttons already carry data-preset attributes and every button is
- * type="button" (no form, no accidental submit).
+ * E6 judge mode reads and writes this same store from one key table:
+ * see JUDGE_SHORTCUTS in src/lib/judgeMode.ts for every binding (the
+ * preset buttons already carry data-preset attributes and every button
+ * is type="button", no form and no accidental submit).
  *
  * Typed slice (gated Gemini add-on, docs/architecture.md): parseTypedShock
  * runs the shockParse boundary and parks an ok result in pendingShock.

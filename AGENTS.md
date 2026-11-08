@@ -24,7 +24,21 @@ Full pivot to the Tangerine "Resilience Rewired" Financial Resilience Engine (C-
 | E3 | Weather viz (forecast strip, bands, EI-cliff overlay) | Complete |
 | E4 | Plan engine (goal math + backup levers) | Complete |
 | E5 | Storm Atlas (population headline + drill-down) | Complete |
-| E6 | Judge mode (shortcuts, edge guards, rehearsal, fallback) | Not started |
-| E7 | Solana A+ touch (gated, receipt badge) | Not started |
+| E6 | Judge mode (shortcuts, edge guards, rehearsal, fallback) | Complete |
+| E7 | Solana A+ touch (gated, receipt badge) | In progress |
 
 Hard stops: findings freeze Sat 6 PM, Devpost draft Sat 8 PM, submit Sun 12 PM. Headline numbers must match docs/tangerine-challenge.md answer key exactly.
+
+## Coordination note (Nov 08, user decision)
+
+The seven-state weather ladder is retired on every surface. The single
+vocabulary is src/lib/verdict.ts (five bands), per the E5 record and
+the user's confirmed decision. The session that added
+scripts/engine/weather_state.py, scripts/engine/weather_state_goldens.json,
+and the seven-state shading in public/data/engine/atlas.json must
+reband the district cartogram to the five verdict bands (keep the
+cartogram feature, drop the ladder), unhook the ladder assertions from
+verify.py's drift gate (profiles.json gate stays), and append a
+correction entry to docs/decisions.md noting the misfiled Phase E5
+atlas precompute record. Do not reintroduce clear/cloudy/overcast/
+rain/drought/storm/flood in code, artifacts, or docs.

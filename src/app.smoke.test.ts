@@ -135,7 +135,7 @@ describe('app shell (loaded console)', () => {
     const input = container.querySelector<HTMLInputElement>('#account-lookup')
     await type(input as HTMLInputElement, '68257')
     await until(container, 'One match.')
-    await click(container.querySelector('[data-account-id="68257"]') as Element)
+    await click(container.querySelector('#console [data-account-id="68257"]') as Element)
 
     await until(container, 'Account 68257')
     expect(container.textContent).toContain('Fair skies')

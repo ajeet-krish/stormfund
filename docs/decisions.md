@@ -1,6 +1,6 @@
-# Ledger Odyssey Decision Records
+# Storm Fund Decision Records
 
-Last updated: Sat Nov 07 2026
+Last updated: Sun Nov 08 2026
 
 ## Nov 04 2026: Phase 0: Stack and gameplay architecture
 
@@ -391,3 +391,90 @@ the 3x starter and the 6x stretch target, so a judge reading only the
 small print sees the full range. The chips continue to highlight both.
 Applied in the E6 implementation pass as a one line planText.ts change
 with its test expectation updated.
+
+## Nov 08 2026, Phase E7: Static memo receipts mounted in the verdict card
+
+**Context**: the approved gated Solana package (three receipts, static
+panel, not-built paragraph) was designed for the dropped findings-first
+site. The pivot to the engine needs the same receipts surfaced in the
+new single page layout, without colliding with the concurrent E6 work
+in judge/, App.tsx, and ConsoleView.
+
+**Decision**: keep the approved three receipts exactly (root memo
+already sent and finalized; model_card.json hash and F1 aggregate
+fingerprint sent inside the 60 minute gate; no profiles.json chain
+receipt, user confirmed, its SHA256 is printed offline by verify.py).
+The old section E panel folds into a new ReceiptStamp component
+(console/) that mounts the untouched judge/ReceiptBadge once, in
+BaselineCard under the provenance line (user confirmed; the one E7
+seam), reading public/data/memo-devnet*.json via import.meta.glob
+eager (zero fetch; missing receipts render the honest placeholder).
+Links are plain anchors to the bundled evidence and the explorer. Gate
+conditions unchanged; re-run green adapts to verify.py plus pytest plus
+vitest green; gate failure ships the single memo and skips the
+paragraph; cut order is receipt 3, receipt 2, rows. E7 implementation
+runs after E6 review and commit (user confirmed) because both phases
+register files in dashScan.test.ts. The approved future work sentence
+routes to docs/devpost.md "Limits we declare up front".
+
+**Rationale**: the badge is an artifact level receipt, so
+provenance adjacent placement in the baseline card passes the deception
+test where a hero verdict stamp would not; the glob keeps the design
+build safe in every gate state; keeping judge/ byte identical removes
+the only real merge risk.
+
+**Trade offs**: the chain attests the frozen analysis, not the engine
+artifact (checkable offline via verify.py instead); the panel is a
+compact row list rather than a section; the JudgeBar receipt slot stays
+reserved for post freeze.
+
+## Nov 08 2026, Phase E5: atlas.json precompute and weather state parity twin
+
+**Decision**: scripts/engine/build.py now also writes
+public/data/engine/atlas.json (schema_version 1, generated_by
+scripts.engine.build) for the 77 district cartogram tiles the frontend
+renders in parallel. Keys in emission order: schema_version,
+generated_by, states (clear, cloudy, overcast, rain, drought, storm,
+flood), sources (profiles.json, accounts.csv, districts.csv as path,
+sha256, rows), districts (all 77 rows sorted by district_id with
+district_name, region, inhabitants, unemployment_rate_2023,
+average_salary, account_count, no_data), account_district (account_id
+string keys to district_id numbers, 4500 entries), baseline (per
+district seven state counts), and scenarios (the same counts under the
+four src/lib/shockPresets.ts ids verbatim: layoff, cost_spike,
+emergency_repair, combo, run through the shocks.py math). Every
+district's seven counts sum to its account_count, every account sits in
+exactly one district, and two consecutive builds are byte identical
+(no timestamps, canonical source paths, numeric key order).
+
+**Weather state parity twin**: src/lib/weatherState.ts was deleted by
+the E5 verdict fold, so the seven state ladder ported to
+scripts/engine/weather_state.py comes from the parent commit and is the
+contract the atlas counts use. The shared vector table lives in
+scripts/engine/weather_state_goldens.json (all seven states, runway
+boundaries 0, 30, 119, 120, 239, 240 and 1200 tenths, the no shortfall
+string state, and both sides of the 65 percent drought ratio edge);
+scripts/engine/test_atlas.py asserts the table against the Python
+ladder, and the TS side must assert the same fixture table so a
+frontend restore of the ladder cannot drift from the atlas counts.
+
+**no_data rule**: a district renders as "no data" (never 0) when any
+cell of its districts.csv row is missing; with this dataset only
+district 69 qualifies (its 2022 columns are empty), and its present
+2023 values still ship as numbers under the no_data flag. The rule
+wording in the schema brief named the 2023 and salary columns, but
+neither is empty for district 69, so the fixture test pins the
+"district 69 is no_data" requirement through the whole row.
+
+**Rationale**: precomputed counts keep the cartogram a pure render of
+committed integers (the frontend owns no shock math), the fixture table
+is the single parity contract now that weatherState.ts is gone from the
+tree, and the artifact only atlas checks added to verify.py let any
+checkout re validate the schema and sum invariants without the
+gitignored CSVs.
+
+**Trade offs**: the ladder is recovered from git history rather than
+imported from a live src file, so the TS assertion of the fixture table
+is a follow up the frontend owns; the scenario presets mirror the
+shockPresets.ts twist fields by hand, with test_atlas.py parsing that
+file and failing on any drift.

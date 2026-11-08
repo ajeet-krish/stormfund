@@ -3,6 +3,7 @@ import { formatCents, formatDeciMonths } from './format'
 import {
   BACKUP_HORIZON_MONTHS,
   GOAL_CONTRIBUTION_FLOOR_PCT,
+  GOAL_STRETCH_MONTHS,
   GOAL_TARGET_MONTHS,
   MONTHS_UNREACHABLE,
   backupPlan,
@@ -212,7 +213,7 @@ export function buildPlanText(
   })
   const savingsDeci = savingsMonthsDeci(profile.buffer_cents, profile.spending_cents)
   const definitions: string[] = [
-    `Starter cushion: ${GOAL_TARGET_MONTHS} times typical spending, ${formatCents(goal.targetCents)}.`,
+    `Starter cushion: ${GOAL_TARGET_MONTHS} times typical spending, ${formatCents(goal.targetCents)}. Stretch target: ${GOAL_STRETCH_MONTHS} times typical spending, ${formatCents(GOAL_STRETCH_MONTHS * profile.spending_cents)}.`,
     `Monthly contribution: the larger of income minus spending and ${GOAL_CONTRIBUTION_FLOOR_PCT} percent of income, ${formatCents(goal.contributionCents)}.`,
     `Months to the target count new contributions from zero. Savings on hand: ${formatCents(profile.buffer_cents)} (${formatDeciMonths(savingsDeci, 'finite')} of spending), not counted in the months above.`,
     `Backup horizon: ${BACKUP_HORIZON_MONTHS} months, matching the EI twist duration.`,

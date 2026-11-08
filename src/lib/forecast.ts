@@ -30,9 +30,9 @@ import { verdictBand, type VerdictBandId } from './verdict'
  * instead of drawing a wrong sky.
  *
  * Vocabulary: the five verdict bands from src/lib/verdict.ts are the
- * only band vocabulary on every E3 surface. The seven state ladder in
- * src/lib/weatherState.ts is quarantined (E5 rework pending) and this
- * module never imports it.
+ * only band vocabulary on every E3 surface. The E5 verdict fold landed:
+ * src/lib/weatherState.ts is deleted, and src/lib/verdict.ts owns every
+ * band this module can print.
  *
  * Display only branches, never headlines: the EI cliff (income stops
  * after month 6 under a job loss twist) and the dashed worst case

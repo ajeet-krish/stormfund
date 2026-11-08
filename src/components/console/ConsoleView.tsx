@@ -6,6 +6,7 @@ import { applyTwist, type ShockResult, type Twist } from '../../lib/shocks'
 import { verdictBand, type VerdictBand } from '../../lib/verdict'
 import { useConsole } from '../../state/consoleStore'
 import WeatherPanel from '../weather/WeatherPanel'
+import GuardChips from '../judge/GuardChips'
 import AccountLookup from './AccountLookup'
 import BaselineCard from './BaselineCard'
 import PlanCard from './PlanCard'
@@ -106,6 +107,7 @@ export default function ConsoleView() {
               activePresetId={activePresetId}
             />
           </div>
+          <GuardChips />
           <WeatherPanel projection={derivation.projection} />
           <PlanCard plan={derivation.plan} />
         </>

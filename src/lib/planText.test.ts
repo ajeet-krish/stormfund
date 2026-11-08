@@ -291,7 +291,7 @@ describe('buildPlanText: definition strip', () => {
     const plan = planFor(makeProfile(), COMBO)
     expect(plan.definitions).toHaveLength(5)
     expect(plan.definitions).toEqual([
-      'Starter cushion: 3 times typical spending, $21,482.52.',
+      'Starter cushion: 3 times typical spending, $21,482.52. Stretch target: 6 times typical spending, $42,965.04.',
       'Monthly contribution: the larger of income minus spending and 5 percent of income, $325.16.',
       'Months to the target count new contributions from zero. Savings on hand: $6,437.85 (0.9 months of spending), not counted in the months above.',
       'Backup horizon: 6 months, matching the EI twist duration.',

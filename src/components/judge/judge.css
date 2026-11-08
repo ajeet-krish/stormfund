@@ -43,6 +43,60 @@
     "Liberation Mono", monospace;
 }
 
+/* The bar sticks to the bottom of the viewport so the keys and the
+   guard line stay one glance away while a judge scrolls the console. */
+.jg-bar-sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+}
+
+/* Rehearsal toggle and paper sheet link, right of the key row. */
+.jg-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.jg-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 4px 12px;
+  color: var(--jg-parchment);
+  background: transparent;
+  border: 1px solid var(--jg-rule);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.jg-tool:hover {
+  border-color: var(--jg-parchment);
+}
+
+/* Phone width: the nine keys and the tools wrap into a taller strip,
+   and labels may break so nothing overflows the viewport. */
+@media (max-width: 40rem) {
+  .jg-bar {
+    padding: 8px 10px;
+    gap: 8px 10px;
+  }
+
+  .jg-shortcut {
+    padding: 4px 8px;
+  }
+
+  .jg-shortcut__label {
+    white-space: normal;
+  }
+}
+
 .jg-shortcuts {
   display: flex;
   flex-wrap: wrap;
@@ -139,6 +193,127 @@ button.jg-shortcut {
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Guard chip row inside the console: short captions over the full
+   sentence, which stays in the DOM for screen readers and rides the
+   title tooltip for a pointer.
+   ========================================================================== */
+
+.jg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 3px 8px;
+  background: rgba(255, 106, 77, 0.14);
+  border: 1px solid #ff6a4d;
+  border-radius: 3px;
+  color: var(--jg-parchment);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.jg-chip__mark {
+  color: #ff6a4d;
+  font-weight: 700;
+}
+
+.jg-chip__label {
+  text-transform: uppercase;
+}
+
+/* Visually hidden, still read aloud. */
+.jg-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================================================
+   Rehearsal dock: the five step timed dry run over the fixtures
+   ========================================================================== */
+
+.jg-dock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--jg-panel);
+  border: 1px solid var(--jg-rule);
+  border-radius: 4px;
+}
+
+.jg-dock__step {
+  margin: 0;
+  color: var(--jg-parchment);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jg-dock__card {
+  margin: 0;
+  color: var(--jg-parchment);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.jg-dock__script {
+  margin: 0;
+  color: var(--jg-dim);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.jg-dock__meta {
+  margin: 0;
+  color: var(--jg-faint);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.jg-dock__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.jg-dock__result {
+  margin: 0;
+  color: var(--jg-parchment);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 0.75rem;
+}
+
+.jg-dock__hint {
+  margin: 0;
+  color: var(--jg-faint);
+  font-size: 0.75rem;
 }
 
 /* ==========================================================================

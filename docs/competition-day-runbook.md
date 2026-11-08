@@ -363,7 +363,7 @@ ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:no
 | 11:00 AM | SUBMISSION FREEZE: Devpost final filled and reviewed (repo, live site, video, write-up, tracks, one submission per team) | user |
 | 11:00 to 11:50 | buffer for the 12:00 PM final deadline | user |
 | 12:00 PM | FINAL SUBMISSION DEADLINE | user |
-| 12:30 PM | demo: 90 second rehearsal script, question, headline number, river, provenance click, counterfactual, Solana anchor, next step | user |
+| 12:30 PM | demo: 90 second rehearsal script, question, headline number, river, provenance click, counterfactual, Solana anchor, next step; keep the printable judge sheet (`../public/judge-sheet.html`) at hand for keys and definitions | user |
 
 ## 14. Cut order (when behind)
 
@@ -392,7 +392,7 @@ NEVER cut: the findings re-run plus verify, the hero river static scene, the Dev
 | Pages deploy on fresh repo | configure-pages failure or 404 assets | Settings, Pages, Source: GitHub Actions; verify `VITE_BASE` equals `/<repo>/`; smoke test on the first push |
 | Video overrun | clip list over 120.000s | re-record the long clip (shorter `-d`), never `--allow-trim`; drop B-roll first |
 | Number drift | a number in docs, video, or Devpost disagrees with findings.json | findings.json wins; re-run verify_findings and fix every surface before the next freeze |
-| Offline booth | venue Wi-Fi blocks RPC or the site | everything is bundled locally (no runtime network calls), hotspot as backup, Explorer screenshot as chain proof, fixture labels for any cached data |
+| Offline booth | venue Wi-Fi blocks RPC or the site | everything is bundled locally (no runtime network calls), hotspot as backup, Explorer screenshot as chain proof, fixture labels for any cached data, and the printable judge sheet (`../public/judge-sheet.html`) so keys, definitions, and the rehearsal script still print with the site down |
 
 ## 16. Agent instructions
 

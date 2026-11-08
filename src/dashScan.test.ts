@@ -62,7 +62,12 @@ const AUTO_DIRS: readonly string[] = [
 ]
 
 /** Stylesheets written this phase, scanned without the double hyphen rule. */
-const CSS_FILES: readonly string[] = ['src/index.css', 'src/components/atlas/atlas.css']
+const CSS_FILES: readonly string[] = [
+  'src/index.css',
+  'src/components/atlas/atlas.css',
+  'src/components/weather/weather.css',
+  'tailwind.config.js',
+]
 
 function listDir(directory: string): string[] {
   const out: string[] = []
