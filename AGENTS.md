@@ -25,7 +25,7 @@ Full pivot to the Tangerine "Resilience Rewired" Financial Resilience Engine (C-
 | E4 | Plan engine (goal math + backup levers) | Complete |
 | E5 | Storm Atlas (population headline + drill-down) | Complete |
 | E6 | Judge mode (shortcuts, edge guards, rehearsal, fallback) | Complete |
-| E7 | Solana A+ touch (gated, receipt badge) | In progress |
+| E7 | Solana A+ touch (gated, receipt badge) | Complete |
 
 Hard stops: findings freeze Sat 6 PM, Devpost draft Sat 8 PM, submit Sun 12 PM. Headline numbers must match docs/tangerine-challenge.md answer key exactly.
 
@@ -49,6 +49,5 @@ up front": future work: a behavioral score attested on chain could
 gate a credit line or automate surplus sweeps; not implemented, and
 the underlying model (F3, AUC 0.590) is not strong enough to gate
 credit
-(2) `npm run typecheck` is red with 12 TS2532/TS2345 errors in
-src/lib/atlasData.test.ts (your in-progress file); it blocks the repo
-gate and must be fixed before the Devpost draft hard stop.
+(2) RESOLVED: npm run typecheck is green again as of the E7 review
+(0 errors); no action needed.

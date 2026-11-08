@@ -1,0 +1,23 @@
+{
+  "signature": "Q7evLcRboSd5xkgesg4PJKBixwono2WagquCp1ifMD5rNxKUVsd599P8pYw1VBP4o4dRnYeMni7rAhYoMA3Lrwn",
+  "slot": 519934638,
+  "payload_sha256": "84f5f24be8f1c74e3ca645fdebfd0f41e52f916c0cc84f6059ada2554138cccd",
+  "cluster": "devnet",
+  "program_id": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+  "rpc": "https://api.devnet.solana.com",
+  "rpc_url": "https://api.devnet.solana.com",
+  "confirmed_at": "2026-11-08T06:44:11+00:00",
+  "confirmation_status": "finalized",
+  "block_time": 1794120249,
+  "explorer_url": "https://explorer.solana.com/tx/Q7evLcRboSd5xkgesg4PJKBixwono2WagquCp1ifMD5rNxKUVsd599P8pYw1VBP4o4dRnYeMni7rAhYoMA3Lrwn?cluster=devnet",
+  "signer_pubkey": "FhJ4obmShVhs5WV4RFoSzAXYuCK2XGfoDEygyvQwb67g",
+  "payload": {
+    "algorithm": "sha256",
+    "digest_hex": "84f5f24be8f1c74e3ca645fdebfd0f41e52f916c0cc84f6059ada2554138cccd",
+    "source": "file:build/f1-aggregate-table.json",
+    "memo_text": "Sheridan Datathon 2026 F1 aggregate fingerprint, aggregates only, no raw rows sha256:84f5f24be8f1c74e3ca645fdebfd0f41e52f916c0cc84f6059ada2554138cccd",
+    "memo_program": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+  },
+  "memo_text_on_chain": "Sheridan Datathon 2026 F1 aggregate fingerprint, aggregates only, no raw rows sha256:84f5f24be8f1c74e3ca645fdebfd0f41e52f916c0cc84f6059ada2554138cccd",
+  "matches_local": true
+}

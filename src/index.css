@@ -2587,3 +2587,48 @@ html {
   outline: 2px solid var(--rp-paper);
   outline-offset: 2px;
 }
+
+/* E7 chain receipt stamp */
+
+.cp-receipt-stamp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rp-s2);
+  margin-top: var(--rp-s4);
+  padding-top: var(--rp-s3);
+  border-top: 1px solid var(--cp-rule);
+}
+
+.cp-receipt-stamp ul {
+  list-style: none;
+  display: grid;
+  gap: var(--rp-s1);
+  margin: 0;
+  padding: 0;
+}
+
+.cp-receipt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--rp-s2);
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  color: var(--cp-ink-faint);
+}
+
+.cp-receipt-link {
+  color: var(--rp-verified);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.cp-receipt-note {
+  margin: 0;
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--cp-ink-faint);
+  overflow-wrap: anywhere;
+}

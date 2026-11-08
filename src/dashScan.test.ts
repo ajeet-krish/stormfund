@@ -32,6 +32,8 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/dashScan.test.ts',
   'src/data/profiles.ts',
   'src/data/profiles.test.ts',
+  'src/data/receipts.ts',
+  'src/data/receipts.test.ts',
   'src/lib/atlasPlot.test.ts',
   'src/lib/atlasPlot.ts',
   'src/lib/forecast.test.ts',
@@ -188,6 +190,12 @@ describe('content rule: dash scan over the Phase E2 through E5 sources', () => {
     expect(files).toContain('src/components/atlas/AtlasStripPlot.test.ts')
     expect(files).toContain('src/components/atlas/AtlasSection.tsx')
     expect(files).toContain('src/components/atlas/AtlasSection.test.ts')
+    // The E7 receipts: the data registry and its test are explicit,
+    // the stamp component rides the console AUTO_DIRS entry.
+    expect(files).toContain('src/data/receipts.ts')
+    expect(files).toContain('src/data/receipts.test.ts')
+    expect(files).toContain('src/components/console/ReceiptStamp.tsx')
+    expect(files).toContain('src/components/console/ReceiptStamp.test.ts')
     expect(files.length).toBeGreaterThanOrEqual(40)
   })
 

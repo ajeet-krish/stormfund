@@ -1,0 +1,23 @@
+{
+  "signature": "5YPxwK9dobRKeaVdrVsSGdCcXe4dQ7T8ffm7okDEUNhHb5SEL7g65efLrB17FcoqGJWbKqDrU2D2Ka1Ltnnnxstg",
+  "slot": 519514224,
+  "payload_sha256": "48bb57a409459812ae2bfead9ae688bf5d38b4c4786dabf15e1e05d52b8b3bc3",
+  "cluster": "devnet",
+  "program_id": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+  "rpc": "https://api.devnet.solana.com",
+  "rpc_url": "https://api.devnet.solana.com",
+  "confirmed_at": "2026-11-07T02:47:12+00:00",
+  "confirmation_status": "finalized",
+  "block_time": 1794019631,
+  "explorer_url": "https://explorer.solana.com/tx/5YPxwK9dobRKeaVdrVsSGdCcXe4dQ7T8ffm7okDEUNhHb5SEL7g65efLrB17FcoqGJWbKqDrU2D2Ka1Ltnnnxstg?cluster=devnet",
+  "signer_pubkey": "FhJ4obmShVhs5WV4RFoSzAXYuCK2XGfoDEygyvQwb67g",
+  "payload": {
+    "algorithm": "sha256",
+    "digest_hex": "48bb57a409459812ae2bfead9ae688bf5d38b4c4786dabf15e1e05d52b8b3bc3",
+    "source": "file:public/data/findings.json",
+    "memo_text": "Sheridan Datathon 2026 findings.json sha256:48bb57a409459812ae2bfead9ae688bf5d38b4c4786dabf15e1e05d52b8b3bc3",
+    "memo_program": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
+  },
+  "memo_text_on_chain": "Sheridan Datathon 2026 findings.json sha256:48bb57a409459812ae2bfead9ae688bf5d38b4c4786dabf15e1e05d52b8b3bc3",
+  "matches_local": true
+}

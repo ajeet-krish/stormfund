@@ -1,6 +1,7 @@
 import { formatCents } from '../../lib/format'
 import type { VerdictBand } from '../../lib/verdict'
 import type { AccountProfile, ProfileFlags } from '../../data/profiles'
+import ReceiptStamp from './ReceiptStamp'
 import VerdictBadge from './VerdictBadge'
 
 /**
@@ -102,6 +103,8 @@ export default function BaselineCard({ profile, band }: BaselineCardProps) {
         {profile.provenance.source}, written by scripts.engine.build. This page shows the recorded
         value and does not recompute it.
       </p>
+
+      <ReceiptStamp />
     </section>
   )
 }
