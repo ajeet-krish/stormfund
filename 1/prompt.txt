@@ -1,0 +1,1 @@
+we are approaching storm atlas and solana. no implementation here. Walk me through the storm atlas idea. @00-planner brainstorm ways to discuss/visualize our population wide findings (weather forecast precipitation style, 3d bar/geo plots, etc.). be creative

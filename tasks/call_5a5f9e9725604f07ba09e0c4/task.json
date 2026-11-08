@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_5a5f9e9725604f07ba09e0c4",
+  "agent_id": "ses_e46954ebcffeLyPCR3rpZSzEdb",
+  "subagent_type": "00-planner",
+  "task_description": "Brainstorm Atlas visualizations",
+  "token_usage": {
+    "input_tokens": 27931,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 244608,
+    "output_tokens": 7761,
+    "api_call_count": 11
+  },
+  "started_at": "2026-11-07T23:28:59.584-05:00",
+  "completed_at": "2026-11-07T23:36:09.814321-05:00"
+}
