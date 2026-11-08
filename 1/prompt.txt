@@ -1,0 +1,12 @@
+run the acceptance gate
+
+i got my domain on godaddy/porkbun. how do we deploy to pages and point it to the new custom domain?
+
+---
+
+tried to add the custom domain manually on the github site
+
+DNS check unsuccessful
+
+Both stormfund.work and its alternate name are improperly configured
+Domain does not resolve to the GitHub Pages server. For more information, see documentation (NotServedByPagesError).
