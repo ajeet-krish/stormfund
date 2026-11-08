@@ -308,3 +308,37 @@ same sentence on a different account refetches; percent detection is
 scoped to incomeFactor and billsPct only, because oneOffMonths and
 durationMonths legitimately exceed 1; mic input via the Web Speech API
 is not built.
+
+## Nov 07 2026, Phase E4: Lever ladder, goal definitions, and the Python twin restored
+
+**Context**: the plan engine needs +N months lever effects honest
+enough for a judge hand check; plans.py is a dormant draft with a
+broken scale_cents import; E2 review required printed definition lines
+for the 6 month horizon and F+P cut floor.
+
+**Decision**: levers are an ordered cumulative ladder (shop_insurance,
+trim_discretionary, defer_loan), each an explicit integer-cents effect
+sized from profile numbers, each +N months computed only by re-running
+shocks.runway. Order is free moves first: insurance, then discretionary
+trim, then loan deferral (user confirmed). Standing-orders and
+secondary-buffer levers are rejected (not derivable from profiles.json;
+no schema change in E4). Goal keeps 3x S from-zero months (E2
+invariant) with 6x stretch chips and a printed definition strip; the
+buffer on hand is a separate disclosure line (user confirmed). The
+insurance lever uses the full median insurance cost, labeled simulated
+counterfactual upper bound (user confirmed). scripts/engine/plans.py is
+restored as a test-side twin (scale_cents added to shocks.py),
+asserting a new frozen scripts/engine/golden_plans.json that
+src/lib/planMath.golden.test.ts also asserts; no build/verify coupling
+(user confirmed).
+
+**Rationale**: re-running the judge formula makes every lever number
+hand-checkable and drift-proof; the shared golden file is the
+established cross-language drift guard and is judge-facing evidence for
+the Data Use rubric.
+
+**Trade-offs**: the F+P floor can double count loan cost (judge F
+includes median loan_payments) and is explainable rather than exact;
+depleted-buffer accounts show +0.0 for every lever (honest, surfaced as
+copy); every plan rule change now needs a TS and a Python edit, with a
+missed edit failing pytest.
