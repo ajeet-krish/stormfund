@@ -13,9 +13,15 @@ five edge flags, the last 12 monthly balances, and a per account
 provenance checksum. No timestamps: two consecutive builds are byte
 identical.
 
+The same run then writes public/data/engine/atlas.json, the Storm
+Atlas cartogram precompute from scripts/engine/atlas.py: all 77
+districts joined to their accounts, the account to district map, and
+per district counts of the five verdict bands at baseline and under
+each shock preset, also with no timestamps.
+
 The stdout report lists source quality (sha256 and row counts), edge
-flag counts, the loan status versus schedule cross check, and the
-artifact size.
+flag counts, the loan status versus schedule cross check, the artifact
+sizes, and the atlas line.
 """
 
 from __future__ import annotations
@@ -26,7 +32,7 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from scripts.engine import load, metrics, shocks
+from scripts.engine import atlas, load, metrics, shocks
 from scripts.pipeline_lib import REPO_ROOT, checksum, rel_to_root
 
 ENGINE_DIR: Path = REPO_ROOT / "public" / "data" / "engine"
@@ -349,10 +355,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     out_path = args.out_dir / OUTPUT_NAME
     size = write_json(out_path, document)
 
+    try:
+        atlas_document = atlas.build_atlas(document, out_path)
+    except (load.ChecksumError, load.DataError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 1
+    atlas_path = args.out_dir / atlas.OUTPUT_NAME
+    atlas_size = write_json(atlas_path, atlas_document)
+
     for line in report_lines(
         records, document, cross, row_count_range, out_path, size
     ):
         print(line)
+    print(atlas.report_line(atlas_document, atlas_size, atlas_path))
     print("scripts.engine.build: PASS")
     return 0
 

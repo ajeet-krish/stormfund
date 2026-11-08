@@ -478,3 +478,42 @@ imported from a live src file, so the TS assertion of the fixture table
 is a follow up the frontend owns; the scenario presets mirror the
 shockPresets.ts twist fields by hand, with test_atlas.py parsing that
 file and failing on any drift.
+
+## Nov 08 2026, Correction: atlas.json folded onto the five verdict bands
+
+**Correction**: the Phase E5 atlas precompute record above was misfiled
+relative to the E5 verdict band fold. It ships the retired seven state
+ladder as the atlas vocabulary and names
+scripts/engine/weather_state.py as its contract, while the user
+confirmed decision is the single five band vocabulary in
+src/lib/verdict.ts (critical, storm_warning, watch, fair_skies,
+clear). The seven state ladder is retired on every surface; the record
+above stays for provenance only, and this entry is the operative atlas
+contract.
+
+**Change**: public/data/engine/atlas.json now carries the five verdict
+band ids in severity order under states, and baseline plus each of the
+four shock preset scenarios carry per district counts of those five
+bands. The band comes from band_for_runway in scripts/engine/atlas.py,
+a pure port of verdictBand: buffer_depleted reads critical and
+no_shortfall reads clear before any threshold, then the finite ladder
+cuts at 10, 30, 60, and 120 tenths of a month.
+scripts/engine/weather_state.py and
+scripts/engine/weather_state_goldens.json were deleted, their golden
+tests were replaced by band vectors transcribed from src/lib/verdict.ts
+in scripts/engine/test_atlas.py, and verify.py's ladder assertions were
+replaced by the five band id check while the profiles.json
+recomputation gate stays untouched.
+
+**Rationale**: one vocabulary per surface keeps the cartogram shading,
+the console badge, and the forecast strip reading from the same band
+ids a judge reads in src/lib/verdict.ts. The district cartogram feature
+itself is unchanged; only the shading vocabulary moved.
+
+**Trade offs**: the atlas counts are a Python port of the TS band logic
+rather than an import, so test_atlas.py pins the boundary vectors (0,
+9, 10, 29, 30, 59, 60, 119, 120, and 1200 tenths plus both special
+states) to keep the two sides honest. docs/reviews.md and the Phase E5
+record above still narrate the retired ladder as history, which is
+intended; no doc outside those historical records reintroduces the
+retired names as vocabulary.

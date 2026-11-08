@@ -8,9 +8,10 @@ This module reimplements every metric with the naive csv module and
 plain integers: no pandas, no numpy, and no import of
 scripts.engine.metrics, so a bug in the builder cannot hide in the
 verifier. It recomputes the whole document for all accounts, diffs it
-field by field against the committed artifact, scans every artifact
-string for dash violations (the verify_findings pattern), and prints the
-artifact SHA256. Any mismatch exits non zero.
+field by field against the committed artifact, checks the sibling
+atlas.json schema and count invariants from committed files only, scans
+every artifact string for dash violations (the verify_findings
+pattern), and prints the artifact SHA256. Any mismatch exits non zero.
 """
 
 from __future__ import annotations
@@ -47,6 +48,57 @@ PROVENANCE_AGG: str = (
 CHECKSUM_RECIPE: str = (
     "row id = account_id:month sorted ascending; value = money_in_cents "
     "per row; SHA256 of LF joined id:value lines"
+)
+
+# Atlas contract strings, duplicated on purpose like the profiles ones:
+# if atlas.py changes one of them without this file following, the
+# sibling artifact check fails instead of drifting silently. The band
+# ids are the single five band vocabulary from src/lib/verdict.ts.
+ATLAS_NAME: str = "atlas.json"
+ATLAS_SCHEMA_VERSION: int = 1
+ATLAS_GENERATED_BY: str = "scripts.engine.build"
+ATLAS_BANDS: tuple[str, ...] = (
+    "critical",
+    "storm_warning",
+    "watch",
+    "fair_skies",
+    "clear",
+)
+ATLAS_PRESETS: tuple[str, ...] = (
+    "layoff",
+    "cost_spike",
+    "emergency_repair",
+    "combo",
+)
+ATLAS_DISTRICT_COUNT: int = 77
+ATLAS_SOURCE_PATHS: tuple[str, ...] = (
+    "public/data/engine/profiles.json",
+    "data/tangerine/accounts.csv",
+    "data/tangerine/districts.csv",
+)
+ATLAS_KEYS: frozenset[str] = frozenset(
+    {
+        "schema_version",
+        "generated_by",
+        "states",
+        "sources",
+        "districts",
+        "account_district",
+        "baseline",
+        "scenarios",
+    }
+)
+ATLAS_DISTRICT_KEYS: frozenset[str] = frozenset(
+    {
+        "district_id",
+        "district_name",
+        "region",
+        "inhabitants",
+        "unemployment_rate_2023",
+        "average_salary",
+        "account_count",
+        "no_data",
+    }
 )
 ROUNDING_RULE: str = (
     "all money is integer CAD cents converted with np.rint(dollars * 100); "
@@ -449,6 +501,201 @@ def _dash_scan(document: Any) -> list[str]:
     return problems
 
 
+def atlas_problems(profiles: dict[str, Any]) -> list[str]:
+    """Schema and count invariants of the sibling atlas.json artifact.
+
+    Reads committed files only (atlas.json next to the profiles
+    artifact plus the profiles mapping it already holds), so the check
+    needs no raw CSV and can run wherever the artifacts are committed.
+    The prose dash scan stays with profiles.json because district names
+    are data, not pipeline prose, and several carry a spaced hyphen.
+    """
+    path = ARTIFACT_PATH.parent / ATLAS_NAME
+    if not path.is_file():
+        return [
+            f"{rel_to_root(path)} is missing; run "
+            "uv run python -m scripts.engine.build first"
+        ]
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        return [f"{rel_to_root(path)} is not valid JSON: {error}"]
+    if not isinstance(document, dict):
+        return [f"{rel_to_root(path)}: document is not an object"]
+    if set(document) != ATLAS_KEYS:
+        return [
+            f"atlas top level keys {sorted(document)} do not match "
+            f"{sorted(ATLAS_KEYS)}"
+        ]
+
+    problems: list[str] = []
+    try:
+        if document["schema_version"] != ATLAS_SCHEMA_VERSION:
+            problems.append(
+                f"atlas schema_version {document['schema_version']!r} "
+                f"!= {ATLAS_SCHEMA_VERSION}"
+            )
+        if document["generated_by"] != ATLAS_GENERATED_BY:
+            problems.append(f"atlas generated_by {document['generated_by']!r}")
+        if document["states"] != list(ATLAS_BANDS):
+            problems.append(f"atlas band ids {document['states']!r} do not match")
+
+        sources = document["sources"]
+        if not isinstance(sources, list) or [
+            entry.get("path") for entry in sources if isinstance(entry, dict)
+        ] != list(ATLAS_SOURCE_PATHS):
+            problems.append(
+                "atlas sources paths do not match "
+                f"{list(ATLAS_SOURCE_PATHS)}"
+            )
+        else:
+            for entry in sources:
+                if set(entry) != {"path", "sha256", "rows"}:
+                    problems.append(f"atlas source {entry.get('path')} keys")
+                    continue
+                digest = entry["sha256"]
+                if (
+                    not isinstance(digest, str)
+                    or len(digest) != 64
+                    or digest != digest.lower()
+                ):
+                    problems.append(f"atlas source {entry['path']} sha256")
+                if not isinstance(entry["rows"], int) or entry["rows"] <= 0:
+                    problems.append(f"atlas source {entry['path']} rows")
+            # The profiles source hashes the artifact being verified.
+            if (
+                isinstance(sources[0], dict)
+                and sources[0].get("path") == ATLAS_SOURCE_PATHS[0]
+                and isinstance(sources[0].get("sha256"), str)
+                and ARTIFACT_PATH.is_file()
+                and sources[0]["sha256"] != _sha256(ARTIFACT_PATH)
+            ):
+                problems.append("atlas sources profiles.json sha256 drift")
+
+        districts = document["districts"]
+        if not isinstance(districts, list) or len(districts) != ATLAS_DISTRICT_COUNT:
+            problems.append(
+                f"atlas districts length "
+                f"{len(districts) if isinstance(districts, list) else 'n/a'} "
+                f"!= {ATLAS_DISTRICT_COUNT}"
+            )
+            return problems
+        district_ids: list[int] = []
+        account_counts: dict[int, int] = {}
+        for entry in districts:
+            if not isinstance(entry, dict) or set(entry) != ATLAS_DISTRICT_KEYS:
+                problems.append(f"atlas district entry keys {entry!r}"[:120])
+                continue
+            district_id = entry["district_id"]
+            if (
+                not isinstance(district_id, int)
+                or isinstance(district_id, bool)
+                or not isinstance(entry["district_name"], str)
+                or not isinstance(entry["region"], str)
+                or not isinstance(entry["inhabitants"], int)
+                or not isinstance(entry["account_count"], int)
+                or not isinstance(entry["no_data"], bool)
+            ):
+                problems.append(f"atlas district {district_id!r} value types")
+                continue
+            if entry["unemployment_rate_2023"] is not None and not isinstance(
+                entry["unemployment_rate_2023"], float
+            ):
+                problems.append(f"atlas district {district_id} unemployment type")
+            if entry["average_salary"] is not None and not isinstance(
+                entry["average_salary"], float
+            ):
+                problems.append(f"atlas district {district_id} salary type")
+            district_ids.append(district_id)
+            account_counts[district_id] = entry["account_count"]
+        if district_ids != sorted(district_ids) or len(set(district_ids)) != len(
+            district_ids
+        ):
+            problems.append("atlas district ids are not unique ascending")
+        no_data_ids = [
+            entry["district_id"]
+            for entry in districts
+            if isinstance(entry, dict) and entry.get("no_data") is True
+        ]
+        if no_data_ids != [69]:
+            problems.append(f"atlas no_data districts {no_data_ids} != [69]")
+
+        join = document["account_district"]
+        district_id_set = set(district_ids)
+        if not isinstance(join, dict):
+            problems.append("atlas account_district is not an object")
+        else:
+            if set(join) != set(profiles):
+                problems.append(
+                    "atlas account_district does not cover the profiles "
+                    "account set"
+                )
+            per_district: dict[int, int] = {}
+            for account_id, district_id in join.items():
+                if (
+                    not isinstance(district_id, int)
+                    or isinstance(district_id, bool)
+                    or district_id not in district_id_set
+                ):
+                    problems.append(
+                        f"atlas account_district {account_id} -> "
+                        f"{district_id!r}"
+                    )
+                    continue
+                per_district[district_id] = per_district.get(district_id, 0) + 1
+            for district_id, expected in account_counts.items():
+                if per_district.get(district_id, 0) != expected:
+                    problems.append(
+                        f"atlas district {district_id} join count "
+                        f"{per_district.get(district_id, 0)} != "
+                        f"account_count {expected}"
+                    )
+
+        district_keys = {str(district_id) for district_id in district_ids}
+        scenarios = document["scenarios"]
+        if not isinstance(scenarios, dict) or list(scenarios) != list(ATLAS_PRESETS):
+            problems.append(
+                f"atlas scenario keys "
+                f"{list(scenarios) if isinstance(scenarios, dict) else 'n/a'} "
+                f"!= {list(ATLAS_PRESETS)}"
+            )
+        buckets: list[tuple[str, Any]] = [("baseline", document["baseline"])]
+        if isinstance(scenarios, dict):
+            buckets.extend(scenarios.items())
+        for name, bucket in buckets:
+            if not isinstance(bucket, dict) or set(bucket) != district_keys:
+                problems.append(f"atlas {name} district keys")
+                continue
+            for district_key, counts in bucket.items():
+                if not isinstance(counts, dict) or set(counts) != set(ATLAS_BANDS):
+                    problems.append(f"atlas {name} {district_key} band keys")
+                    continue
+                total = 0
+                for band, count in counts.items():
+                    if (
+                        not isinstance(count, int)
+                        or isinstance(count, bool)
+                        or count < 0
+                    ):
+                        problems.append(
+                            f"atlas {name} {district_key} {band} = {count!r}"
+                        )
+                    total += count if isinstance(count, int) else 0
+                expected_total = account_counts.get(int(district_key))
+                if expected_total is None:
+                    problems.append(
+                        f"atlas {name} district {district_key} unknown id"
+                    )
+                elif total != expected_total:
+                    problems.append(
+                        f"atlas {name} {district_key} counts sum {total} != "
+                        f"account_count {expected_total}"
+                    )
+    except (KeyError, TypeError, IndexError, ValueError) as error:
+        problems.append(f"atlas structure error: {error}")
+    return problems
+
+
 def run_verification() -> list[str]:
     """Return drift messages; an empty list means the artifact is green."""
     if not ARTIFACT_PATH.is_file():
@@ -466,6 +713,8 @@ def run_verification() -> list[str]:
         return [f"recomputation failed: {error}"]
     problems = _diff(expected, actual)
     problems.extend(_dash_scan(actual))
+    if isinstance(actual, dict) and isinstance(actual.get("profiles"), dict):
+        problems.extend(atlas_problems(actual["profiles"]))
     return problems
 
 
@@ -494,7 +743,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"drift: ... and {len(problems) - len(shown)} more", file=sys.stderr)
         print("scripts.engine.verify: FAIL", file=sys.stderr)
         return 1
-    print("drift: none (all accounts, all fields, dash scan clean)")
+    print("drift: none (all accounts, all fields, atlas invariants, dash scan clean)")
     print("scripts.engine.verify: PASS")
     return 0
 
