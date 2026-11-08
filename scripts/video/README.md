@@ -10,7 +10,7 @@ shell plus ffmpeg: no Python, no uv environment, no npm scripts.
 | `record.sh` | capture one screen clip with ffmpeg avfoundation (macOS) |
 | `assemble.sh` | concat clips, optionally burn an .srt, enforce the 120s hard cap, emit a YouTube ready MP4 |
 | `test_assemble.sh` | synthetic end to end test of `assemble.sh` (color clips, no footage) |
-| `../video/` (docs) | shot script template and the capture checklist: `docs/video/script-template.md`, `docs/video/shots.md` |
+| `../video/` (docs) | timed shot script and the capture plan: `docs/video/script.md`, `docs/video/plan.md` |
 
 ## Tool requirements
 
@@ -45,15 +45,24 @@ ffmpeg -version
 npm run build
 npm run preview            # http://localhost:4173
 
-# 2. record each shot (full list and durations in docs/video/shots.md)
-./scripts/video/record.sh -d 14 -o scripts/video/captures/clip_01_question.mp4
-./scripts/video/record.sh -d 28 -o scripts/video/captures/clip_02_f1_f2.mp4
+# 2. record each shot (six clips, durations 15, 20, 30, 20, 20, 15 seconds;
+#    full shot copy in docs/video/plan.md, budget in docs/video/script.md)
+./scripts/video/record.sh -d 15 --mic -o scripts/video/captures/clip_01_hook.mp4
+./scripts/video/record.sh -d 20 --mic -o scripts/video/captures/clip_02_customer.mp4
+./scripts/video/record.sh -d 30 --mic -o scripts/video/captures/clip_03_shock.mp4
+./scripts/video/record.sh -d 20 --mic -o scripts/video/captures/clip_04_plan.mp4
+./scripts/video/record.sh -d 20 --mic -o scripts/video/captures/clip_05_depth.mp4
+./scripts/video/record.sh -d 15 --mic -o scripts/video/captures/clip_06_close.mp4
 
 # 3. assemble in shot order (the hard 120s check runs before encoding)
 ./scripts/video/assemble.sh -o scripts/video/final/demo.mp4 \
-    scripts/video/captures/clip_01_question.mp4 \
-    scripts/video/captures/clip_02_f1_f2.mp4
-# clip list order must match the shot order in docs/video/script-template.md
+    scripts/video/captures/clip_01_hook.mp4 \
+    scripts/video/captures/clip_02_customer.mp4 \
+    scripts/video/captures/clip_03_shock.mp4 \
+    scripts/video/captures/clip_04_plan.mp4 \
+    scripts/video/captures/clip_05_depth.mp4 \
+    scripts/video/captures/clip_06_close.mp4
+# clip list order must match the shot order in docs/video/script.md
 
 # 4. verify what you would upload
 ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \
@@ -68,8 +77,8 @@ at 30 fps, silent by default (`--mic` adds the first microphone).
 ```bash
 ./scripts/video/record.sh --help
 ./scripts/video/record.sh --list-devices
-./scripts/video/record.sh -d 24 --mic -o scripts/video/captures/clip_04_game_auto.mp4
-./scripts/video/record.sh -d 9 -i 5 -o scripts/video/captures/clip_07_second_screen.mp4
+./scripts/video/record.sh -d 30 --mic -o scripts/video/captures/clip_03_shock.mp4
+./scripts/video/record.sh -d 15 -i 5 -o scripts/video/captures/clip_01_hook.mp4
 ```
 
 Practical notes:
@@ -90,9 +99,11 @@ Concatenates with the ffmpeg concat demuxer, then performs one re-encode.
 ```bash
 ./scripts/video/assemble.sh --help
 
-# normal case, under the cap
+# normal case, six clips in shot order, exactly 120s, under the cap
 ./scripts/video/assemble.sh -o scripts/video/final/demo.mp4 \
-    scripts/video/captures/clip_01.mp4 scripts/video/captures/clip_02.mp4
+    scripts/video/captures/clip_01_hook.mp4 scripts/video/captures/clip_02_customer.mp4 \
+    scripts/video/captures/clip_03_shock.mp4 scripts/video/captures/clip_04_plan.mp4 \
+    scripts/video/captures/clip_05_depth.mp4 scripts/video/captures/clip_06_close.mp4
 
 # burn captions (needs a libass build, see below)
 ./scripts/video/assemble.sh -o scripts/video/final/demo.mp4 \
@@ -140,7 +151,7 @@ sudo port install ffmpeg                     # MacPorts, libass enabled
 
 Fallback with zero extra tooling: assemble without `--subtitles` (all key
 numbers are already on screen as text cards) and upload the same `.srt` as
-YouTube captions, which the checklist in `docs/video/script-template.md`
+YouTube captions, which the upload checklist in `docs/video/plan.md`
 covers.
 
 Known gap: `assemble.sh` does not mix a separate narration track. Per

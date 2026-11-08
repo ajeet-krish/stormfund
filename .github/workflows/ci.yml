@@ -2,7 +2,7 @@
 # typechecks, tests (vitest), and builds the React/Vite app against the
 # committed fixture data in public/data. The python job syncs uv, runs the
 # pytest suite, and recomputes the findings artifacts with verify_findings
-# so findings.json, model_card.json, and docs/findings.md cannot drift.
+# so findings.json and model_card.json cannot drift.
 #
 # Layout: the mounted surfaces live in src/components (console, atlas,
 # weather, judge) with their engines in src/lib and src/state, the data
@@ -71,11 +71,11 @@ jobs:
 
       - name: Run unit tests
         # scripts/analysis/test_findings.py recomputes F1 to F5 and checks
-        # them against the published findings.json, model_card.json, and
-        # docs/findings.md (uv run pytest).
+        # them against the published findings.json and model_card.json
+        # (uv run pytest).
         run: uv run pytest
 
       - name: Verify published findings
         # Catches drift between the pipeline output and the committed
-        # artifacts (findings.json, model_card.json, report headlines).
+        # artifacts (findings.json and model_card.json).
         run: uv run python -m scripts.analysis.verify_findings

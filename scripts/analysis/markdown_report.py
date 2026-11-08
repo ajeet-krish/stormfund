@@ -1,4 +1,4 @@
-"""Render docs/findings.md, the single source of truth for the Devpost entry.
+"""Render the Devpost entry report markdown, formerly committed as docs/findings.md.
 
 The document follows the exact Devpost 2026 structure: question asked, what
 we did, what we found (numbered F1 to F5 with the actual numbers from this

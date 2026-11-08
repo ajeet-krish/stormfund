@@ -24,12 +24,16 @@
 #
 # Examples:
 #   ./scripts/video/assemble.sh -o scripts/video/final/demo.mp4 \
-#       scripts/video/captures/clip_01_question.mp4 \
-#       scripts/video/captures/clip_02_f1_f2.mp4
+#       scripts/video/captures/clip_01_hook.mp4 \
+#       scripts/video/captures/clip_02_customer.mp4 \
+#       scripts/video/captures/clip_03_shock.mp4 \
+#       scripts/video/captures/clip_04_plan.mp4 \
+#       scripts/video/captures/clip_05_depth.mp4 \
+#       scripts/video/captures/clip_06_close.mp4
 #
-#   ./scripts/video/assemble.sh -o final.mp4 --subtitles captions.srt clip_01.mp4 clip_02.mp4
+#   ./scripts/video/assemble.sh -o final.mp4 --subtitles captions.srt clip_01_hook.mp4 clip_02_customer.mp4
 #
-#   ./scripts/video/assemble.sh -o final.mp4 --allow-trim clip_01.mp4 clip_02.mp4
+#   ./scripts/video/assemble.sh -o final.mp4 --allow-trim clip_01_hook.mp4 clip_02_customer.mp4
 #
 # Exit codes: 2 input or usage error, 3 subtitles unavailable in this ffmpeg
 # build, 4 over the 120s maximum without --allow-trim, 5 output verification
@@ -129,7 +133,7 @@ Options:
     (a plain 'brew reinstall ffmpeg' does NOT help: the Homebrew formula on
      this machine ships without libass, verified with 'brew deps ffmpeg')
   * or drop --subtitles and upload the .srt as YouTube captions instead
-    (the upload checklist in docs/video/script-template.md covers this).
+    (the upload checklist in docs/video/plan.md covers this).
 EOF
         exit 3
     fi

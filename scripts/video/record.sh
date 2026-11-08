@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# record.sh: capture one screen clip for the Ledger Odyssey demo video.
+# record.sh: capture one screen clip for the Sheridan Datathon 2026 demo video.
 #
 # Uses ffmpeg's avfoundation input (macOS only) to record the screen into an
 # H.264 MP4 that assemble.sh can concat later. Pure shell plus ffmpeg: no
@@ -19,16 +19,18 @@
 #
 # Examples:
 #     ./scripts/video/record.sh --list-devices
-#     ./scripts/video/record.sh -d 14 -o scripts/video/captures/clip_01_question.mp4
-#     ./scripts/video/record.sh -d 24 --mic -o scripts/video/captures/clip_04_game.mp4
-#     ./scripts/video/record.sh -d 9 -i 5 -o scripts/video/captures/clip_07_second_screen.mp4
+#     ./scripts/video/record.sh -d 15 --mic -o scripts/video/captures/clip_01_hook.mp4
+#     ./scripts/video/record.sh -d 30 --mic -o scripts/video/captures/clip_03_shock.mp4
+#     ./scripts/video/record.sh -d 15 -i 5 -o scripts/video/captures/clip_06_close.mp4
+# Clip names and durations follow docs/video/script.md: six clips of
+# 15, 20, 30, 20, 20, 15 seconds (clip_01_hook through clip_06_close).
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Defaults, all overridable from the command line.
-DURATION=30           # seconds, match the shot budget in docs/video/shots.md
+DURATION=30           # seconds, match the shot budget in docs/video/script.md
 FPS=30                # keep every clip at 30 fps so concat stays smooth
 OUTPUT=""             # empty means captures/clip_<timestamp>.mp4
 SCREEN_DEVICE=""      # empty means auto-detect "Capture screen 0"

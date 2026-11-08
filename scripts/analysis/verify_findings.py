@@ -1,10 +1,12 @@
 """Verify the published findings against a fresh recomputation.
 
 Mirrors the checksum discipline of scripts/build_world.py: every headline
-number in public/data/findings.json, public/data/model_card.json, and
-docs/findings.md is recomputed from source and compared, plus two independent
-checks (the baseline month end series against world.json, and the no dash
-equivalents rule from AGENTS.md on the generated artifacts).
+number in public/data/findings.json and public/data/model_card.json is
+recomputed from source and compared, plus two independent checks (the
+baseline month end series against world.json, and the no dash equivalents
+rule from AGENTS.md on the generated artifacts). The report headline
+check runs only when the report file exists, because docs/findings.md
+was retired from the repository.
 
 Run from the repository root:
 
@@ -122,7 +124,7 @@ def check_file_matches(
 
 
 def check_report_headlines(path: Path, computed: dict[str, Any]) -> CheckResult:
-    """Confirm docs/findings.md carries this run's headline numbers."""
+    """Confirm the report file carries this run's headline numbers."""
     if not path.is_file():
         return CheckResult("report headlines", False, [f"{rel_to_root(path)} does not exist"])
     text = path.read_text(encoding="utf-8")
@@ -153,9 +155,17 @@ def check_report_headlines(path: Path, computed: dict[str, Any]) -> CheckResult:
 def check_report_and_data_no_dashes(
     findings_path: Path, model_card_path: Path, report_path: Path
 ) -> CheckResult:
-    """Apply the AGENTS.md no dash equivalents rule to generated artifacts."""
+    """Apply the AGENTS.md no dash equivalents rule to generated artifacts.
+
+    The two JSON artifacts are always required. The report is optional:
+    docs/findings.md was retired, so an absent report is skipped instead
+    of failing.
+    """
     problems: list[str] = []
-    for path in (findings_path, model_card_path, report_path):
+    paths = [findings_path, model_card_path]
+    if report_path.is_file():
+        paths.append(report_path)
+    for path in paths:
         if not path.is_file():
             problems.append(f"{rel_to_root(path)} does not exist")
             continue
@@ -201,11 +211,14 @@ def run_verification(
     results = [
         check_file_matches("findings.json matches recomputation", findings_path, findings),
         check_file_matches("model_card.json matches recomputation", model_card_path, model_card),
-        check_report_headlines(report_path, findings),
         check_baseline_cross_check(findings),
         check_seed_logged(findings, model_card),
         check_report_and_data_no_dashes(findings_path, model_card_path, report_path),
     ]
+    # The headline check is report dependent: docs/findings.md was retired,
+    # so an absent report skips the check instead of failing it.
+    if report_path.is_file():
+        results.insert(2, check_report_headlines(report_path, findings))
     return results
 
 

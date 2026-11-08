@@ -165,11 +165,11 @@ after assembly; `assemble.sh` does not mix a narration track (see
   of the shipped single page, because the runbook kit
   (`scripts/video/record.sh`) captures the screen only and the product's story
   is the interface changing under a judge's keys.
-* `docs/video/script-template.md` and `docs/video/shots.md` describe the
+* `docs/video/script-template.md` and `docs/video/shots.md` described the
   retired Ledger Odyssey findings and orbit game build (question card, F1 to F5
   cards, auto demo, inspector). None of that exists in this app, so those files
-  are not followed here; they need a rewrite or retirement, which is noted for
-  the orchestrator rather than edited in this pass.
+  were retired at commit d775a1f instead of rewritten; this file and
+  `docs/video/plan.md` are the replacements.
 * The old template's "synthetic data said in the first 15 seconds" rule is
   inverted: this entry runs on real anonymized bank data, and the video says so
   in the closing line instead.
