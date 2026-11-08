@@ -1,0 +1,59 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6X58J567SMZASY00DFFMKZC",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/ci.yml",
+    "main.py",
+    "scripts/__init__.py",
+    "scripts/generate_mock_ledger.py",
+    "scripts/pipeline_lib.py",
+    "src/App.tsx",
+    "src/dashScan.test.ts",
+    "src/data/checksum.test.ts",
+    "src/data/checksum.ts",
+    "src/data/loaders.ts",
+    "src/data/profiles.ts",
+    "src/data/schema.md",
+    "src/data/types.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 23348,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2823424,
+    "output_tokens": 2858,
+    "api_call_count": 9,
+    "subagent_tokens": {
+      "input_tokens": 709794,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 22097856,
+      "output_tokens": 63688,
+      "api_call_count": 201
+    }
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 8,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

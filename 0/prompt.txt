@@ -1,0 +1,14 @@
+Update readme with actual results/implementation:
+- intro, screenshot, primary features, demo video keep as is
+- Update Full feature breakdown (update this section since it was originally written based on implementation plan), use of Solana, Use of gemini api, use of entire, project architecture
+
+Update devpost submission doc
+1. About the project: Be sure to write what inspired you, what you learned, how you built your project, and the challenges you faced. Format your story in Markdown, with LaTeX support for math. the question you asked, what you did, what you found Follow similar structure/tone as the project readme.
+2. Did you implement a generative AI model or API in your hack this weekend?
+If so, how and why did you use it? If not, mark your response as ‘N/A’.
+
+Write the video script and video demo plan (screen recording plan), use reference /Users/ajeet/Projects/Hackathons/Meta\ Global\ 2026 . 2-minute demo video
+
+---
+
+go through docs and delete stale/unnecessary docs such as docs/competition-day-runbook.md . lets start cleaning up the repo to prepare for submission
