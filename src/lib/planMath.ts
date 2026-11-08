@@ -1,4 +1,4 @@
-import { scaleCents } from './shocks'
+import { runway, scaleCents, type RunwayAnswer } from './shocks'
 
 /**
  * Phase E4 plan engine, the pure TypeScript mirror of the goal and
@@ -31,6 +31,12 @@ import { scaleCents } from './shocks'
 
 /** Months of typical spending the starter cushion targets. */
 export const GOAL_TARGET_MONTHS = 3
+
+/** Stretch cushion the milestone row offers beside the 3 month goal. */
+export const GOAL_STRETCH_MONTHS = 6
+
+/** Milestone cushions the plan card prints, in months of spending. */
+export const GOAL_MILESTONE_MONTHS: readonly number[] = [1, 2, 3, 6]
 
 /** Pay yourself first floor, a percent of I rounded half up. */
 export const GOAL_CONTRIBUTION_FLOOR_PCT = 5
@@ -71,8 +77,9 @@ function cents(value: number): number {
 /**
  * Goal plan for one account, all integer cents. The arithmetic is the
  * exact integer form of the vectorized python twin: ceil division is
- * (target + contribution - 1) // contribution for positive operands,
- * which the golden tests check against hand computed fixture accounts.
+ * integer division of target plus contribution minus 1 by
+ * contribution for positive operands, which the golden tests check
+ * against hand computed fixture accounts.
  */
 export function goalPlan(incomeCents: number, spendingCents: number): GoalPlan {
   const income = cents(incomeCents)
@@ -103,6 +110,49 @@ export function goalPlan(incomeCents: number, spendingCents: number): GoalPlan {
     cutCents,
     status: cutCents > 0 ? 'cut needed' : 'on track',
   }
+}
+
+/** One cushion milestone on the goal row of the plan card. */
+export interface GoalMilestone {
+  /** This milestone in months of typical spending (1, 2, 3, or 6). */
+  monthsOfSpending: number
+  /** monthsOfSpending x S in integer cents. */
+  amountCents: number
+  /** New savings months to reach it, or MONTHS_UNREACHABLE. */
+  monthsToReach: number
+  /** True on the 3 month starter cushion goal itself. */
+  isGoal: boolean
+  /** True on the 6 month stretch cushion. */
+  isStretch: boolean
+}
+
+/**
+ * The milestone cushions for one account, all integer cents. Months to
+ * reach each milestone reuse the goalPlan contribution rule (the max of
+ * surplus and the 5 percent floor) and the same ceil division, so the
+ * 3 month chip's monthsToReach always equals goalPlan(...).months and
+ * every count still starts from zero new savings (E2 invariant).
+ */
+export function goalMilestones(incomeCents: number, spendingCents: number): GoalMilestone[] {
+  const income = cents(incomeCents)
+  const spending = cents(spendingCents)
+  const floorCents = scaleCents(income, GOAL_CONTRIBUTION_FLOOR_PCT)
+  const contributionCents = Math.max(income - spending, floorCents)
+
+  return GOAL_MILESTONE_MONTHS.map((monthsOfSpending) => {
+    const amountCents = monthsOfSpending * spending
+    const monthsToReach =
+      contributionCents <= 0
+        ? MONTHS_UNREACHABLE
+        : Math.floor((amountCents + contributionCents - 1) / contributionCents)
+    return {
+      monthsOfSpending,
+      amountCents,
+      monthsToReach,
+      isGoal: monthsOfSpending === GOAL_TARGET_MONTHS,
+      isStretch: monthsOfSpending === GOAL_STRETCH_MONTHS,
+    }
+  })
 }
 
 export interface BackupPlanInput {
@@ -172,4 +222,150 @@ export function backupPlan(input: BackupPlanInput): BackupPlan {
     survives,
     shortfallDeciMonths,
   }
+}
+
+/**
+ * Backup levers (E4): an ordered, cumulative ladder of counterfactual
+ * cuts, each one sized from profile numbers (judge part 1 metrics), never
+ * from shocked ones. The three levers run free moves first: shop
+ * insurance, trim discretionary spending above the F plus P floor, then
+ * defer the loan payment. Every lever keeps income and the buffer
+ * untouched, so a step only ever reduces spending, and every +N months
+ * figure is the difference of two shocks.runway answers (this module
+ * never re-derives a runway any other way).
+ */
+export type LeverId = 'shop_insurance' | 'trim_discretionary' | 'defer_loan'
+
+export interface LeverEffect {
+  /** E4 levers never move income, so this is always 0 cents. */
+  incomeDeltaCents: number
+  /** Spending change in integer cents, never positive. */
+  spendingDeltaCents: number
+  /** E4 levers never touch the buffer, so this is always 0 cents. */
+  bufferDeltaCents: number
+}
+
+export interface Lever {
+  id: LeverId
+  /** Row label the plan card prints. */
+  label: string
+  /** Honest counterfactual disclaimer printed under the ladder. */
+  caveat: string
+  effect: LeverEffect
+}
+
+export interface LeverInputs {
+  /** Income after the twist, straight from applyTwist. */
+  shockedIncomeCents: number
+  /** Spending after the twist (bills bump plus extra cost), one off out. */
+  shockedSpendingCents: number
+  /** One off cost already subtracted from the buffer by the twist. */
+  oneOffCents: number
+  /** profile.buffer_cents before the one off cost, the runway's B. */
+  bufferCents: number
+  /** F, typical fixed costs in integer cents (profile metric). */
+  fixedCostsCents: number
+  /** P, the running loan payment in integer cents (profile metric). */
+  loanPaymentCents: number
+  /** Median insurance cost in integer cents (profile metric, 0 when none). */
+  insuranceCents: number
+  /** S, typical monthly spending in integer cents (profile metric). */
+  typicalSpendingCents: number
+}
+
+export interface LeverStep {
+  lever: Lever
+  /** Shocked income plus the lever income delta (always shocked income). */
+  incomeAfterCents: number
+  /** Shocked spending plus every delta so far, floored at 0. */
+  spendingAfterCents: number
+  /** B minus the one off cost, unchanged by any E4 lever. */
+  bufferLeftCents: number
+  /** shocks.runway re run over this step's numbers. */
+  runwayAfter: RunwayAnswer
+  /** Runway gain versus the baseline in tenths, never negative. */
+  plusDeciMonths: number
+  /** Runway gain versus the previous step in tenths, never negative. */
+  stepDeciMonths: number
+}
+
+export interface LeverLadder {
+  /** The shocked runway before any lever, equal to result.runway. */
+  baseline: RunwayAnswer
+  /** Available levers in ladder order, applied cumulatively. */
+  steps: LeverStep[]
+}
+
+const SHOP_INSURANCE_CAVEAT =
+  'simulated counterfactual: premiums re-shopped, upper bound of renegotiation'
+const TRIM_DISCRETIONARY_CAVEAT =
+  'simulated counterfactual: all discretionary spending above the fixed cost floor trimmed'
+const DEFER_LOAN_CAVEAT =
+  'simulated counterfactual: hardship deferral, the payment resumes later and interest cost is not modeled'
+
+/**
+ * Build the lever ladder for one shocked account. Levers appear in
+ * ladder order (insurance, discretionary trim, loan deferral) only when
+ * their profile input allows them, spending is recomputed with a
+ * defensive floor of 0 after each cumulative delta, and each step re
+ * runs shocks.runway over the same buffer, one off cost, and income.
+ */
+export function leverLadder(input: LeverInputs): LeverLadder {
+  const income = cents(input.shockedIncomeCents)
+  const shockedSpending = cents(input.shockedSpendingCents)
+  const oneOff = cents(input.oneOffCents)
+  const buffer = cents(input.bufferCents)
+  const fixed = cents(input.fixedCostsCents)
+  const loan = cents(input.loanPaymentCents)
+  const insurance = cents(input.insuranceCents)
+  const typical = cents(input.typicalSpendingCents)
+
+  const baseline = runway(buffer, oneOff, income, shockedSpending)
+  const discretionaryCents = Math.max(0, typical - (fixed + loan))
+
+  const available: Lever[] = []
+  if (insurance > 0) {
+    available.push({
+      id: 'shop_insurance',
+      label: 'Shop insurance',
+      caveat: SHOP_INSURANCE_CAVEAT,
+      effect: { incomeDeltaCents: 0, spendingDeltaCents: -insurance, bufferDeltaCents: 0 },
+    })
+  }
+  if (discretionaryCents > 0) {
+    available.push({
+      id: 'trim_discretionary',
+      label: 'Trim discretionary',
+      caveat: TRIM_DISCRETIONARY_CAVEAT,
+      effect: { incomeDeltaCents: 0, spendingDeltaCents: -discretionaryCents, bufferDeltaCents: 0 },
+    })
+  }
+  if (loan > 0) {
+    available.push({
+      id: 'defer_loan',
+      label: 'Defer loan',
+      caveat: DEFER_LOAN_CAVEAT,
+      effect: { incomeDeltaCents: 0, spendingDeltaCents: -loan, bufferDeltaCents: 0 },
+    })
+  }
+
+  const steps: LeverStep[] = []
+  let spendingAfterCents = shockedSpending
+  let previous = baseline
+  for (const lever of available) {
+    spendingAfterCents = Math.max(0, spendingAfterCents + lever.effect.spendingDeltaCents)
+    const runwayAfter = runway(buffer, oneOff, income, spendingAfterCents)
+    steps.push({
+      lever,
+      incomeAfterCents: income,
+      spendingAfterCents,
+      bufferLeftCents: buffer - oneOff,
+      runwayAfter,
+      plusDeciMonths: runwayAfter.deciMonths - baseline.deciMonths,
+      stepDeciMonths: runwayAfter.deciMonths - previous.deciMonths,
+    })
+    previous = runwayAfter
+  }
+
+  return { baseline, steps }
 }

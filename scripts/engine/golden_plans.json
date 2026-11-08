@@ -1,0 +1,331 @@
+{
+  "schema_version": 1,
+  "generated_by": "scripts/engine golden plan derivation (frozen E4 hand computation)",
+  "source": "scripts/engine/golden_fixtures.json metrics under the standard COMBO twist (job loss EI at 55 percent, bills plus 15 percent, no one off cost)",
+  "notes": [
+    "Every expected number is hand computed in integer cents: shocked numbers apply the twist above, levers are sized from profile metrics (never shocked ones), and every plus N months figure is the difference of two shocks.runway answers.",
+    "goal and its milestones are twist independent: they read profile I and S only, and months_to_reach counts new savings from zero (the E2 invariant).",
+    "insurance_cents is 0 on all five fixtures, so shop_insurance never appears in this file; the synthetic ladder golden in src/lib/planMath.test.ts covers that lever.",
+    "The 42988 buffer is negative, so every lever step stays buffer_depleted with a zero gain (honest, surfaced as copy).",
+    "Asserted by src/lib/planMath.golden.test.ts (TypeScript applyTwist mirror) and scripts/engine/test_plans.py (Python twin)."
+  ],
+  "twist": {
+    "job_loss": true,
+    "income_factor_pct": 55,
+    "bills_delta_pct": 15,
+    "one_off_months_tenths": 0,
+    "extra_monthly_cents": 0,
+    "duration_months": 6
+  },
+  "plans": [
+    {
+      "account_id": "68257",
+      "why": [
+        "running loan so the defer lever fires",
+        "trim barely moves a finite runway, defer adds real months",
+        "goal needs a cut, so the cut story carries the goal block"
+      ],
+      "steps": {
+        "shocked": "income = scaleCents(650326, 55) = 357679; spending = 716084 + scaleCents(430672, 15) = 716084 + 64601 = 780685; one off = 0; runway: buffer_left = 643785, gap = 780685 minus 357679 = 423006, deci = (20 * 643785 + 423006) // (2 * 423006) = 13298706 // 846012 = 15",
+        "ladder": "disc = max(0, 716084 minus (430672 + 284493)) = 919; step trim_discretionary: spending 780685 minus 919 = 779766, gap = 422087, deci = (20 * 643785 + 422087) // (2 * 422087) = 13297787 // 844174 = 15, plus = 15 minus 15 = 0, step = 0; step defer_loan: spending 779766 minus 284493 = 495273, gap = 137594, deci = (20 * 643785 + 137594) // (2 * 137594) = 13013294 // 275188 = 47, plus = 47 minus 15 = 32, step = 47 minus 15 = 32",
+        "backup": "floor = 430672 + 284493 = 715165; shocked deci 15 under horizon 60; survives no, shortfall = 60 minus 15 = 45",
+        "goal": "target = 3 * 716084 = 2148252; contribution floor = scaleCents(650326, 5) = 32516; contribution = max(650326 minus 716084, 32516) = 32516; months = (2148252 + 32516 minus 1) // 32516 = 67; cut = 716084 minus 650326 + 32516 = 98274 (cut needed)",
+        "milestones": "ceil division at contribution 32516: 716084 reaches in 23, 1432168 in 45, 2148252 in 67, 4296504 in 133"
+      },
+      "expected": {
+        "account_id": "68257",
+        "shocked": {
+          "income_cents": 357679,
+          "spending_cents": 780685,
+          "one_off_cents": 0,
+          "buffer_left_cents": 643785,
+          "runway_state": "finite",
+          "runway_deci_months": 15
+        },
+        "ladder": {
+          "baseline_state": "finite",
+          "baseline_deci_months": 15,
+          "steps": [
+            {
+              "id": "trim_discretionary",
+              "spending_delta_cents": -919,
+              "spending_after_cents": 779766,
+              "state": "finite",
+              "deci_months": 15,
+              "plus_deci_months": 0,
+              "step_deci_months": 0
+            },
+            {
+              "id": "defer_loan",
+              "spending_delta_cents": -284493,
+              "spending_after_cents": 495273,
+              "state": "finite",
+              "deci_months": 47,
+              "plus_deci_months": 32,
+              "step_deci_months": 32
+            }
+          ]
+        },
+        "backup": {
+          "cut_floor_cents": 715165,
+          "survives": false,
+          "shortfall_deci_months": 45
+        },
+        "goal": {
+          "target_cents": 2148252,
+          "contribution_cents": 32516,
+          "months": 67,
+          "cut_cents": 98274,
+          "status": "cut needed",
+          "milestones": [
+            { "months_of_spending": 1, "amount_cents": 716084, "months_to_reach": 23 },
+            { "months_of_spending": 2, "amount_cents": 1432168, "months_to_reach": 45 },
+            { "months_of_spending": 3, "amount_cents": 2148252, "months_to_reach": 67 },
+            { "months_of_spending": 6, "amount_cents": 4296504, "months_to_reach": 133 }
+          ]
+        }
+      }
+    },
+    {
+      "account_id": "23838",
+      "why": [
+        "the trim lever alone crosses into no_shortfall",
+        "surplus goal is on track, so the goal block prints the setting aside line"
+      ],
+      "steps": {
+        "shocked": "income = scaleCents(280403, 55) = 154222; spending = 173780 + scaleCents(127553, 15) = 173780 + 19133 = 192913; one off = 0; runway: buffer_left = 3229857, gap = 192913 minus 154222 = 38691, deci = (20 * 3229857 + 38691) // (2 * 38691) = 64635831 // 77382 = 835",
+        "ladder": "disc = max(0, 173780 minus 127553) = 46227; step trim_discretionary: spending 192913 minus 46227 = 146686, gap = 146686 minus 154222 is negative, so no_shortfall 1200, plus = 1200 minus 835 = 365, step = 365; no loan payment and no insurance, so the ladder stops here",
+        "backup": "floor = 127553 + 0 = 127553; shocked deci 835 at or beyond horizon 60; survives yes, shortfall 0",
+        "goal": "target = 3 * 173780 = 521340; contribution floor = scaleCents(280403, 5) = 14020; contribution = max(280403 minus 173780, 14020) = 106623; months = (521340 + 106623 minus 1) // 106623 = 5; cut = 0 (on track)",
+        "milestones": "ceil division at contribution 106623: 173780 reaches in 2, 347560 in 4, 521340 in 5, 1042680 in 10"
+      },
+      "expected": {
+        "account_id": "23838",
+        "shocked": {
+          "income_cents": 154222,
+          "spending_cents": 192913,
+          "one_off_cents": 0,
+          "buffer_left_cents": 3229857,
+          "runway_state": "finite",
+          "runway_deci_months": 835
+        },
+        "ladder": {
+          "baseline_state": "finite",
+          "baseline_deci_months": 835,
+          "steps": [
+            {
+              "id": "trim_discretionary",
+              "spending_delta_cents": -46227,
+              "spending_after_cents": 146686,
+              "state": "no_shortfall",
+              "deci_months": 1200,
+              "plus_deci_months": 365,
+              "step_deci_months": 365
+            }
+          ]
+        },
+        "backup": {
+          "cut_floor_cents": 127553,
+          "survives": true,
+          "shortfall_deci_months": 0
+        },
+        "goal": {
+          "target_cents": 521340,
+          "contribution_cents": 106623,
+          "months": 5,
+          "cut_cents": 0,
+          "status": "on track",
+          "milestones": [
+            { "months_of_spending": 1, "amount_cents": 173780, "months_to_reach": 2 },
+            { "months_of_spending": 2, "amount_cents": 347560, "months_to_reach": 4 },
+            { "months_of_spending": 3, "amount_cents": 521340, "months_to_reach": 5 },
+            { "months_of_spending": 6, "amount_cents": 1042680, "months_to_reach": 10 }
+          ]
+        }
+      }
+    },
+    {
+      "account_id": "49900",
+      "why": [
+        "zero income goal needs income, chips all report the sentinel",
+        "capped baseline: the trim lever clears the gap but gains zero tenths"
+      ],
+      "steps": {
+        "shocked": "income = scaleCents(0, 55) = 0; spending = 6293 + scaleCents(0, 15) = 6293; one off = 0; runway: buffer_left = 925140, gap = 6293, deci = (20 * 925140 + 6293) // (2 * 6293) = 18509093 // 12586 = 1470, capped at 1200",
+        "ladder": "disc = max(0, 6293 minus 0) = 6293; step trim_discretionary: spending 6293 minus 6293 = 0, gap = 0, so no_shortfall 1200, plus = 1200 minus 1200 = 0, step = 0; no loan payment and no insurance, so the ladder stops here",
+        "backup": "floor = 0 + 0 = 0; shocked deci 1200 at or beyond horizon 60; survives yes, shortfall 0",
+        "goal": "target = 3 * 6293 = 18879; contribution = max(0 minus 6293, scaleCents(0, 5) = 0) = 0; goal needs income: months = -1, cut = -1",
+        "milestones": "contribution 0, so every chip reports months_to_reach = -1 over targets 6293, 12586, 18879, 37758"
+      },
+      "expected": {
+        "account_id": "49900",
+        "shocked": {
+          "income_cents": 0,
+          "spending_cents": 6293,
+          "one_off_cents": 0,
+          "buffer_left_cents": 925140,
+          "runway_state": "finite",
+          "runway_deci_months": 1200
+        },
+        "ladder": {
+          "baseline_state": "finite",
+          "baseline_deci_months": 1200,
+          "steps": [
+            {
+              "id": "trim_discretionary",
+              "spending_delta_cents": -6293,
+              "spending_after_cents": 0,
+              "state": "no_shortfall",
+              "deci_months": 1200,
+              "plus_deci_months": 0,
+              "step_deci_months": 0
+            }
+          ]
+        },
+        "backup": {
+          "cut_floor_cents": 0,
+          "survives": true,
+          "shortfall_deci_months": 0
+        },
+        "goal": {
+          "target_cents": 18879,
+          "contribution_cents": 0,
+          "months": -1,
+          "cut_cents": -1,
+          "status": "needs income",
+          "milestones": [
+            { "months_of_spending": 1, "amount_cents": 6293, "months_to_reach": -1 },
+            { "months_of_spending": 2, "amount_cents": 12586, "months_to_reach": -1 },
+            { "months_of_spending": 3, "amount_cents": 18879, "months_to_reach": -1 },
+            { "months_of_spending": 6, "amount_cents": 37758, "months_to_reach": -1 }
+          ]
+        }
+      }
+    },
+    {
+      "account_id": "98952",
+      "why": [
+        "trim alone crosses the 120 month cap into no_shortfall",
+        "pensioner goal needs a cut for 66 months"
+      ],
+      "steps": {
+        "shocked": "income = scaleCents(391520, 55) = 215336; spending = 427376 + scaleCents(124407, 15) = 427376 + 18661 = 446037; one off = 0; runway: buffer_left = 881382, gap = 446037 minus 215336 = 230701, deci = (20 * 881382 + 230701) // (2 * 230701) = 17858341 // 461402 = 38",
+        "ladder": "disc = max(0, 427376 minus 124407) = 302969; step trim_discretionary: spending 446037 minus 302969 = 143068, gap = 143068 minus 215336 is negative, so no_shortfall 1200, plus = 1200 minus 38 = 1162, step = 1162; no loan payment and no insurance, so the ladder stops here",
+        "backup": "floor = 124407 + 0 = 124407; shocked deci 38 under horizon 60; survives no, shortfall = 60 minus 38 = 22",
+        "goal": "target = 3 * 427376 = 1282128; contribution floor = scaleCents(391520, 5) = 19576; contribution = max(391520 minus 427376, 19576) = 19576; months = (1282128 + 19576 minus 1) // 19576 = 66; cut = 427376 minus 391520 + 19576 = 55432 (cut needed)",
+        "milestones": "ceil division at contribution 19576: 427376 reaches in 22, 854752 in 44, 1282128 in 66, 2564256 in 131"
+      },
+      "expected": {
+        "account_id": "98952",
+        "shocked": {
+          "income_cents": 215336,
+          "spending_cents": 446037,
+          "one_off_cents": 0,
+          "buffer_left_cents": 881382,
+          "runway_state": "finite",
+          "runway_deci_months": 38
+        },
+        "ladder": {
+          "baseline_state": "finite",
+          "baseline_deci_months": 38,
+          "steps": [
+            {
+              "id": "trim_discretionary",
+              "spending_delta_cents": -302969,
+              "spending_after_cents": 143068,
+              "state": "no_shortfall",
+              "deci_months": 1200,
+              "plus_deci_months": 1162,
+              "step_deci_months": 1162
+            }
+          ]
+        },
+        "backup": {
+          "cut_floor_cents": 124407,
+          "survives": false,
+          "shortfall_deci_months": 22
+        },
+        "goal": {
+          "target_cents": 1282128,
+          "contribution_cents": 19576,
+          "months": 66,
+          "cut_cents": 55432,
+          "status": "cut needed",
+          "milestones": [
+            { "months_of_spending": 1, "amount_cents": 427376, "months_to_reach": 22 },
+            { "months_of_spending": 2, "amount_cents": 854752, "months_to_reach": 44 },
+            { "months_of_spending": 3, "amount_cents": 1282128, "months_to_reach": 66 },
+            { "months_of_spending": 6, "amount_cents": 2564256, "months_to_reach": 131 }
+          ]
+        }
+      }
+    },
+    {
+      "account_id": "42988",
+      "why": [
+        "negative buffer: every lever step stays buffer_depleted with a zero gain",
+        "both the trim and the defer levers fire, in ladder order"
+      ],
+      "steps": {
+        "shocked": "income = scaleCents(1439203, 55) = 791562; spending = 1593092 + scaleCents(632417, 15) = 1593092 + 94863 = 1687955; one off = 0; runway: buffer_left = 0 minus 73269 is negative, so buffer_depleted 0",
+        "ladder": "disc = max(0, 1593092 minus (733100 + 473085)) = 386907; step trim_discretionary: spending 1687955 minus 386907 = 1301048, buffer_left still negative, buffer_depleted 0, plus 0, step 0; step defer_loan: spending 1301048 minus 473085 = 827963, buffer_depleted 0, plus 0, step 0",
+        "backup": "floor = 733100 + 473085 = 1206185; a depleted buffer is always a full horizon short; survives no, shortfall 60",
+        "goal": "target = 3 * 1593092 = 4779276; contribution floor = scaleCents(1439203, 5) = 71960; contribution = max(1439203 minus 1593092, 71960) = 71960; months = (4779276 + 71960 minus 1) // 71960 = 67; cut = 1593092 minus 1439203 + 71960 = 225849 (cut needed)",
+        "milestones": "ceil division at contribution 71960: 1593092 reaches in 23, 3186184 in 45, 4779276 in 67, 9558552 in 133"
+      },
+      "expected": {
+        "account_id": "42988",
+        "shocked": {
+          "income_cents": 791562,
+          "spending_cents": 1687955,
+          "one_off_cents": 0,
+          "buffer_left_cents": -73269,
+          "runway_state": "buffer_depleted",
+          "runway_deci_months": 0
+        },
+        "ladder": {
+          "baseline_state": "buffer_depleted",
+          "baseline_deci_months": 0,
+          "steps": [
+            {
+              "id": "trim_discretionary",
+              "spending_delta_cents": -386907,
+              "spending_after_cents": 1301048,
+              "state": "buffer_depleted",
+              "deci_months": 0,
+              "plus_deci_months": 0,
+              "step_deci_months": 0
+            },
+            {
+              "id": "defer_loan",
+              "spending_delta_cents": -473085,
+              "spending_after_cents": 827963,
+              "state": "buffer_depleted",
+              "deci_months": 0,
+              "plus_deci_months": 0,
+              "step_deci_months": 0
+            }
+          ]
+        },
+        "backup": {
+          "cut_floor_cents": 1206185,
+          "survives": false,
+          "shortfall_deci_months": 60
+        },
+        "goal": {
+          "target_cents": 4779276,
+          "contribution_cents": 71960,
+          "months": 67,
+          "cut_cents": 225849,
+          "status": "cut needed",
+          "milestones": [
+            { "months_of_spending": 1, "amount_cents": 1593092, "months_to_reach": 23 },
+            { "months_of_spending": 2, "amount_cents": 3186184, "months_to_reach": 45 },
+            { "months_of_spending": 3, "amount_cents": 4779276, "months_to_reach": 67 },
+            { "months_of_spending": 6, "amount_cents": 9558552, "months_to_reach": 133 }
+          ]
+        }
+      }
+    }
+  ]
+}

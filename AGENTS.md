@@ -22,7 +22,7 @@ Full pivot to the Tangerine "Resilience Rewired" Financial Resilience Engine (C-
 | E1 | Profile precompute (profiles.json + golden fixtures) | Complete |
 | E2 | Console base (lookup, baseline card, shocks, verdict, plan text) | Complete |
 | E3 | Weather viz (forecast strip, bands, EI-cliff overlay) | Complete |
-| E4 | Plan engine (goal math + backup levers) | Not started |
+| E4 | Plan engine (goal math + backup levers) | Complete |
 | E5 | Storm Atlas (population headline + drill-down) | Not started |
 | E6 | Judge mode (shortcuts, edge guards, rehearsal, fallback) | Not started |
 | E7 | Solana A+ touch (gated, receipt badge) | Not started |

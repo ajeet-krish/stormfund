@@ -2274,6 +2274,129 @@ html {
   color: var(--rp-money);
 }
 
+/* E4 plan additions: milestone chips, the lever ladder, definitions */
+
+.cp-plan__chips {
+  list-style: none;
+  margin: var(--rp-s4) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rp-s2);
+}
+
+.cp-plan__chip {
+  flex: 1 1 9rem;
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  align-content: start;
+  padding: var(--rp-s2) var(--rp-s3);
+  background: var(--cp-inset);
+  border: 1px solid var(--cp-rule);
+  border-left: 3px solid var(--cp-rule);
+  border-radius: var(--cp-radius);
+}
+
+.cp-plan__chip-label {
+  font-family: var(--rp-font-utility);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cp-ink-faint);
+}
+
+.cp-plan__chip-amount {
+  font-family: var(--rp-font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--cp-ink);
+}
+
+.cp-plan__chip-reach {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--cp-ink-dim);
+}
+
+.cp-plan__chip-badge {
+  justify-self: start;
+  font-family: var(--rp-font-utility);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cp-plan__chip-goal {
+  border-left-color: var(--rp-verified);
+  background: var(--rp-verified-ghost);
+}
+
+.cp-plan__chip-goal .cp-plan__chip-badge {
+  color: var(--rp-verified);
+}
+
+.cp-plan__chip-stretch {
+  border-left-color: var(--rp-money);
+  background: var(--rp-money-ghost);
+}
+
+.cp-plan__chip-stretch .cp-plan__chip-badge {
+  color: var(--rp-money);
+}
+
+.cp-plan__levers {
+  margin-top: var(--rp-s5);
+}
+
+.cp-plan__lever-table .cp-plan__lever-name {
+  display: block;
+  font-family: var(--rp-font-body);
+  font-weight: 600;
+  color: var(--cp-ink);
+}
+
+.cp-plan__lever-table .cp-plan__lever-caveat {
+  display: block;
+  max-width: 34rem;
+  margin-top: 2px;
+  font-family: var(--rp-font-body);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--cp-ink-faint);
+}
+
+.cp-plan__lever-table .cp-plan__lever-gain {
+  color: var(--rp-money);
+  font-weight: 700;
+  white-space: normal;
+  max-width: 13rem;
+}
+
+.cp-plan__definitions {
+  margin-top: var(--rp-s5);
+  padding-top: var(--rp-s3);
+  border-top: 1px solid var(--cp-rule);
+}
+
+.cp-plan__definition-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: var(--rp-s2);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--cp-ink-dim);
+}
+
+.cp-plan__definition-list li::marker {
+  color: var(--cp-ink-faint);
+  font-family: var(--rp-font-utility);
+}
+
 /* ==========================================================================
    Typed shock input (cp typed): the gated Gemini add on, mounted directly
    above the preset cards in ShockPanel. Every value reuses an rp or cp

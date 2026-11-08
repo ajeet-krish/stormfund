@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
- * Content rule scan for the Phase E2 and E3 sources
+ * Content rule scan for the Phase E2, E3, and E4 sources
  * (docs/architecture.md): no em dash, en dash, minus sign, double
  * hyphen, or spaced hyphen may appear in anything these phases write
  * (UI copy, comments, JSX text). The three dash code points are checked
@@ -25,7 +25,7 @@ const SPACED_HYPHEN = [' ', '-', ' '].join('')
 /** Prose characters a JSX text node may hold before we read it as copy. */
 const PROSE = /^[\p{L}\p{N} .,:()'"/!?&+%-]+$/u
 
-/** E2 and E3 files that do not live in an auto scanned directory. */
+/** E2 through E4 files that do not live in an auto scanned directory. */
 const EXPLICIT_FILES: readonly string[] = [
   'src/App.tsx',
   'src/app.smoke.test.ts',
@@ -36,6 +36,9 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/lib/forecast.ts',
   'src/lib/format.ts',
   'src/lib/metrics.ts',
+  'src/lib/planMath.golden.test.ts',
+  'src/lib/planMath.test.ts',
+  'src/lib/planMath.ts',
   'src/lib/planText.ts',
   'src/lib/planText.test.ts',
   'src/lib/shockPresets.ts',
@@ -149,7 +152,7 @@ function violationsIn(chunk: string): string[] {
   return problems
 }
 
-describe('content rule: dash scan over the Phase E2 and E3 sources', () => {
+describe('content rule: dash scan over the Phase E2, E3, and E4 sources', () => {
   const files = targetFiles()
 
   it('covers every file these phases wrote', () => {
@@ -159,6 +162,11 @@ describe('content rule: dash scan over the Phase E2 and E3 sources', () => {
     expect(files).toContain('src/lib/forecast.test.ts')
     expect(files).toContain('src/components/weather/WeatherPanel.tsx')
     expect(files).toContain('src/components/weather/ForecastStrip.test.ts')
+    expect(files).toContain('src/lib/planMath.ts')
+    expect(files).toContain('src/lib/planMath.test.ts')
+    expect(files).toContain('src/lib/planMath.golden.test.ts')
+    expect(files).toContain('src/lib/planText.ts')
+    expect(files).toContain('src/components/console/PlanCard.tsx')
     expect(files.length).toBeGreaterThanOrEqual(20)
   })
 

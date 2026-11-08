@@ -25,6 +25,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal
 
+import numpy as np
+
+from scripts.engine.metrics import round_half_up
+
 RunwayState = Literal["finite", "no_shortfall", "buffer_depleted"]
 
 # The 120 month cap expressed in tenths of a month.
@@ -37,6 +41,24 @@ class Runway:
 
     state: RunwayState
     deci_months: int
+
+
+def scale_cents(base_cents: int | np.ndarray, pct: int) -> int | np.ndarray:
+    """A percentage of a base amount in integer cents, rounded half up.
+
+    scale_cents(H, 15) is the 15 percent bills increase the challenge
+    doc writes as 0.15 x H, and pct is an integer count of percent (0 to
+    100). Scalars follow round_half_up(base * pct, 100) exactly, the
+    mirror of scaleCents in src/lib/shocks.ts; numpy arrays apply the
+    same rule elementwise so the vectorized goal_plans twin can share
+    one rounding definition with the scalar plan functions.
+    """
+    product = base_cents * pct
+    if isinstance(product, np.ndarray):
+        sign = np.where(product >= 0, 1, -1)
+        magnitude = (np.abs(product) + 50) // 100
+        return sign * magnitude
+    return round_half_up(int(product), 100)
 
 
 def runway(
