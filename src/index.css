@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Vendored pixel display face: Silkscreen by Jason Kottke, SIL Open Font
+   License 1.1, latin subset, served from src/assets/fonts so the booth
+   machine still never reaches the network. It is chrome only: the station
+   title, eyebrows, band names, and button caps. Every number the engine
+   prints stays on the tabular mono stack, because a scoreboard font must
+   never change how a digit lines up.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Silkscreen';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/silkscreen-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Silkscreen';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/silkscreen-700.woff2') format('woff2');
+}
+
 html,
 body,
 #root {
@@ -13,39 +38,44 @@ body {
 }
 
 /* ==========================================================================
-   Report tokens: financial print artifact meets mission control readout.
-   Six named colors, three type roles, one spacing scale. No external fonts,
-   so the booth machine never reaches the network.
+   Report tokens: a pixel game weather station read in daylight. Six named
+   colors, three type roles, one spacing scale. No external fonts, so the
+   booth machine never reaches the network. The values run light: a pale
+   sky tinted ground, white panel cards, dark slate ink, and the five
+   verdict band hues re-tuned so every band label clears WCAG AA on both
+   the ground and a panel.
    ========================================================================== */
 
 :root {
   /* Palette (named hex values, the whole report runs on these six). */
-  --rp-void: #070c18; /* archival navy ground */
-  --rp-paper: #e9effa; /* cool paper ink */
-  --rp-rule: #22314f; /* blueprint rule */
-  --rp-verified: #35d0ae; /* provenance teal, locked and checked */
-  --rp-money: #f4b740; /* ledger amber, discretionary dollars */
-  --rp-stamp: #ff6a4d; /* audit stamp red, warnings and mismatches */
+  --rp-void: #eaf1fb; /* daylight ground, pale sky paper */
+  --rp-paper: #16273f; /* slate ink, every piece of primary text */
+  --rp-rule: #8496b3; /* blueprint rule on light */
+  --rp-verified: #0a7a5a; /* provenance teal, locked and checked */
+  --rp-money: #8f5502; /* ledger amber, discretionary dollars */
+  --rp-stamp: #c02f12; /* audit stamp red, warnings and mismatches */
 
-  /* Derived tones (alpha laid over the report ground). */
-  --rp-panel: rgba(233, 239, 250, 0.04);
-  --rp-panel-strong: rgba(233, 239, 250, 0.07);
-  --rp-text-dim: rgba(233, 239, 250, 0.74);
-  --rp-text-faint: rgba(233, 239, 250, 0.52);
-  --rp-verified-dim: rgba(53, 208, 174, 0.45);
-  --rp-verified-ghost: rgba(53, 208, 174, 0.1);
-  --rp-money-dim: rgba(244, 183, 64, 0.5);
-  --rp-money-ghost: rgba(244, 183, 64, 0.12);
-  --rp-stamp-ghost: rgba(255, 106, 77, 0.14);
-  --rp-gridline: rgba(34, 49, 79, 0.4);
+  /* Derived tones (solid over the daylight ground, so contrast holds). */
+  --rp-panel: #ffffff;
+  --rp-panel-strong: #f2f7fd;
+  --rp-text-dim: #3f5270;
+  --rp-text-faint: #56688a;
+  --rp-verified-dim: rgba(10, 122, 90, 0.55);
+  --rp-verified-ghost: rgba(10, 122, 90, 0.1);
+  --rp-money-dim: rgba(143, 85, 2, 0.55);
+  --rp-money-ghost: rgba(143, 85, 2, 0.1);
+  --rp-stamp-ghost: rgba(192, 47, 18, 0.1);
+  --rp-gridline: rgba(132, 150, 179, 0.3);
 
   /* Type roles. Display and utility share one mono stack in two registers:
-     heavy tight numerals for the readouts, tiny tracked caps for labels. */
+     heavy tight numerals for the readouts, tiny tracked caps for labels.
+     The pixel face is the fourth role: chrome only, never a number. */
   --rp-font-display: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
   --rp-font-body: system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --rp-font-utility: var(--rp-font-display);
+  --rp-font-pixel: 'Silkscreen', ui-monospace, "SF Mono", Menlo, monospace;
 
   /* Spacing scale. */
   --rp-s1: 0.25rem;
@@ -57,7 +87,7 @@ body {
   --rp-s7: 3rem;
   --rp-s8: 4.5rem;
 
-  --rp-radius: 4px;
+  --rp-radius: 0;
   --rp-max: 72rem;
 }
 
@@ -68,7 +98,7 @@ body {
 :where(a, button, summary, [tabindex]):focus-visible {
   outline: 2px solid var(--rp-paper);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(7, 12, 24, 0.85);
+  box-shadow: 0 0 0 4px rgba(13, 110, 168, 0.4);
 }
 
 html {
@@ -77,7 +107,7 @@ html {
 
 ::selection {
   background: var(--rp-verified);
-  color: var(--rp-void);
+  color: #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -151,20 +181,20 @@ html {
 
 .rp-banner {
   margin: var(--rp-s5) 0 var(--rp-s7);
-  border: 2px solid var(--rp-void);
+  border: 2px solid var(--rp-paper);
   border-radius: var(--rp-radius);
   overflow: hidden;
   background: repeating-linear-gradient(
     -45deg,
     var(--rp-money) 0 18px,
-    var(--rp-void) 18px 36px
+    var(--rp-paper) 18px 36px
   );
   padding: 5px;
 }
 
 .rp-banner__body {
   background: var(--rp-money);
-  color: var(--rp-void);
+  color: var(--rp-paper);
   padding: var(--rp-s4) var(--rp-s5);
   display: flex;
   flex-wrap: wrap;
@@ -195,7 +225,7 @@ html {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
-  border: 2px solid var(--rp-void);
+  border: 2px solid var(--rp-paper);
   border-radius: var(--rp-radius);
   padding: var(--rp-s1) var(--rp-s2);
 }
@@ -738,7 +768,7 @@ html {
 }
 
 .rp-chart .rp-label-void {
-  fill: var(--rp-void);
+  fill: var(--rp-paper);
   font-weight: 700;
 }
 
@@ -892,7 +922,7 @@ html {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--rp-verified);
-  background: rgba(7, 12, 24, 0.6);
+  background: rgba(255, 255, 255, 0.8);
   transform: rotate(-1.2deg);
   transition: background-color 160ms ease, transform 160ms ease;
 }
@@ -928,7 +958,7 @@ html {
 .rp-inspector {
   border-top: var(--rp-rule-w) solid var(--rp-verified-dim);
   padding: var(--rp-s4);
-  background: rgba(7, 12, 24, 0.55);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .rp-inspector__rollup {
@@ -1096,7 +1126,7 @@ html {
 
 .rp-explore:hover {
   background: var(--rp-verified);
-  color: var(--rp-void);
+  color: #ffffff;
 }
 
 .rp-explore__arrow {
@@ -1577,7 +1607,9 @@ html {
    band (mirrored in tailwind.config.js as text-cp-* utilities), and keeps
    every interactive target at 44px or taller. Band text color comes from
    the band's tailwind class, never from these rules, so the badge and the
-   forecast strip in E3 share one source of color.
+   forecast strip in E3 share one source of color. The ground is daylight
+   now: panels are white cards, the inset is a pale sky tint, and each
+   band hue is dark enough to read as text on both.
    ========================================================================== */
 
 :root {
@@ -1587,13 +1619,17 @@ html {
   --cp-ink: var(--rp-paper);
   --cp-ink-dim: var(--rp-text-dim);
   --cp-ink-faint: var(--rp-text-faint);
-  --cp-inset: rgba(7, 12, 24, 0.55);
+  --cp-inset: #e6edf8;
+  /* Hard offset shadow color for the chunky 8 bit chrome: one flat
+     value, no blur, so every panel reads as a raised pixel tile. */
+  --cp-shadow: #a8bcd8;
+  --cp-shadow-strong: #7e97bb;
 
-  --cp-band-critical: #ff6a4d;
-  --cp-band-storm: #f4b740;
-  --cp-band-watch: #8b7cf6;
-  --cp-band-fair: #39c2e0;
-  --cp-band-clear: #35d0ae;
+  --cp-band-critical: #c02f12;
+  --cp-band-storm: #8f5502;
+  --cp-band-watch: #5744c2;
+  --cp-band-fair: #0b6b93;
+  --cp-band-clear: #0a7a5a;
 
   --cp-radius: var(--rp-radius);
 }
@@ -1620,8 +1656,9 @@ html {
 
 .cp-panel {
   background: var(--cp-surface);
-  border: 1px solid var(--cp-rule);
+  border: 3px solid var(--cp-ink);
   border-radius: var(--cp-radius);
+  box-shadow: 6px 6px 0 0 var(--cp-shadow);
   padding: var(--rp-s5);
   min-width: 0;
 }
@@ -1636,7 +1673,7 @@ html {
 }
 
 .cp-eyebrow {
-  font-family: var(--rp-font-utility);
+  font-family: var(--rp-font-pixel);
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -1650,7 +1687,7 @@ html {
 }
 
 .cp-title {
-  font-family: var(--rp-font-display);
+  font-family: var(--rp-font-pixel);
   font-weight: 700;
   font-size: clamp(1.25rem, 2.2vw, 1.6rem);
   letter-spacing: -0.02em;
@@ -1714,7 +1751,7 @@ html {
   min-height: 44px;
   padding: 0 var(--rp-s3);
   background: var(--cp-inset);
-  border: 1px solid var(--cp-rule);
+  border: 2px solid var(--cp-ink);
   border-radius: var(--cp-radius);
   color: var(--cp-ink);
   font-family: var(--rp-font-display);
@@ -1747,7 +1784,8 @@ html {
   min-width: 5.5rem;
   padding: 0 var(--rp-s3);
   background: var(--cp-inset);
-  border: 1px solid var(--cp-rule);
+  border: 2px solid var(--cp-ink);
+  box-shadow: 3px 3px 0 0 var(--cp-shadow);
   border-radius: var(--cp-radius);
   color: var(--cp-ink);
   font-family: var(--rp-font-display);
@@ -1771,11 +1809,12 @@ html {
 .cp-button {
   min-height: 44px;
   padding: 0 var(--rp-s4);
-  background: transparent;
-  border: 1px solid var(--rp-verified);
+  background: var(--cp-surface);
+  border: 2px solid var(--rp-verified);
   border-radius: var(--cp-radius);
+  box-shadow: 3px 3px 0 0 var(--cp-shadow);
   color: var(--rp-verified);
-  font-family: var(--rp-font-utility);
+  font-family: var(--rp-font-pixel);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -1786,6 +1825,7 @@ html {
 
 .cp-button:hover:not(:disabled) {
   background: var(--rp-verified-ghost);
+  box-shadow: 5px 5px 0 0 var(--cp-shadow-strong);
 }
 
 .cp-button:disabled {
@@ -1836,6 +1876,7 @@ html {
   color: var(--cp-ink);
   margin: 2px 0 0;
   overflow-wrap: anywhere;
+  text-shadow: 2px 2px 0 0 var(--cp-shadow);
 }
 
 .cp-flags {
@@ -1848,8 +1889,8 @@ html {
 }
 
 .cp-flag {
-  border: 1px solid var(--cp-rule);
-  border-radius: 999px;
+  border: 2px solid var(--cp-ink);
+  border-radius: 0;
   padding: var(--rp-s1) var(--rp-s3);
   font-family: var(--rp-font-utility);
   font-size: 0.6875rem;
@@ -1897,8 +1938,9 @@ html {
   min-height: 44px;
   padding: var(--rp-s3);
   background: var(--cp-inset);
-  border: 1px solid var(--cp-rule);
+  border: 2px solid var(--cp-ink);
   border-radius: var(--cp-radius);
+  box-shadow: 3px 3px 0 0 var(--cp-shadow);
   color: var(--cp-ink);
   cursor: pointer;
   transition: border-color 160ms ease, background-color 160ms ease;
@@ -1907,12 +1949,13 @@ html {
 .cp-preset:hover {
   border-color: var(--rp-money);
   background: var(--rp-money-ghost);
+  box-shadow: 5px 5px 0 0 var(--cp-shadow-strong);
 }
 
 .cp-preset[aria-pressed='true'] {
   border-color: var(--rp-money);
   background: var(--rp-money-ghost);
-  box-shadow: inset 0 0 0 1px var(--rp-money);
+  box-shadow: 3px 3px 0 0 var(--cp-shadow-strong), inset 0 0 0 2px var(--rp-money);
 }
 
 .cp-preset__label {
@@ -1951,10 +1994,11 @@ html {
   margin-top: var(--rp-s4);
   padding: var(--rp-s4);
   background: var(--cp-inset);
-  border: 1px solid var(--cp-rule);
-  border-left-width: 6px;
+  border: 3px solid var(--cp-ink);
+  border-left-width: 8px;
   border-left-color: var(--cp-band);
   border-radius: var(--cp-radius);
+  box-shadow: 4px 4px 0 0 var(--cp-shadow);
 }
 
 .cp-verdict[data-band='critical'] {
@@ -1999,7 +2043,7 @@ html {
 }
 
 .cp-verdict__label {
-  font-family: var(--rp-font-display);
+  font-family: var(--rp-font-pixel);
   font-weight: 700;
   font-size: clamp(1.125rem, 2.4vw, 1.5rem);
   letter-spacing: 0.06em;
@@ -2013,7 +2057,8 @@ html {
   font-size: clamp(2.25rem, 6vw, 4rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
+  text-shadow: 3px 3px 0 0 var(--cp-shadow);
 }
 
 .cp-verdict__state {
@@ -2112,7 +2157,7 @@ html {
   margin-top: -9px;
   border-radius: 50%;
   background: var(--rp-money);
-  border: 2px solid var(--rp-void);
+  border: 2px solid var(--rp-paper);
   box-shadow: 0 0 0 1px var(--rp-money);
 }
 
@@ -2127,7 +2172,7 @@ html {
   height: 22px;
   border-radius: 50%;
   background: var(--rp-money);
-  border: 2px solid var(--rp-void);
+  border: 2px solid var(--rp-paper);
 }
 
 .cp-slider:focus-visible::-webkit-slider-thumb {
@@ -2293,8 +2338,8 @@ html {
   align-content: start;
   padding: var(--rp-s2) var(--rp-s3);
   background: var(--cp-inset);
-  border: 1px solid var(--cp-rule);
-  border-left: 3px solid var(--cp-rule);
+  border: 2px solid var(--cp-ink);
+  border-left: 5px solid var(--cp-rule);
   border-radius: var(--cp-radius);
 }
 
@@ -2415,8 +2460,9 @@ html {
   gap: var(--rp-s3);
   padding: var(--rp-s4);
   background: var(--cp-inset);
-  border: 1px solid var(--cp-rule);
+  border: 2px solid var(--cp-ink);
   border-radius: var(--cp-radius);
+  box-shadow: 4px 4px 0 0 var(--cp-shadow);
 }
 
 .cp-typed__row {
@@ -2435,14 +2481,14 @@ html {
 /* Mode badge */
 
 .cp-mode-badge {
-  font-family: var(--rp-font-utility);
+  font-family: var(--rp-font-pixel);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: var(--rp-s1) var(--rp-s3);
-  border: 1px solid var(--cp-rule);
-  border-radius: 999px;
+  border: 2px solid var(--cp-ink);
+  border-radius: 0;
   color: var(--cp-ink-dim);
   white-space: nowrap;
 }
@@ -2520,8 +2566,9 @@ html {
   min-width: 0;
   padding: var(--rp-s3);
   background: var(--cp-surface);
-  border: 1px solid var(--cp-rule);
+  border: 2px solid var(--cp-ink);
   border-radius: var(--cp-radius);
+  box-shadow: 3px 3px 0 0 var(--cp-shadow);
 }
 
 .cp-chip .cp-field__value {

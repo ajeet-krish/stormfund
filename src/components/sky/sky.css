@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Pixel sky header (px): the day and storm scenes that PixelSky draws,
+   the text plates that sit on top of them, and the mascot. The art grid
+   is 320 by 32 units and the band is whatever height the header content
+   makes it, so the scene scales with slice and the horizon always lands
+   on the bottom edge: one unit of artwork stays a chunky, square pixel
+   from a phone to a judging table. Nothing here is a raster image, so
+   image rendering pixelated only guards the logo for the day a bitmap
+   replaces it. Motion is gated behind prefers-reduced-motion:
+   no-preference, matching the rest of the app.
+   ========================================================================== */
+
+.px-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-height: clamp(120px, 12vw, 184px);
+  background: #b0d9ff;
+  border-bottom: 3px solid var(--rp-paper);
+}
+
+.px-sky {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* A text plate: solid white card, chunky border, hard offset shadow,
+   so the title keeps AA contrast on the pale day sky and on the
+   indigo storm sky without the art having to dim itself. */
+
+.px-plate {
+  display: flex;
+  align-items: center;
+  gap: var(--rp-s3);
+  max-width: 100%;
+  padding: var(--rp-s2) var(--rp-s3);
+  background: var(--rp-panel);
+  border: 3px solid var(--rp-paper);
+  box-shadow: 5px 5px 0 0 var(--cp-shadow-strong);
+}
+
+.px-plate img {
+  image-rendering: pixelated;
+}
+
+.px-title {
+  margin: 0;
+  font-family: var(--rp-font-pixel);
+  font-weight: 700;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: var(--rp-paper);
+}
+
+.px-tagline {
+  margin: var(--rp-s1) 0 0;
+  max-width: 46ch;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--rp-text-dim);
+}
+
+.px-track {
+  margin: 0;
+  padding: var(--rp-s1) var(--rp-s3);
+  background: var(--rp-panel);
+  border: 2px solid var(--rp-paper);
+  box-shadow: 3px 3px 0 0 var(--cp-shadow-strong);
+  font-family: var(--rp-font-pixel);
+  font-size: 0.625rem;
+  line-height: 1.7;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rp-text-dim);
+}
+
+.px-mascot {
+  display: block;
+  flex: none;
+  width: 64px;
+  height: 64px;
+}
+
+/* ==========================================================================
+   Motion: the rain falls in whole pixel steps and the bolt flickers.
+   Only when motion is welcome; the global prefers-reduced-motion: reduce
+   block in src/index.css zeroes the durations a second time.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .px-sky__rain {
+    animation: px-rain-fall 360ms steps(4, end) infinite;
+  }
+
+  .px-sky__bolt {
+    animation: px-bolt-flicker 2.4s linear infinite;
+  }
+}
+
+/* Eight units is one full drop, so the loop closes without a seam. */
+@keyframes px-rain-fall {
+  from {
+    transform: translateY(-8px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes px-bolt-flicker {
+  0%,
+  86% {
+    opacity: 1;
+  }
+
+  87%,
+  92% {
+    opacity: 0.15;
+  }
+
+  93%,
+  100% {
+    opacity: 1;
+  }
+}

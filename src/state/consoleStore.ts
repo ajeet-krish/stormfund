@@ -113,7 +113,7 @@ function matchPreset(twist: Twist): PresetId | null {
 }
 
 /** Fallback notes, one per reject category (docs/architecture.md). */
-const NOTE_NO_KEY = 'Gemini key not configured, using preset cards'
+const NOTE_NO_KEY = 'Typed shocks run on a local build: npm run dev, or build and preview with .env. The deployed build falls back to preset cards.'
 const NOTE_UNAVAILABLE = 'Gemini unavailable, using preset cards'
 const NOTE_NO_SHOCK = 'No clear shock in that sentence, using preset cards'
 const NOTE_NO_ACCOUNT = 'No account selected, using preset cards'

@@ -517,3 +517,36 @@ states) to keep the two sides honest. docs/reviews.md and the Phase E5
 record above still narrate the retired ladder as history, which is
 intended; no doc outside those historical records reintroduces the
 retired names as vocabulary.
+
+## Nov 08 2026, Phase E8: Lever explorer subsets and backup block removal
+
+**Context**: the "Backup: if the shock lands" block duplicated the E3
+forecast (shocked runway, landfall, verdict), and judges could not
+compare lever combinations. The frozen E4 goldens pin the full ladder,
+so subset exploration had to be additive.
+
+**Decision**: per-lever toggle chips (available levers only, all on by
+default, local state in PlanCard keyed by account; consoleStore
+untouched) drive a new planMath.leverPlan(input, selected): selection
+normalized to the canonical ladder order, cumulative prefix runways for
+the absolute +N column (byte identical to leverLadder for the full
+selection), one summed-delta shocks.runway re-run for the combined
+headline, and leave-one-out runways for the new "With the others"
+marginal column. Every month figure stays a difference of two runway
+answers. Zero marginal reads "no change for this account" while the
+absolute zero keeps the pinned "+0.0 months" (user confirmed). The
+backup block and PlanText.backup are removed; backupPlan stays as the
+golden-pinned library behind the definitions cut-floor line. Card
+titles "Goal and backup" and "Backup levers, in order" are kept (user
+confirmed, video script quotes them). Subset math is TS only: the
+Python twin keeps pinning the canonical ladder alone.
+
+**Rationale**: the subset path is a UI explorer over goldens-pinned
+primitives; full selection reduces definitionally to leverLadder, so no
+new judge-facing number exists outside the frozen contract.
+
+**Trade offs**: marginal gains are context dependent (the "With the
+others" header must stay visible); subset figures get no Python twin
+until they are quoted as findings; docs/video/script.md and plan.md
+quote the removed block and need a copy pass; .cp-plan__block-backup
+CSS removal coordinates with the concurrent UI restyle.

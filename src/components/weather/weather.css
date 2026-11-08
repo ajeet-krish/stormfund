@@ -11,14 +11,14 @@
    E3 draft left with weatherState.ts, and its unused palette tokens were
    deleted with it.
 
-   The one state accent kept is wx-storm #ff6a4d, storm vermillion, used
+   The one state accent kept is wx-storm #c02f12, storm vermillion, used
    only as a marker: the worst case continuation, the EI cliff line, and
    the storm tag. It never sets a band.
 
-   Plus the two grounds every surface sits on: wx-grounds #070c18 (the
-   archival navy, same value as --rp-void but read from its own token so
-   this file never depends on --rp-) and wx-parchment #e9e0c9 for text.
-   Parchment on wx-grounds stays above WCAG AA on every surface here.
+   Plus the two grounds every surface sits on: wx-grounds #ffffff (the
+   halo stroke behind labels on a white panel, read from its own token
+   so this file never depends on --rp-) and wx-parchment #16273f for
+   text. Slate on white stays above WCAG AA on every surface here.
 
    Motion in this file is gated behind prefers-reduced-motion:
    no-preference, matching src/index.css, which also zeroes animation
@@ -27,20 +27,20 @@
 
 :root {
   /* The single state accent: marker only, never a band color. */
-  --wx-storm: #ff6a4d;
+  --wx-storm: #c02f12;
 
   /* Grounds and text. */
-  --wx-grounds: #070c18;
-  --wx-parchment: #e9e0c9;
-  --wx-rule: rgba(233, 224, 201, 0.24);
-  --wx-text-dim: rgba(233, 224, 201, 0.74);
-  --wx-text-faint: rgba(233, 224, 201, 0.54);
+  --wx-grounds: #ffffff;
+  --wx-parchment: #16273f;
+  --wx-rule: rgba(22, 39, 63, 0.28);
+  --wx-text-dim: rgba(22, 39, 63, 0.85);
+  --wx-text-faint: rgba(22, 39, 63, 0.7);
 
   /* Utility, deliberately local so nothing here reaches into --rp-. */
   --wx-font-display: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
   --wx-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --wx-radius: 4px;
+  --wx-radius: 0;
 }
 
 /* ==========================================================================
@@ -216,15 +216,18 @@
   align-items: baseline;
   gap: 10px;
   padding: 8px 12px;
-  background: rgba(233, 224, 201, 0.05);
-  border: 1px solid var(--wx-rule);
-  border-left: 6px solid currentColor;
+  background: rgba(22, 39, 63, 0.04);
+  border: 2px solid var(--wx-parchment);
+  border-left: 8px solid currentColor;
   border-radius: var(--wx-radius);
+  box-shadow: 3px 3px 0 0 rgba(22, 39, 63, 0.18);
   min-height: 44px;
 }
 
 .wx-band-active {
-  box-shadow: inset 0 0 0 2px var(--wx-parchment);
+  box-shadow:
+    3px 3px 0 0 rgba(22, 39, 63, 0.18),
+    inset 0 0 0 2px var(--wx-parchment);
 }
 
 .wx-band__glyph {

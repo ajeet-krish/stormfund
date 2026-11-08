@@ -149,3 +149,28 @@ describe('app shell (loaded console)', () => {
     )
   })
 })
+
+describe('app shell (layout order)', () => {
+  it('mounts the console above the atlas so judges reach account entry first', async () => {
+    stubBundledData()
+    const container = await renderShell()
+    await until(container, 'Know the customer')
+
+    const consoleSlot = container.querySelector('#console')
+    const atlasSlot = container.querySelector('#atlas')
+    expect(consoleSlot).not.toBeNull()
+    expect(atlasSlot).not.toBeNull()
+    if (!consoleSlot || !atlasSlot) {
+      return
+    }
+
+    // The console precedes the atlas in document order, so the first
+    // thing under the header is the account lookup.
+    const order = consoleSlot.compareDocumentPosition(atlasSlot)
+    expect(order & Node.DOCUMENT_POSITION_FOLLOWING).toBeGreaterThan(0)
+
+    // The atlas drill down still has its scroll target to climb back to.
+    expect(container.querySelector('#console #account-lookup')).not.toBeNull()
+    expect(container.querySelector('#atlas .ax-shell')).not.toBeNull()
+  })
+})

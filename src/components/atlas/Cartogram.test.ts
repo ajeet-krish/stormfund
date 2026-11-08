@@ -9,19 +9,22 @@ import { createRoot, type Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import Cartogram from './Cartogram'
+import { CZECHIA_VIEW_BOX } from '../../assets/czechia-districts'
 import type { AtlasDoc, BandCounts, DistrictRow } from '../../lib/atlasData'
 
 /**
- * Cartogram markup and behavior on an inline fixture: seven districts
- * over three regions, one no_data district whose source row is
- * incomplete while its demographic cells and its accounts are both
- * real (the shipped artifact shape), tiles shaded by the severity bins
- * with the counts they were handed, the legend printing the severity
- * definition and the region, not geography caveat, focusable tiles
- * routed to the optional callback, and safe rendering when the
- * document or the counts never arrive. The stylesheet contract
- * (gated motion) is asserted from disk. No test reads the shipped
- * atlas artifact.
+ * Cartogram markup and behavior on two inline fixtures: seven invented
+ * districts over three regions, which the bundled map geometry does not
+ * know, so they prove the tile fallback (one no_data district whose
+ * source row is incomplete while its demographic cells and its
+ * accounts are both real, the shipped artifact shape, shaded by the
+ * severity bins with the counts they were handed); and four real Czech
+ * district names, which the geometry does know, so they prove the map
+ * paths (shade values, the accessible sentence, the hatch, click and
+ * keyboard routing). The legend prints the severity definition and the
+ * caveat that belongs to whichever surface rendered. The stylesheet
+ * contract (gated motion) is asserted from disk. No test reads the
+ * shipped atlas artifact.
  */
 
 // React's act() refuses to run until the environment declares itself.
@@ -255,6 +258,198 @@ describe('Cartogram tiles', () => {
   })
 })
 
+/** Four real Czech district names, so the bundled geometry matches. */
+function mapFixture(): AtlasDoc {
+  const base = fixture()
+  return {
+    ...base,
+    districts: [
+      district(1, 'Hl.m. Praha', 'Prague', 60),
+      district(2, 'Benesov', 'central Bohemia', 40),
+      district(3, 'Cheb', 'Karlovy Vary', 55),
+      district(4, 'Liberec', 'Liberec', 45, true),
+    ],
+  }
+}
+
+/** Two districts the geometry knows and one it does not. */
+function mixedFixture(): AtlasDoc {
+  const base = fixture()
+  return {
+    ...base,
+    districts: [
+      district(1, 'Hl.m. Praha', 'Prague', 60),
+      district(2, 'Benesov', 'central Bohemia', 40),
+      district(3, 'Ashfield', 'North', 55),
+    ],
+  }
+}
+
+describe('Cartogram map', () => {
+  it('draws one path per district on the bundled viewBox', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    const svg = container.querySelector('svg.ax-map')
+    expect(svg).not.toBeNull()
+    expect(svg?.getAttribute('viewBox')).toBe(CZECHIA_VIEW_BOX)
+    expect(svg?.getAttribute('aria-label')).toBe('District map of Czechia')
+    expect(container.querySelectorAll('.ax-map__path')).toHaveLength(4)
+    // Every name here is a real Czech district, so no tile fallback.
+    expect(container.querySelectorAll('.ax-tile')).toHaveLength(0)
+    expect(container.textContent).toContain(
+      'One path is one district, drawn where it sits in Czechia.',
+    )
+
+    await cleanup(container, root)
+  })
+
+  it('shades every path by its severity bin with the band color', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    // 10 of 60 is over 15 to 40 percent: storm warning shade.
+    const heavy = container.querySelector('.ax-map__path[data-district="1"]')
+    expect(heavy?.getAttribute('data-bin')).toBe('3')
+    expect(heavy?.getAttribute('data-band')).toBe('storm_warning')
+    // 0 of 40 is exactly zero: clear shade.
+    const calm = container.querySelector('.ax-map__path[data-district="2"]')
+    expect(calm?.getAttribute('data-bin')).toBe('0')
+    expect(calm?.getAttribute('data-band')).toBe('clear')
+    // 5 of 55 is over 5 to 15 percent: watch shade.
+    const mid = container.querySelector('.ax-map__path[data-district="3"]')
+    expect(mid?.getAttribute('data-bin')).toBe('2')
+    expect(mid?.getAttribute('data-band')).toBe('watch')
+    // 2 of 45 is under 5 percent: fair skies shade.
+    const light = container.querySelector('.ax-map__path[data-district="4"]')
+    expect(light?.getAttribute('data-bin')).toBe('1')
+    expect(light?.getAttribute('data-band')).toBe('fair_skies')
+
+    await cleanup(container, root)
+  })
+
+  it('says the full sentence in the accessible name and the tooltip', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    const path = container.querySelector('.ax-map__path[data-district="1"]')
+    expect(path?.getAttribute('role')).toBe('button')
+    expect(path?.getAttribute('tabindex')).toBe('0')
+    expect(path?.getAttribute('aria-label')).toBe(
+      'Hl.m. Praha, 10 of 60 accounts critical or storm warning',
+    )
+    expect(path?.querySelector('title')?.textContent).toBe(
+      'Hl.m. Praha, 10 of 60 accounts critical or storm warning',
+    )
+
+    await cleanup(container, root)
+  })
+
+  it('hatches the no_data district over its shade and keeps its counts', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    const hatch = container.querySelector('.ax-map__hatch')
+    expect(hatch).not.toBeNull()
+    expect(container.querySelectorAll('.ax-map__hatch')).toHaveLength(1)
+    expect(hatch?.getAttribute('data-no-data')).toBe('true')
+    expect(hatch?.getAttribute('aria-hidden')).toBe('true')
+
+    const flagged = container.querySelector('.ax-map__path[data-district="4"]')
+    expect(flagged?.getAttribute('data-no-data')).toBe('true')
+    expect(flagged?.getAttribute('aria-label')).toBe(
+      'Liberec, source data incomplete, 2 of 45 accounts critical or storm warning',
+    )
+
+    await cleanup(container, root)
+  })
+
+  it('routes a path click and the Enter key to onSelectDistrict', async () => {
+    const onSelectDistrict = vi.fn()
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      onSelectDistrict,
+    })
+
+    const path = container.querySelector('.ax-map__path[data-district="3"]')
+    await act(async () => {
+      path?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+    expect(onSelectDistrict).toHaveBeenCalledTimes(1)
+    expect(onSelectDistrict).toHaveBeenCalledWith(3)
+
+    await act(async () => {
+      path?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    })
+    expect(onSelectDistrict).toHaveBeenCalledTimes(2)
+    expect(onSelectDistrict).toHaveBeenLastCalledWith(3)
+
+    await cleanup(container, root)
+  })
+
+  it('stays inert when no drill down callback is wired', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+    })
+    const path = container.querySelector('.ax-map__path[data-district="1"]')
+    expect(path).not.toBeNull()
+    await act(async () => {
+      path?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+    await cleanup(container, root)
+  })
+
+  it('takes no shade when the split did not arrive', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: null,
+      scenarioLabel: 'at baseline',
+    })
+
+    expect(container.querySelectorAll('.ax-map__path')).toHaveLength(4)
+    const path = container.querySelector('.ax-map__path[data-district="1"]')
+    expect(path?.getAttribute('data-bin')).toBeNull()
+    expect(path?.getAttribute('data-band')).toBeNull()
+    expect(path?.getAttribute('aria-label')).toBe(
+      'Hl.m. Praha, account split not precomputed',
+    )
+
+    await cleanup(container, root)
+  })
+
+  it('keeps a district the geometry does not know as a region tile', async () => {
+    const { container, root } = await render({
+      doc: mixedFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    expect(container.querySelectorAll('.ax-map__path')).toHaveLength(2)
+    expect(container.querySelectorAll('.ax-tile')).toHaveLength(1)
+    const tile = container.querySelector('.ax-tile[data-district="3"]')
+    expect(tile?.textContent).toContain('Ashfield')
+    expect(container.textContent).toContain(
+      'Districts the map geometry does not know are listed as tiles below, arranged by region.',
+    )
+
+    await cleanup(container, root)
+  })
+})
+
 describe('Cartogram legend', () => {
   it('prints five bins, the severity definition, and both caveats', async () => {
     const { container, root } = await render({
@@ -279,13 +474,13 @@ describe('Cartogram legend', () => {
     expect(bands).toEqual(['clear', 'fair_skies', 'watch', 'storm_warning', 'critical'])
 
     expect(container.textContent).toContain(
-      'One tile is one district, arranged by region, not to geography.',
+      'Districts the map geometry does not know are listed as tiles below, arranged by region.',
     )
     expect(container.textContent).toContain(
       'Severity: critical plus storm warning share of the district accounts.',
     )
     expect(container.textContent).toContain(
-      'Hatched tiles mark an incomplete source row; their account counts are real.',
+      'Hatched districts mark an incomplete source row; their account counts are real.',
     )
 
     await cleanup(container, root)
@@ -341,7 +536,7 @@ describe('Cartogram empty and partial states', () => {
     )
     expect(html).toContain('ax-tile')
     expect(html).toContain('District counts at baseline')
-    expect(html).toContain('arranged by region, not to geography')
+    expect(html).toContain('arranged by region')
   })
 })
 

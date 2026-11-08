@@ -4,32 +4,37 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Deep space background scale
-        void: '#05070f',
-        'void-2': '#0a0e1c',
-        'void-3': '#101628',
-        grid: '#1b2440',
-        // Signal cyan: active UI, transfers, focus
-        signal: '#39c2e0',
-        'signal-dim': '#1a7f96',
+        // Daylight ground scale: a pale sky tinted paper, the light
+        // theme the whole station sits on (morning forecast on paper).
+        // Token names stay from the dark draft so no component class
+        // had to be rewritten; only the values changed.
+        void: '#eaf1fb',
+        'void-2': '#ffffff',
+        'void-3': '#dbe7f7',
+        grid: '#8496b3',
+        // Forecast blue: active UI, transfers, focus
+        signal: '#0d6ea8',
+        'signal-dim': '#0a5380',
         // Money and fuel accents
-        fuel: '#f0b429',
-        planar: '#8b7cf6',
-        danger: '#e05a5a',
-        // Cool ink scale
-        ink: '#dce6f5',
-        'ink-dim': '#8b9bb4',
-        'ink-faint': '#55657f',
-        // Console verdict bands (cp): one hue per band, reused from the
-        // report palette (rp-stamp, rp-money, rp-verified) plus the two
-        // accents already in this config, so the console and the report
-        // read as one system instead of a second palette.
+        fuel: '#8f5502',
+        planar: '#5744c2',
+        danger: '#c02f12',
+        // Cool ink scale: dark slate text on the daylight ground
+        ink: '#16273f',
+        'ink-dim': '#3f5270',
+        'ink-faint': '#56688a',
+        // Console verdict bands (cp): one hue per band, re-tuned from
+        // the dark draft so every band label clears WCAG AA on white
+        // panels and on the daylight ground, while keeping the same
+        // five hues (critical hot, storm amber, watch violet, fair
+        // blue, clear green). Glyphs and labels always ride with a
+        // band name, so color never carries the verdict alone.
         cp: {
-          critical: '#ff6a4d',
-          storm: '#f4b740',
-          watch: '#8b7cf6',
-          fair: '#39c2e0',
-          clear: '#35d0ae',
+          critical: '#c02f12',
+          storm: '#8f5502',
+          watch: '#5744c2',
+          fair: '#0b6b93',
+          clear: '#0a7a5a',
         },
       },
       fontFamily: {

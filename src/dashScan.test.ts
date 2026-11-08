@@ -39,10 +39,13 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/data/receipts.ts',
   'src/data/receipts.test.ts',
   'src/data/types.ts',
+  'src/assets/czechia-districts.ts',
   'src/lib/atlasData.test.ts',
   'src/lib/atlasData.ts',
   'src/lib/atlasPlot.test.ts',
   'src/lib/atlasPlot.ts',
+  'src/lib/districtNames.test.ts',
+  'src/lib/districtNames.ts',
   'src/lib/forecast.test.ts',
   'src/lib/forecast.ts',
   'src/lib/format.ts',
@@ -76,6 +79,7 @@ const AUTO_DIRS: readonly string[] = [
   'src/components/atlas',
   'src/components/console',
   'src/components/judge',
+  'src/components/sky',
   'src/components/weather',
 ]
 
@@ -84,6 +88,7 @@ const CSS_FILES: readonly string[] = [
   'src/index.css',
   'src/components/atlas/atlas.css',
   'src/components/judge/judge.css',
+  'src/components/sky/sky.css',
   'src/components/weather/weather.css',
   'tailwind.config.js',
 ]
@@ -249,6 +254,17 @@ describe('content rule: dash scan over the surviving app sources', () => {
     expect(files).toContain('src/lib/shockParse.test.ts')
     expect(files).toContain('src/lib/shockParse.dash.test.ts')
     expect(files).toContain('src/main.tsx')
+    // The district map join: the bundled geometry asset and its
+    // normalizer with the test that pins all 77 districts.
+    expect(files).toContain('src/assets/czechia-districts.ts')
+    expect(files).toContain('src/lib/districtNames.ts')
+    expect(files).toContain('src/lib/districtNames.test.ts')
+    // The pixel sky header: the scene, the mascot, the shared grid
+    // helper, and its test all ride the sky folder AUTO_DIRS entry.
+    expect(files).toContain('src/components/sky/PixelSky.tsx')
+    expect(files).toContain('src/components/sky/PixelMascot.tsx')
+    expect(files).toContain('src/components/sky/pixelGrid.tsx')
+    expect(files).toContain('src/components/sky/PixelSky.test.ts')
     expect(files.length).toBeGreaterThanOrEqual(85)
   })
 

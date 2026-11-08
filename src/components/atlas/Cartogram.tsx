@@ -1,3 +1,4 @@
+import { type KeyboardEvent } from 'react'
 import './atlas.css'
 import {
   SEVERITY_BINS,
@@ -10,33 +11,42 @@ import {
   type AtlasDoc,
   type BandCounts,
   type DistrictRow,
+  type SeverityBin,
 } from '../../lib/atlasData'
+import { districtKey } from '../../lib/districtNames'
 import { roundHalfUp } from '../../lib/shocks'
+import type { VerdictBandId } from '../../lib/verdict'
+import {
+  CZECHIA_DISTRICTS,
+  CZECHIA_VIEW_BOX,
+  type DistrictGeometry,
+} from '../../assets/czechia-districts'
 
 /**
- * The district cartogram (E5 extension): one tile per district,
- * grouped into labeled region bands, shaded by the five band colors
- * through the severity bins in atlasData. The tiles only read the
- * counts they are handed: district splits arrive precomputed from
- * atlas.json for the live scenario, so a twist re shades the grid
- * without this component ever recomputing a runway.
+ * The district cartogram (E5 extension, now a real map): one path per
+ * district drawn where the district sits in Czechia, shaded by the five
+ * band colors through the severity bins in atlasData. The outlines are
+ * bundled geometry (src/assets/czechia-districts.ts, simplified at build
+ * time from the public domain geoBoundaries ADM2 release), so the map
+ * makes no network call at runtime; the name join between a districts.csv
+ * row and an outline runs through districtNames, and a district whose
+ * name the geometry does not know falls back to the old region tile
+ * instead of disappearing.
  *
- * Honesty by construction: the tile prints the raw critical plus
- * storm warning count over the district's own account total, the
- * legend prints the severity definition and the region, not geography
- * caveat word for word, and a no_data district shows its hatch and its
- * real account counts together because the hatch marks an incomplete
- * source row, never missing accounts: the shipped hatched district
- * still carries populated 2023 demographic cells. A district whose
- * counts did not arrive prints n/a and takes no shade, so absent data
- * can never read as a safe zero.
+ * Honesty by construction: the path prints the raw critical plus
+ * storm warning count over the district's own account total in its
+ * accessible name and its tooltip, the legend prints the severity
+ * definition word for word, and a no_data district keeps a hatch over
+ * its shade because the hatch marks an incomplete source row, never
+ * missing accounts. A district whose counts did not arrive takes no
+ * shade at all, so absent data can never read as a safe zero.
  *
- * Every tile is a focusable button with a full sentence as its
- * accessible name, wired to the optional onSelectDistrict callback and
- * inert without one. Motion: the tile shade transition lives only
- * inside prefers-reduced-motion: no-preference in atlas.css, so the
- * cascade moment runs at 600ms ease-out for judges who welcome motion
- * and swaps instantly for judges who asked for reduced motion.
+ * Every path is focusable with a full sentence as its accessible name,
+ * wired to the optional onSelectDistrict callback and inert without
+ * one. Motion: the shade transition lives only inside
+ * prefers-reduced-motion: no-preference in atlas.css, so the cascade
+ * moment runs at 600ms ease-out for judges who welcome motion and
+ * swaps instantly for judges who asked for reduced motion.
  */
 
 export interface CartogramProps {
@@ -48,16 +58,21 @@ export interface CartogramProps {
   scenarioLabel?: string | null
   /** Extra honesty note, for a twist with no precomputed district split. */
   note?: string | null
-  /** Optional drill down; the tiles stay inert without it. */
+  /** Optional drill down; the paths and tiles stay inert without it. */
   onSelectDistrict?: (districtId: number) => void
 }
 
-/** Grouped digits for every count this grid prints. */
+/** One outline per normalized district name, built once per module. */
+const GEOMETRY_BY_KEY: ReadonlyMap<string, DistrictGeometry> = new Map(
+  CZECHIA_DISTRICTS.map((entry) => [entry.name, entry]),
+)
+
+/** Grouped digits for every count this map prints. */
 function formatCount(count: number): string {
   return count.toLocaleString('en-CA')
 }
 
-/** The tile body, shared by the shaded and the not precomputed cases. */
+/** The sentence a path or a tile says about itself. */
 function tileAria(row: DistrictRow, counts: BandCounts | null): string {
   if (!counts) {
     return `${row.district_name}, account split not precomputed`
@@ -71,6 +86,87 @@ function tileAria(row: DistrictRow, counts: BandCounts | null): string {
   return `${row.district_name}, ${suffix}`
 }
 
+/** Everything a shade decision needs, read from the counts it is handed. */
+interface Shade {
+  bin: SeverityBin | null
+  band: VerdictBandId | null
+  total: number | null
+  risky: number | null
+  sharePercent: number | null
+}
+
+function shadeOf(counts: BandCounts | null): Shade {
+  if (!counts) {
+    return { bin: null, band: null, total: null, risky: null, sharePercent: null }
+  }
+  const severity = districtSeverity(counts)
+  const bin = binFor(severity)
+  const total = bandTotal(counts)
+  const risky = counts.critical + counts.storm_warning
+  return {
+    bin,
+    band: bandForBin(bin),
+    total,
+    risky,
+    sharePercent: total > 0 ? roundHalfUp(risky * 100, total) : null,
+  }
+}
+
+/** One district outline on the map, hatch on top when the source row is short. */
+function CartogramPath({
+  row,
+  counts,
+  onSelectDistrict,
+}: {
+  row: DistrictRow
+  counts: BandCounts | null
+  onSelectDistrict?: (districtId: number) => void
+}) {
+  const geometry = GEOMETRY_BY_KEY.get(districtKey(row.district_name))
+  if (!geometry) {
+    return null
+  }
+  const shade = shadeOf(counts)
+  const label = tileAria(row, counts)
+  const activate = (): void => onSelectDistrict?.(row.district_id)
+
+  const handleKeyDown = (event: KeyboardEvent<SVGPathElement>): void => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      activate()
+    }
+  }
+
+  return (
+    <>
+      <path
+        className="ax-map__path"
+        data-district={row.district_id}
+        data-bin={shade.bin}
+        data-band={shade.band}
+        data-no-data={row.no_data ? 'true' : undefined}
+        d={geometry.path}
+        role="button"
+        tabIndex={0}
+        aria-label={label}
+        onClick={activate}
+        onKeyDown={handleKeyDown}
+      >
+        <title>{label}</title>
+      </path>
+      {row.no_data ? (
+        <path
+          className="ax-map__hatch"
+          d={geometry.path}
+          data-no-data="true"
+          aria-hidden="true"
+        />
+      ) : null}
+    </>
+  )
+}
+
+/** The tile body, shared by the shaded and the not precomputed cases. */
 function CartogramTile({
   row,
   counts,
@@ -80,14 +176,7 @@ function CartogramTile({
   counts: BandCounts | null
   onSelectDistrict?: (districtId: number) => void
 }) {
-  const severity = counts ? districtSeverity(counts) : null
-  const bin = severity !== null ? binFor(severity) : null
-  const band = bin !== null ? bandForBin(bin) : null
-  const total = counts ? bandTotal(counts) : null
-  const risky = counts ? counts.critical + counts.storm_warning : null
-  const sharePercent =
-    counts && total !== null && total > 0 ? roundHalfUp((risky ?? 0) * 100, total) : null
-
+  const shade = shadeOf(counts)
   const className = row.no_data ? 'ax-tile ax-tile-no-data' : 'ax-tile'
 
   return (
@@ -96,19 +185,19 @@ function CartogramTile({
         type="button"
         className={className}
         data-district={row.district_id}
-        data-bin={bin}
-        data-band={band}
+        data-bin={shade.bin}
+        data-band={shade.band}
         data-no-data={row.no_data ? 'true' : undefined}
         aria-label={tileAria(row, counts)}
         onClick={() => onSelectDistrict?.(row.district_id)}
       >
         <span className="ax-tile__name">{row.district_name}</span>
         <span className="ax-tile__value">
-          {sharePercent !== null && risky !== null && total !== null ? (
+          {shade.sharePercent !== null && shade.risky !== null && shade.total !== null ? (
             <>
-              {sharePercent}%
+              {shade.sharePercent}%
               <span className="ax-tile__raw">
-                {`${formatCount(risky)} of ${formatCount(total)}`}
+                {`${formatCount(shade.risky)} of ${formatCount(shade.total)}`}
               </span>
             </>
           ) : (
@@ -143,6 +232,21 @@ export default function Cartogram({
     )
   }
 
+  // Split the rows once: outlines the geometry knows become paths on
+  // the map, and the rest keep their region tile instead of vanishing.
+  const mapped: DistrictRow[] = []
+  const fallback: DistrictRow[] = []
+  for (const row of doc.districts) {
+    if (GEOMETRY_BY_KEY.has(districtKey(row.district_name))) {
+      mapped.push(row)
+    } else {
+      fallback.push(row)
+    }
+  }
+
+  const countsFor = (row: DistrictRow): BandCounts | null =>
+    districtCounts?.[String(row.district_id)] ?? null
+
   return (
     <section className="ax-cartogram" aria-labelledby="ax-cartogram-title">
       <div className="ax-cartogram__head">
@@ -154,23 +258,61 @@ export default function Cartogram({
         ) : null}
       </div>
 
-      <div className="ax-cartogram__regions">
-        {groups.map((group) => (
-          <div className="ax-region" key={group.region}>
-            <h4 className="ax-region__label">{group.region}</h4>
-            <ul className="ax-region__grid">
-              {group.districts.map((row) => (
-                <CartogramTile
-                  key={row.district_id}
-                  row={row}
-                  counts={districtCounts?.[String(row.district_id)] ?? null}
-                  onSelectDistrict={onSelectDistrict}
-                />
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      {mapped.length > 0 ? (
+        <svg
+          className="ax-map"
+          viewBox={CZECHIA_VIEW_BOX}
+          role="group"
+          aria-label="District map of Czechia"
+          data-mapped={mapped.length}
+        >
+          <defs>
+            <pattern
+              id="ax-no-data-hatch"
+              width="10"
+              height="10"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(45)"
+            >
+              <line x1="0" y1="0" x2="0" y2="10" stroke="rgba(22, 39, 63, 0.55)" strokeWidth="4" />
+            </pattern>
+          </defs>
+          {mapped.map((row) => (
+            <CartogramPath
+              key={row.district_id}
+              row={row}
+              counts={countsFor(row)}
+              onSelectDistrict={onSelectDistrict}
+            />
+          ))}
+        </svg>
+      ) : null}
+
+      {fallback.length > 0 ? (
+        <div className="ax-cartogram__regions">
+          {groups
+            .map((group) => ({
+              ...group,
+              districts: group.districts.filter((row) => fallback.includes(row)),
+            }))
+            .filter((group) => group.districts.length > 0)
+            .map((group) => (
+              <div className="ax-region" key={group.region}>
+                <h4 className="ax-region__label">{group.region}</h4>
+                <ul className="ax-region__grid">
+                  {group.districts.map((row) => (
+                    <CartogramTile
+                      key={row.district_id}
+                      row={row}
+                      counts={countsFor(row)}
+                      onSelectDistrict={onSelectDistrict}
+                    />
+                  ))}
+                </ul>
+              </div>
+            ))}
+        </div>
+      ) : null}
 
       <div className="ax-legend">
         <ul className="ax-legend__bins">
@@ -182,11 +324,13 @@ export default function Cartogram({
           ))}
         </ul>
         <p className="ax-legend__note">
-          One tile is one district, arranged by region, not to geography.
+          {fallback.length > 0
+            ? 'Districts the map geometry does not know are listed as tiles below, arranged by region.'
+            : 'One path is one district, drawn where it sits in Czechia.'}
         </p>
         <p className="ax-legend__note">{`Severity: ${SEVERITY_DEFINITION}.`}</p>
         <p className="ax-legend__note">
-          Hatched tiles mark an incomplete source row; their account counts are real.
+          Hatched districts mark an incomplete source row; their account counts are real.
         </p>
         {note ? <p className="ax-legend__note">{note}</p> : null}
       </div>

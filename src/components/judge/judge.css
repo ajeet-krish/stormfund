@@ -4,13 +4,13 @@
    tokens live in ../weather/weather.css and are untouched here), and
    nothing in this file edits src/index.css.
 
-     jg-grounds    #070c18   archival navy ground
-     jg-panel      #0d1526   raised bar surface
-     jg-parchment  #e9e0c9   primary text (14.9 to 1 on grounds)
-     jg-dim        rgba(233, 224, 201, 0.72)   secondary text
-     jg-key        #1b2740   keycap face
-     jg-flag       #ff6a4d   guard flag warning
-     jg-ok         #35d0ae   verified receipt
+     jg-grounds    #eaf1fb   daylight ground
+     jg-panel      #ffffff   raised bar surface
+     jg-parchment  #16273f   primary text (15 to 1 on grounds)
+     jg-dim        rgba(22, 39, 63, 0.82)   secondary text
+     jg-key        #dbe6f5   keycap face
+     jg-flag       #c02f12   guard flag warning
+     jg-ok         #0a7a5a   verified receipt
 
    Keyboard focus comes from the global focus-visible rule in
    src/index.css, so every button this file renders shows a visible
@@ -19,15 +19,16 @@
    ========================================================================== */
 
 :root {
-  --jg-grounds: #070c18;
-  --jg-panel: #0d1526;
-  --jg-parchment: #e9e0c9;
-  --jg-dim: rgba(233, 224, 201, 0.72);
-  --jg-faint: rgba(233, 224, 201, 0.54);
-  --jg-rule: rgba(233, 224, 201, 0.24);
-  --jg-key: #1b2740;
-  --jg-flag: #ff6a4d;
-  --jg-ok: #35d0ae;
+  --jg-grounds: #eaf1fb;
+  --jg-panel: #ffffff;
+  --jg-parchment: #16273f;
+  --jg-dim: rgba(22, 39, 63, 0.82);
+  --jg-faint: rgba(22, 39, 63, 0.68);
+  --jg-rule: rgba(22, 39, 63, 0.32);
+  --jg-key: #dbe6f5;
+  --jg-flag: #c02f12;
+  --jg-ok: #0a7a5a;
+  --jg-shadow: #a8bcd8;
 }
 
 .jg-bar {
@@ -38,7 +39,8 @@
   gap: 10px 18px;
   padding: 10px 14px;
   background: var(--jg-panel);
-  border-top: 1px solid rgba(233, 224, 201, 0.24);
+  border-top: 3px solid var(--jg-parchment);
+  box-shadow: 0 -4px 0 0 var(--jg-shadow);
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
 }
@@ -66,9 +68,10 @@
   min-height: 44px;
   padding: 4px 12px;
   color: var(--jg-parchment);
-  background: transparent;
-  border: 1px solid var(--jg-rule);
-  border-radius: 4px;
+  background: var(--jg-panel);
+  border: 2px solid var(--jg-parchment);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 0 var(--jg-shadow);
   font-family: inherit;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
@@ -113,9 +116,10 @@
   min-height: 44px;
   padding: 4px 10px;
   color: var(--jg-parchment);
-  background: transparent;
-  border: 1px solid var(--jg-rule);
-  border-radius: 4px;
+  background: var(--jg-panel);
+  border: 2px solid var(--jg-parchment);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 0 var(--jg-shadow);
   font-family: inherit;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
@@ -138,9 +142,8 @@ button.jg-shortcut {
   min-height: 1.6rem;
   padding: 0 5px;
   background: var(--jg-key);
-  border: 1px solid rgba(233, 224, 201, 0.34);
-  border-bottom-width: 2px;
-  border-radius: 3px;
+  border: 2px solid var(--jg-parchment);
+  border-radius: 0;
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 700;
@@ -148,7 +151,7 @@ button.jg-shortcut {
 }
 
 .jg-shortcut__label {
-  color: rgba(233, 224, 201, 0.72);
+  color: var(--jg-dim);
   white-space: nowrap;
 }
 
@@ -174,22 +177,22 @@ button.jg-shortcut {
   align-items: center;
   gap: 6px;
   padding: 3px 8px;
-  background: rgba(255, 106, 77, 0.14);
-  border: 1px solid #ff6a4d;
-  border-radius: 3px;
+  background: rgba(192, 47, 18, 0.1);
+  border: 2px solid var(--jg-flag);
+  border-radius: 0;
   color: var(--jg-parchment);
   font-size: 0.6875rem;
   line-height: 1.5;
 }
 
 .jg-flag__mark {
-  color: #ff6a4d;
+  color: var(--jg-flag);
   font-weight: 700;
 }
 
 .jg-clean {
   margin: 0;
-  color: rgba(233, 224, 201, 0.54);
+  color: #56688a;
   font-size: 0.6875rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -216,9 +219,9 @@ button.jg-shortcut {
   gap: 6px;
   min-height: 28px;
   padding: 3px 8px;
-  background: rgba(255, 106, 77, 0.14);
-  border: 1px solid #ff6a4d;
-  border-radius: 3px;
+  background: rgba(192, 47, 18, 0.1);
+  border: 2px solid var(--jg-flag);
+  border-radius: 0;
   color: var(--jg-parchment);
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
@@ -227,7 +230,7 @@ button.jg-shortcut {
 }
 
 .jg-chip__mark {
-  color: #ff6a4d;
+  color: var(--jg-flag);
   font-weight: 700;
 }
 
@@ -258,8 +261,9 @@ button.jg-shortcut {
   gap: 8px;
   padding: 12px 14px;
   background: var(--jg-panel);
-  border: 1px solid var(--jg-rule);
-  border-radius: 4px;
+  border: 2px solid var(--jg-parchment);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 0 var(--jg-shadow);
 }
 
 .jg-dock__step {
@@ -325,10 +329,10 @@ button.jg-shortcut {
   align-items: center;
   gap: 8px;
   padding: 4px 10px;
-  background: rgba(233, 224, 201, 0.06);
-  border: 1px dashed rgba(233, 224, 201, 0.4);
-  border-radius: 3px;
-  color: rgba(233, 224, 201, 0.74);
+  background: rgba(22, 39, 63, 0.04);
+  border: 2px dashed rgba(22, 39, 63, 0.55);
+  border-radius: 0;
+  color: var(--jg-dim);
   font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
   font-size: 0.75rem;
@@ -337,13 +341,13 @@ button.jg-shortcut {
 
 .jg-receipt-verified {
   border-style: solid;
-  border-color: #35d0ae;
-  color: #35d0ae;
+  border-color: var(--jg-ok);
+  color: var(--jg-ok);
 }
 
 .jg-receipt-unverified {
   border-style: solid;
-  border-color: rgba(233, 224, 201, 0.5);
+  border-color: rgba(22, 39, 63, 0.5);
 }
 
 .jg-receipt__mark {
@@ -351,7 +355,7 @@ button.jg-shortcut {
 }
 
 .jg-receipt__label {
-  color: rgba(233, 224, 201, 0.54);
+  color: #56688a;
   font-size: 0.6875rem;
 }
 
@@ -367,10 +371,10 @@ button.jg-shortcut {
 
 @keyframes jg-key-glow {
   from {
-    box-shadow: 0 0 0 0 rgba(233, 224, 201, 0.05);
+    box-shadow: 0 0 0 0 rgba(13, 110, 168, 0.08);
   }
 
   to {
-    box-shadow: 0 0 0 4px rgba(233, 224, 201, 0.16);
+    box-shadow: 0 0 0 4px rgba(13, 110, 168, 0.28);
   }
 }

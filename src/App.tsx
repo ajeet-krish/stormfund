@@ -3,13 +3,17 @@ import AtlasSection from './components/atlas/AtlasSection'
 import ConsoleView from './components/console/ConsoleView'
 import JudgeBar from './components/judge/JudgeBar'
 import RehearsalDock from './components/judge/RehearsalDock'
+import PixelMascot from './components/sky/PixelMascot'
+import PixelSky from './components/sky/PixelSky'
 import { useEdgeGuard } from './components/judge/useEdgeGuard'
 import { useJudgeDispatcher, useJudgeShortcuts } from './components/judge/useJudgeShortcuts'
 
 /**
  * App shell (Phase E2, docs/decisions.md): the engine owns the page.
- * The header names the instrument, the main slot mounts the Storm
- * Atlas section directly above the console (E5: the population
+ * The header names the instrument, the main slot mounts the console
+ * first so a judge reaches account entry before anything else (its
+ * internal order is already lookup, baseline plus shock, forecast,
+ * plan), then the Storm Atlas section below it (E5: the population
  * headline and strip plot, then the account cards it drills into),
  * and the footer cites the pipeline that wrote the bundled artifact.
  * E6 adds the judge layer: the key listener and the dispatcher wire
@@ -28,37 +32,37 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-void text-ink">
-      <header className="border-b border-grid bg-void-2">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <div className="flex items-center gap-3">
+      <header className="px-header">
+        <PixelSky />
+        <div className="relative mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
+          <div className="px-plate">
             <img
               src={`${import.meta.env.BASE_URL}logo.svg`}
               alt="Storm Fund logo"
               className="h-9 w-9 shrink-0"
             />
             <div>
-              <h1 className="font-mono text-xl font-semibold tracking-widest text-signal">
-                Resilience Weather Station
-              </h1>
-              <p className="mt-1 text-xs text-ink-dim">
+              <h1 className="px-title">Resilience Weather Station</h1>
+              <p className="px-tagline">
                 A weather forecast for personal finance: pick an account, take a shock, read the
                 verdict.
               </p>
             </div>
           </div>
-          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.18em] text-ink-faint">
-            Tangerine track, Sheridan Datathon 2026
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="px-track">Tangerine track, Sheridan Datathon 2026</p>
+            <PixelMascot />
+          </div>
         </div>
       </header>
 
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6">
-        <section id="atlas">
-          <AtlasSection />
-        </section>
         <div id="console">
           <ConsoleView />
         </div>
+        <section id="atlas">
+          <AtlasSection />
+        </section>
         {rehearsalOpen ? <RehearsalDock /> : null}
       </main>
 
