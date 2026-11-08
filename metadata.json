@@ -3,8 +3,13 @@
   "checkpoint_id": "01M6X0HG0ST19TXCPZBVMQXA8G",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
-  "files_touched": null,
+  "checkpoints_count": 5,
+  "files_touched": [
+    "scripts/engine/atlas.py",
+    "scripts/engine/build.py",
+    "scripts/engine/test_atlas.py",
+    "scripts/engine/verify.py"
+  ],
   "sessions": [
     {
       "metadata": "/0/metadata.json",
@@ -12,31 +17,38 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": ""
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 3378,
+    "input_tokens": 20047,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 528768,
-    "output_tokens": 2493,
-    "api_call_count": 2,
+    "cache_read_tokens": 4506816,
+    "output_tokens": 7261,
+    "api_call_count": 11,
     "subagent_tokens": {
-      "input_tokens": 157334,
+      "input_tokens": 525894,
       "cache_creation_tokens": 0,
-      "cache_read_tokens": 3942784,
-      "output_tokens": 19828,
-      "api_call_count": 64
+      "cache_read_tokens": 12962048,
+      "output_tokens": 69484,
+      "api_call_count": 179
     }
   },
   "redaction": {
-    "replacements": 4,
+    "replacements": 12,
     "layers": {
-      "betterleaks": 0,
+      "betterleaks": 4,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 4,
+      "entropy": 8,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0
