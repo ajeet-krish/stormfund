@@ -29,25 +29,16 @@ Full pivot to the Tangerine "Resilience Rewired" Financial Resilience Engine (C-
 
 Hard stops: findings freeze Sat 6 PM, Devpost draft Sat 8 PM, submit Sun 12 PM. Headline numbers must match docs/tangerine-challenge.md answer key exactly.
 
-## Coordination note (Nov 08, user decision)
+## Coordination note (Nov 08, user decision, resolved)
 
-The seven-state weather ladder is retired on every surface. The single
-vocabulary is src/lib/verdict.ts (five bands), per the E5 record and
-the user's confirmed decision. The session that added
-scripts/engine/weather_state.py, scripts/engine/weather_state_goldens.json,
-and the seven-state shading in public/data/engine/atlas.json must
-reband the district cartogram to the five verdict bands (keep the
-cartogram feature, drop the ladder), unhook the ladder assertions from
-verify.py's drift gate (profiles.json gate stays), and append a
-correction entry to docs/decisions.md noting the misfiled Phase E5
-atlas precompute record. Do not reintroduce clear/cloudy/overcast/
-rain/drought/storm/flood in code, artifacts, or docs.
+The seven-state weather ladder is retired on every surface, and the
+reband is DONE (commits ac6b652 and f5cb657: weather_state.py and its
+goldens deleted, atlas.json rebuilt on the five bands, correction entry
+in docs/decisions.md). The rule stands for any future work: do not
+reintroduce clear, cloudy, overcast, rain, drought, storm, or flood in
+code, artifacts, or docs. The single vocabulary is src/lib/verdict.ts
+(five bands).
 
-Two more routing items for the session owning docs/devpost.md:
-(1) paste the approved E7 sentence verbatim into "Limits we declare
-up front": future work: a behavioral score attested on chain could
-gate a credit line or automate surplus sweeps; not implemented, and
-the underlying model (F3, AUC 0.590) is not strong enough to gate
-credit
-(2) RESOLVED: npm run typecheck is green again as of the E7 review
-(0 errors); no action needed.
+Both earlier routing items are also resolved: the E7 future work
+sentence is in docs/devpost.md "Limits we declare up front", and
+npm run typecheck is green (0 errors).

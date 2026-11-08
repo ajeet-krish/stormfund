@@ -278,9 +278,10 @@ Devpost submission: [DEVPOST SUBMISSION URL]
 Data credit: PKDD'99 Discovery Challenge Financial dataset, CTU Prague Relational Dataset Repository.
 ```
 
-Upload extras from `docs/video/script-template.md`: thumbnail is the money
-shot frame (storm boundary mid transition, signpost RUNWAY number legible),
-captions uploaded if not burned in, and a logged out playback test at 1080p
+Upload extras from `docs/video/plan.md`: thumbnail is the closing frame
+(headline at 10% with the baseline subline, readable at 168x94),
+captions uploaded as an SRT (do not burn them; the local ffmpeg lacks
+libass), and a logged out playback test in a private window at 1080p
 with sound off before the link goes into Devpost.
 
 ## 6. Submission checklist
