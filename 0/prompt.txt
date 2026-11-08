@@ -1,0 +1,5 @@
+in the readme, write how we used Entire from the start of the project. mention entire specific features
+
+---
+
+continue agent work
