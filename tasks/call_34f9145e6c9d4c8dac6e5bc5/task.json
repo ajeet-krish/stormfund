@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_34f9145e6c9d4c8dac6e5bc5",
+  "agent_id": "ses_e45e8f7ddffeZ3UftI47Qg5zWt",
+  "subagent_type": "general",
+  "task_description": "Run four suites and atlas summary",
+  "token_usage": {
+    "input_tokens": 8203,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 60672,
+    "output_tokens": 2308,
+    "api_call_count": 8
+  },
+  "started_at": "2026-11-08T02:37:14.015-05:00",
+  "completed_at": "2026-11-08T02:38:37.764587-05:00"
+}

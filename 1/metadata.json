@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6X3ED2X84F9DDSKPHFDVRA0",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T08:12:27.82592Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "docs/reviews.md"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "5c30b4148ce3",
+  "checkpoint_transcript_start": 278,
+  "transcript_lines_at_start": 278,
+  "compact_transcript_start": 278,
+  "token_usage": {
+    "input_tokens": 451048,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2774144,
+    "output_tokens": 3719,
+    "api_call_count": 7,
+    "subagent_tokens": {
+      "input_tokens": 279061,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 6924544,
+      "output_tokens": 31413,
+      "api_call_count": 97
+    }
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 26
+  }
+}
