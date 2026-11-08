@@ -1,0 +1,62 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6W7H9VFTKNY1HR7RY6TKV8H",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T00:04:40.680166Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".env.example",
+    ".gitignore",
+    "docs/architecture.md",
+    "docs/decisions.md",
+    "src/components/console/ShockChips.tsx",
+    "src/components/console/ShockPanel.tsx",
+    "src/components/console/TypedShock.tsx",
+    "src/components/console/typedShock.smoke.test.ts",
+    "src/index.css",
+    "src/lib/shockParse.dash.test.ts",
+    "src/lib/shockParse.test.ts",
+    "src/lib/shockParse.ts",
+    "src/state/consoleStore.ts",
+    "src/state/consoleStore.typed.test.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "906238a53d36",
+  "checkpoint_transcript_start": 143,
+  "transcript_lines_at_start": 143,
+  "compact_transcript_start": 143,
+  "token_usage": {
+    "input_tokens": 26558,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 2811904,
+    "output_tokens": 8865,
+    "api_call_count": 11,
+    "subagent_tokens": {
+      "input_tokens": 344308,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 7117568,
+      "output_tokens": 49424,
+      "api_call_count": 98
+    }
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 14
+  }
+}
