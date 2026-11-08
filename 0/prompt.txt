@@ -1,0 +1,5 @@
+without making any edits. Explain to me in simplest english how the data is stored and accessed, how solana and entire is used, and how the Plan is calculated
+
+---
+
+what does loan status A/P mean
