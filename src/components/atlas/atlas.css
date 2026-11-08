@@ -73,11 +73,13 @@
   color: var(--cp-ink-faint);
 }
 
-/* Band cells: glyph, label, count, percent, all on one hue --------------- */
+/* Band cells: glyph, label, count, percent, all on one hue. The five
+   cells share one horizontal line at judging widths, each taking an
+   equal share; only a narrow phone lets the row break. -------------- */
 
 .ax-cells {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: var(--rp-s2);
   list-style: none;
   margin: 0;
@@ -86,6 +88,8 @@
 
 .ax-cell {
   --ax-band: var(--cp-ink-faint);
+  flex: 1 1 0;
+  min-width: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 2px var(--rp-s2);
@@ -97,6 +101,19 @@
   border-top: 6px solid var(--ax-band);
   border-radius: var(--cp-radius);
   box-shadow: 3px 3px 0 0 var(--cp-shadow);
+}
+
+/* The one place the row breaks: a phone width where five equal shares
+   would starve the count and percent lines. Cells wrap there and
+   nowhere wider. */
+@media (max-width: 36rem) {
+  .ax-cells {
+    flex-wrap: wrap;
+  }
+
+  .ax-cell {
+    flex: 1 1 11rem;
+  }
 }
 
 .ax-cell__glyph {
@@ -235,21 +252,21 @@
 }
 
 /* ==========================================================================
-   District cartogram and rain gauge (E5 extension).
+   District cartogram (E5 extension).
 
    The header at the top of this file said nothing animates, which was
-   true until this block. The two motions below are the cascade
-   moment: a twist lands and every tile shade plus the gauge fill step
-   together over 600ms ease-out, and both live only inside
-   prefers-reduced-motion: no-preference, so a judge who asked for
-   reduced motion gets an instant swap (the global reduce block in
-   src/index.css zeroes durations again as a second gate). Band hue
-   still never arrives as a literal: the five mapping rules repeat at
-   the end of this block so each new component resolves its band color
-   even when mounted outside the atlas shell.
+   true until this block. The one motion below is the cascade moment:
+   a twist lands and every tile shade steps over 600ms ease-out, and it
+   lives only inside prefers-reduced-motion: no-preference, so a judge
+   who asked for reduced motion gets an instant swap (the global reduce
+   block in src/index.css zeroes durations again as a second gate).
+   Band hue still never arrives as a literal: the five mapping rules
+   repeat at the end of this block so each new component resolves its
+   band color even when mounted outside the atlas shell.
    ========================================================================== */
 
-/* Headline row: the panel, then the gauge beside it ---------------- */
+/* Headline row: the population panel, one column now that the gauge
+   beside it is gone ---------------------------------------------- */
 
 .ax-lead {
   display: grid;
@@ -257,12 +274,6 @@
   gap: var(--rp-s4);
   align-items: start;
   min-width: 0;
-}
-
-@media (min-width: 760px) {
-  .ax-lead {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
 }
 
 /* Cartogram: one tile per district, grouped into region bands ------ */
@@ -476,16 +487,14 @@
   color: var(--cp-ink-faint);
 }
 
-/* Rain gauge: the share outside the two risk bands ----------------- */
+/* District detail: the district name plus the five band counts for the
+   district the judge picked, announced politely when the selection
+   changes. Same one line treatment as the band chips, with the phone
+   escape below 36rem. -------------------------------------------------- */
 
-.ax-gauge {
-  --ax-band: var(--cp-band-clear);
+.ax-detail {
   display: grid;
-  justify-items: center;
-  align-content: start;
-  gap: 4px;
-  margin: 0;
-  min-width: 0;
+  gap: var(--rp-s2);
   padding: var(--rp-s3);
   background: var(--cp-inset);
   border: 2px solid var(--cp-ink);
@@ -493,112 +502,90 @@
   box-shadow: 3px 3px 0 0 var(--cp-shadow);
 }
 
-.ax-gauge__pct {
+.ax-detail__name {
   margin: 0;
   font-family: var(--rp-font-display);
   font-weight: 700;
-  font-size: clamp(1.75rem, 4vw, 2.375rem);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+  font-size: 1rem;
   color: var(--cp-ink);
-  text-shadow: 3px 3px 0 0 var(--cp-shadow);
 }
 
-.ax-gauge__count {
+.ax-detail__bands {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--rp-s2);
+  list-style: none;
   margin: 0;
+  padding: 0;
+}
+
+.ax-detail__band {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  padding: var(--rp-s2);
+  background: var(--cp-surface);
+  border: 2px solid var(--cp-ink);
+  border-top: 6px solid var(--ax-band);
+}
+
+.ax-detail__label {
   font-family: var(--rp-font-utility);
-  font-size: 0.6875rem;
-  font-variant-numeric: tabular-nums;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--cp-ink-dim);
 }
 
-.ax-gauge__svg {
-  display: block;
-  width: 100%;
-  max-width: 150px;
-  height: auto;
-  margin-top: 2px;
-}
-
-.ax-gauge__tube {
-  fill: var(--cp-surface);
-  stroke: var(--cp-rule);
-  stroke-width: 1;
-}
-
-.ax-gauge__fill {
-  --ax-band: var(--cp-ink-faint);
-  fill: var(--ax-band);
-  transform-box: fill-box;
-  transform-origin: bottom center;
-}
-
-.ax-gauge__ref {
-  stroke: var(--cp-ink-dim);
-  stroke-width: 1;
-  stroke-dasharray: 5 4;
-}
-
-.ax-gauge__ref-label {
-  font-family: var(--rp-font-utility);
-  font-size: 11px;
-  font-weight: 600;
+.ax-detail__count {
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
   font-variant-numeric: tabular-nums;
-  fill: var(--cp-ink-dim);
+  color: var(--ax-band);
 }
 
-.ax-gauge__face {
-  margin: 2px 0 0;
-  max-width: 16ch;
-  text-align: center;
-  font-family: var(--rp-font-utility);
-  font-size: 0.625rem;
-  line-height: 1.35;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.ax-detail__note {
+  margin: 0;
+  font-family: var(--rp-font-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
   color: var(--cp-ink-faint);
 }
 
-.ax-gauge__scenario {
-  margin: 0;
-  font-family: var(--rp-font-utility);
-  font-size: 0.6875rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--cp-ink-dim);
-}
+@media (max-width: 36rem) {
+  .ax-detail__bands {
+    flex-wrap: wrap;
+  }
 
-@media (prefers-reduced-motion: no-preference) {
-  .ax-gauge__fill {
-    transition: transform 600ms ease-out;
+  .ax-detail__band {
+    flex: 1 1 9rem;
   }
 }
 
-/* The five mapping rules again, scoped to the two new roots so a
-   cartogram or gauge still resolves band color from tokens when it is
-   mounted outside .ax-shell (tests, future surfaces). */
+/* The five mapping rules again, scoped to the cartogram root so a
+   map or tile resolves band color from tokens when it is mounted
+   outside .ax-shell (tests, future surfaces). */
 
-.ax-cartogram [data-band='critical'],
-.ax-gauge [data-band='critical'] {
+.ax-cartogram [data-band='critical'] {
   --ax-band: var(--cp-band-critical);
 }
 
-.ax-cartogram [data-band='storm_warning'],
-.ax-gauge [data-band='storm_warning'] {
+.ax-cartogram [data-band='storm_warning'] {
   --ax-band: var(--cp-band-storm);
 }
 
-.ax-cartogram [data-band='watch'],
-.ax-gauge [data-band='watch'] {
+.ax-cartogram [data-band='watch'] {
   --ax-band: var(--cp-band-watch);
 }
 
-.ax-cartogram [data-band='fair_skies'],
-.ax-gauge [data-band='fair_skies'] {
+.ax-cartogram [data-band='fair_skies'] {
   --ax-band: var(--cp-band-fair);
 }
 
-.ax-cartogram [data-band='clear'],
-.ax-gauge [data-band='clear'] {
+.ax-cartogram [data-band='clear'] {
   --ax-band: var(--cp-band-clear);
 }
 

@@ -1,6 +1,7 @@
-import { type KeyboardEvent } from 'react'
+import { useState, type KeyboardEvent } from 'react'
 import './atlas.css'
 import {
+  ATLAS_BAND_IDS,
   SEVERITY_BINS,
   SEVERITY_DEFINITION,
   bandForBin,
@@ -15,7 +16,7 @@ import {
 } from '../../lib/atlasData'
 import { districtKey } from '../../lib/districtNames'
 import { roundHalfUp } from '../../lib/shocks'
-import type { VerdictBandId } from '../../lib/verdict'
+import { verdictBandById, type VerdictBandId } from '../../lib/verdict'
 import {
   CZECHIA_DISTRICTS,
   CZECHIA_VIEW_BOX,
@@ -32,6 +33,13 @@ import {
  * row and an outline runs through districtNames, and a district whose
  * name the geometry does not know falls back to the old region tile
  * instead of disappearing.
+ *
+ * Selecting a district (click, Enter, or Space) opens the detail panel
+ * under the map: the district name plus its account count in each of
+ * the five bands, read straight from the precomputed split the tiles
+ * were handed, never from raw rows. A district whose counts did not
+ * arrive says so instead of printing zeros, and a hatched no_data
+ * district keeps its real counts next to the incomplete source note.
  *
  * Honesty by construction: the path prints the raw critical plus
  * storm warning count over the district's own account total in its
@@ -210,6 +218,40 @@ function CartogramTile({
   )
 }
 
+/**
+ * The detail panel for the district the judge picked: the name and the
+ * account count in each of the five bands, straight from the
+ * precomputed split the map was handed. Counts that never arrived read
+ * as an honest note instead of five zeros, and the hatched no_data
+ * districts keep their real counts beside the incomplete source note.
+ */
+function CartogramDetail({ row, counts }: { row: DistrictRow; counts: BandCounts | null }) {
+  return (
+    <div className="ax-detail" role="status">
+      <p className="ax-detail__name">{row.district_name}</p>
+      {counts ? (
+        <ul className="ax-detail__bands" aria-label={`Band counts for ${row.district_name}`}>
+          {ATLAS_BAND_IDS.map((bandId) => (
+            <li key={bandId} className="ax-detail__band" data-band={bandId}>
+              <span className="ax-detail__label">{verdictBandById(bandId).label}</span>
+              <span className="ax-detail__count">{formatCount(counts[bandId])}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="ax-detail__note">
+          The band split for this district did not arrive, so no counts are shown here.
+        </p>
+      )}
+      {row.no_data ? (
+        <p className="ax-detail__note">
+          Source data incomplete: these are the accounts really counted in this district.
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
 export default function Cartogram({
   doc,
   districtCounts,
@@ -218,6 +260,7 @@ export default function Cartogram({
   onSelectDistrict,
 }: CartogramProps) {
   const groups = regionsGrouped(doc)
+  const [selectedId, setSelectedId] = useState<number | null>(null)
 
   if (!doc || groups.length === 0) {
     return (
@@ -246,6 +289,18 @@ export default function Cartogram({
 
   const countsFor = (row: DistrictRow): BandCounts | null =>
     districtCounts?.[String(row.district_id)] ?? null
+
+  /** One activation: open the detail here and forward to the caller. */
+  const activate = (districtId: number): void => {
+    setSelectedId(districtId)
+    onSelectDistrict?.(districtId)
+  }
+
+  const selectedRow =
+    selectedId === null
+      ? null
+      : (doc.districts.find((row) => row.district_id === selectedId) ?? null)
+  const selectedCounts = selectedRow ? countsFor(selectedRow) : null
 
   return (
     <section className="ax-cartogram" aria-labelledby="ax-cartogram-title">
@@ -282,7 +337,7 @@ export default function Cartogram({
               key={row.district_id}
               row={row}
               counts={countsFor(row)}
-              onSelectDistrict={onSelectDistrict}
+              onSelectDistrict={activate}
             />
           ))}
         </svg>
@@ -305,7 +360,7 @@ export default function Cartogram({
                       key={row.district_id}
                       row={row}
                       counts={countsFor(row)}
-                      onSelectDistrict={onSelectDistrict}
+                      onSelectDistrict={activate}
                     />
                   ))}
                 </ul>
@@ -313,6 +368,8 @@ export default function Cartogram({
             ))}
         </div>
       ) : null}
+
+      {selectedRow ? <CartogramDetail row={selectedRow} counts={selectedCounts} /> : null}
 
       <div className="ax-legend">
         <ul className="ax-legend__bins">

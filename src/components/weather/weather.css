@@ -195,16 +195,20 @@
 }
 
 /* ==========================================================================
-   Condition bands: the sky legend with the printed threshold sentence.
-   One band vocabulary (src/lib/verdict.ts): the band's tailwind class on
-   the list item sets the color, currentColor carries it into the left
-   rule and the label, and the responsive grid keeps five bands readable
-   from a phone up to a judging table.
+   Condition bands: the sky ladder with the printed threshold sentence,
+   critical leftmost and clear rightmost. One band vocabulary
+   (src/lib/verdict.ts): the band's tailwind class on the list item sets
+   the color and currentColor carries it into the left rule and the
+   label. The five chips share one horizontal line at every width a
+   judge would read them from, each taking an equal share and letting
+   its own label and threshold wrap inside the chip; only a narrow
+   phone lets the line itself break, because below that width one row
+   would squeeze the threshold sentences past legibility.
    ========================================================================== */
 
 .wx-bands {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: 6px;
   list-style: none;
   margin: 0;
@@ -212,6 +216,8 @@
 }
 
 .wx-band {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   align-items: baseline;
   gap: 10px;
@@ -255,6 +261,19 @@
   font-family: var(--wx-font-body);
   font-size: 0.8125rem;
   color: var(--wx-text-dim);
+}
+
+/* The one place the ladder is allowed to break: a phone width where
+   five equal shares would starve the threshold sentences. Chips wrap
+   onto a second line there and nowhere wider. */
+@media (max-width: 36rem) {
+  .wx-bands {
+    flex-wrap: wrap;
+  }
+
+  .wx-band {
+    flex: 1 1 11rem;
+  }
 }
 
 /* ==========================================================================
@@ -319,9 +338,9 @@
 
 /* ==========================================================================
    Weather panel: the full width section that composes the strip, the
-   cliff overlay, the honesty note, and the band key. Local spacing only,
-   nothing here reaches into the cp or rp namespaces beyond the panel
-   classes the console already defines.
+   cliff overlay, the honesty note, and the band chips. Local spacing
+   only, nothing here reaches into the cp or rp namespaces beyond the
+   panel classes the console already defines.
    ========================================================================== */
 
 .wx-panel {
@@ -370,10 +389,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--wx-text-faint);
-}
-
-.wx-bands__title {
-  margin: 4px 0 0;
 }
 
 /* ==========================================================================

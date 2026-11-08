@@ -11,7 +11,6 @@ import { loadSharedAtlas, type AtlasDoc, type BandCounts } from '../../lib/atlas
 import { useConsole } from '../../state/consoleStore'
 import AtlasStripPlot from './AtlasStripPlot'
 import Cartogram from './Cartogram'
-import RainGauge from './RainGauge'
 import StormAtlas from './StormAtlas'
 
 /**
@@ -35,16 +34,14 @@ import StormAtlas from './StormAtlas'
  * the judge has asked for reduced motion.
  *
  * The E5 extension mounts two siblings around the same derivation: the
- * rain gauge sits beside the headline panel and reads the summary's
- * own counts, and the district cartogram reads the precomputed
- * district splits from the bundled atlas artifact (one fetch per
- * shell, memoized, offline like profiles.json). districtScenarioFor
- * picks which precomputed table matches the live twist and always
- * labels it with the stormAtlas scenarioLabel contract, so cells,
- * tiles, and gauge move together on one twist change and no sentence
- * ever claims a scenario the numbers did not run. A failed or slow
- * artifact load slims the cartogram to a note and never disturbs the
- * headline, the cells, the strip plot, or the gauge.
+ * district cartogram reads the precomputed district splits from the
+ * bundled atlas artifact (one fetch per shell, memoized, offline like
+ * profiles.json). districtScenarioFor picks which precomputed table
+ * matches the live twist and always labels it with the stormAtlas
+ * scenarioLabel contract, so cells and tiles move together on one
+ * twist change and no sentence ever claims a scenario the numbers did
+ * not run. A failed or slow artifact load slims the cartogram to a
+ * note and never disturbs the headline, the cells, or the strip plot.
  */
 
 interface AtlasDerivation {
@@ -193,18 +190,11 @@ export default function AtlasSection() {
 
   return (
     <div className="ax-shell">
-      <div className="ax-lead">
-        <StormAtlas
-          summary={derived.summary}
-          baselineSummary={derived.baseline}
-          selectedId={selectedId}
-        />
-        <RainGauge
-          counts={derived.summary.counts}
-          total={derived.summary.total}
-          scenarioLabel={derived.summary.scenarioLabel}
-        />
-      </div>
+      <StormAtlas
+        summary={derived.summary}
+        baselineSummary={derived.baseline}
+        selectedId={selectedId}
+      />
       <Cartogram
         doc={atlasDoc}
         districtCounts={district ? district.counts : null}

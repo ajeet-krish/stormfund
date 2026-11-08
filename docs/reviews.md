@@ -322,3 +322,14 @@ Concurrent session noise (flagged only, excluded from the verdict per the review
 Verified clean: consoleStore key semantics untouched (single string hunk); the smoke row click scoped to #console closes the E5 note; skyVariantFor cannot disagree with the console badge because both read the same two pure functions over the same store fields; the pixel grids stay on whole units (PixelSky.test.ts:172 to 180); every animation and transition in sky.css, weather.css, and atlas.css sits behind a no-preference gate (asserted from disk at PixelSky.test.ts:198 to 214 and Cartogram.test.ts:543 to 561); the geometry generator (scripts/map/build_district_geometry.py) mirrors the districtNames join key in both languages and fails on duplicate keys (line 176 to 178), with the regeneration contract pinned by the 77 of 77 test; the harness count note: vitest reports 42 files / 497 tests, matching the phase brief exactly after the Tier B cleanup removed the pre-pivot suites.
 
 Recurring patterns: the five cycle dash scan registry lag is finally closed this pass (every new and modified file is registered and asserted); the surviving pattern to watch is surfaces outside a declared sweep keeping retired styling (the paper sheet), so a theme sweep should enumerate the pages it deliberately leaves alone.
+
+## 2026-11-08 - UI fix batch: tight correctness review
+
+Verdict: PASS (SHIP)
+
+| Severity | File:Line | Issue | Fix |
+|----------|-----------|-------|-----|
+| Low (non-blocking) | src/components/console/ShockPanel.tsx:266 | One-off typed box rounds the slider value (2.5 months displays "3"); display only, state stays exact | Optional: show one decimal in fromSlider |
+| Info | src/lib/shockParse.ts:651 | "VITE_GEMINI_KEY is not set" is the only remaining "not set" in src/; env-var error detail, not a flag placeholder | None |
+
+All 11 scope checks PASS: money math integer-safe (dollarsToCents/centsToDollars exact, NaN/Infinity clamp, empty input holds), typed clamps equal slider ranges equal normalizeTwist, provenance tail removed, flag chips set-only, navbar strings exact, RainGauge fully removed, CartogramDetail from precomputed districtCounts with Enter+Space tests, band key gone with nowrap flex tests, background.jpg at dist/art/ base-path-aware, gates green (43 files / 506 tests, typecheck, build), no dash glyphs in prose. docs/video/script.md modified by concurrent session (commits 6afc283, 4997a81 + uncommitted +6 lines): flagged, not reviewed.

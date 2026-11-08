@@ -1,12 +1,14 @@
 /* ==========================================================================
-   Pixel sky header (px): the day and storm scenes that PixelSky draws,
-   the text plates that sit on top of them, and the mascot. The art grid
-   is 320 by 32 units and the band is whatever height the header content
-   makes it, so the scene scales with slice and the horizon always lands
-   on the bottom edge: one unit of artwork stays a chunky, square pixel
-   from a phone to a judging table. Nothing here is a raster image, so
-   image rendering pixelated only guards the logo for the day a bitmap
-   replaces it. Motion is gated behind prefers-reduced-motion:
+   Pixel sky header (px): the shipped header art, the text plates that
+   sit on top of it, and the mascot. The static backdrop is
+   public/art/background.jpg, drawn once by App as an absolutely
+   positioned image that fills the band with object fit cover, so the
+   horizon and the house land on the bottom edge and the night sky end
+   carries the title plate: image rendering pixelated keeps the art
+   crisp and chunky from a phone to a judging table. PixelSky and its
+   day and storm scenes are still on disk as an unmounted module, so
+   their grid rules and their gated motion stay here for the day the
+   header mounts it again. Motion is gated behind prefers-reduced-motion:
    no-preference, matching the rest of the app.
    ========================================================================== */
 
@@ -20,6 +22,22 @@
   border-bottom: 3px solid var(--rp-paper);
 }
 
+/* The shipped header photograph: base path aware, cropped to the band,
+   anchored so the horizon and the house read while the darker sky end
+   sits under the title plate. */
+.px-header__art {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 72%;
+  image-rendering: pixelated;
+}
+
+/* The unmounted PixelSky band rule, kept with its module so the scene
+   can mount again without touching this sheet. */
 .px-sky {
   position: absolute;
   inset: 0;
@@ -62,20 +80,6 @@
   max-width: 46ch;
   font-size: 0.75rem;
   line-height: 1.5;
-  color: var(--rp-text-dim);
-}
-
-.px-track {
-  margin: 0;
-  padding: var(--rp-s1) var(--rp-s3);
-  background: var(--rp-panel);
-  border: 2px solid var(--rp-paper);
-  box-shadow: 3px 3px 0 0 var(--cp-shadow-strong);
-  font-family: var(--rp-font-pixel);
-  font-size: 0.625rem;
-  line-height: 1.7;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--rp-text-dim);
 }
 

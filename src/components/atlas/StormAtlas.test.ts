@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToString } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
@@ -130,5 +131,22 @@ describe('StormAtlas markup', () => {
     expect(html.split('data-band="').length - 1).toBe(5)
     expect(html.split('>0</span>').length - 1).toBe(5)
     expect(html).toContain('0% of 0')
+  })
+})
+
+describe('StormAtlas stylesheet: one line at judging widths', () => {
+  it('keeps the five band cells on a single flex row with one phone escape', () => {
+    const css = readFileSync(new URL('./atlas.css', import.meta.url), 'utf8')
+
+    const cells = css.match(/\.ax-cells \{[^}]*\}/)?.[0] ?? ''
+    expect(cells).toContain('display: flex')
+    expect(cells).toContain('flex-wrap: nowrap')
+
+    const cell = css.match(/\.ax-cell \{[^}]*\}/)?.[0] ?? ''
+    expect(cell).toContain('flex: 1 1 0')
+    expect(cell).toContain('min-width: 0')
+
+    // The only place the row breaks sits under a narrow phone width.
+    expect(css).toMatch(/@media \(max-width: 36rem\) \{\s*\.ax-cells \{[^}]*flex-wrap: wrap/)
   })
 })

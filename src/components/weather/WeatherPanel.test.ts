@@ -11,8 +11,8 @@ import WeatherPanel from './WeatherPanel'
 /**
  * The weather panel composes the strip, the EI overlay on the strip's
  * slot grid, the storm front caption, the history honesty note, and the
- * band key with month 0's band active. It must render in every wiring
- * state: no projection at all (placeholder shell plus the band key),
+ * five band chips with month 0's band active. It must render in every
+ * wiring state: no projection at all (placeholder strip plus the chips),
  * a live job loss projection (marker and worst case line visible), and
  * a live projection without a job loss (marker hidden).
  */
@@ -45,12 +45,13 @@ function render(projection?: ForecastProjection | null): string {
 }
 
 describe('WeatherPanel', () => {
-  it('renders the shell with the placeholder strip and the band key before any account', () => {
+  it('renders the shell with the placeholder strip and the band chips before any account', () => {
     const html = render()
     expect(html).toContain('id="forecast-heading"')
     expect(html).toContain('Your buffer, month by month')
     expect(html).toContain('forecast not wired yet')
-    expect(html).toContain('Band key, lowest runway first')
+    // The old band key caption is gone: the chips speak for themselves.
+    expect(html).not.toContain('Band key')
     expect(html).toContain('aria-label="Weather condition bands"')
     // No projection means no account specific copy and no EI marker.
     expect(html).not.toContain('Recorded average balances')

@@ -550,3 +550,45 @@ others" header must stay visible); subset figures get no Python twin
 until they are quoted as findings; docs/video/script.md and plan.md
 quote the removed block and need a copy pass; .cp-plan__block-backup
 CSS removal coordinates with the concurrent UI restyle.
+
+## Nov 08 2026, UI pass note: judge sheet stays dark
+
+**Context**: the daylight theme sweep converted the app to a light
+palette, but public/judge-sheet.html kept the near black theme. The
+code review flagged the two remaining dark literals as out-of-scope
+residue.
+
+**Decision** (user confirmed): the printable judge sheet stays dark as
+a standalone print artifact outside the app theme. The dark literals
+at judge-sheet.html lines 13 and 19 are intentional, not drift.
+
+## Nov 08 2026, Gemini typed shock removed from the product
+
+**Context**: the Gemini typed-shock input passed every server side
+verification (key embedded in dev and production builds, endpoint
+returns 200, CORS allows localhost) but still did not work in the
+user's actual demo environment. With submission time short, the user
+decided to cut it and focus on the deterministic inputs.
+
+**Decision** (user confirmed): FULL removal. Delete TypedShock,
+shockParse, and their tests; strip the typed shock state and actions
+from consoleStore; simplify the judge Esc layers (the typed gate layer
+goes: Esc clears the query, then resets the console); update dashScan
+registrations and every README, Devpost, and video reference to typed
+input. The shock input surface is now exactly: four preset cards,
+four sliders, and the local synced numeric fields. The Devpost
+generative AI answer stays YES with an explicit cut note: the
+integration was implemented during the hack (strict response schema,
+mandatory confirm gate, 3 second abort to presets) and then removed
+from the final demo build in favor of deterministic inputs.
+
+**Rationale**: a feature that does not work in the actual demo
+environment is a liability in front of judges; the deterministic
+path (presets, sliders, typed numbers) is offline, instant, and
+already covers every twist card the challenge can hand us.
+
+**Trade offs**: no generative AI appears in the shipped UI (the
+Devpost answer documents the build and the cut); the Esc key map
+simplifies to two layers; the local numeric inputs (added in the same
+window) carry the "specific value" use case the Gemini input was
+meant to serve.

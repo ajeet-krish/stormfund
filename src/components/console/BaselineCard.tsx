@@ -6,13 +6,14 @@ import VerdictBadge from './VerdictBadge'
 
 /**
  * Current conditions for one account: the six judge numbers plus the
- * gap and the baseline verdict, the five edge flags, the history span,
- * and the recorded provenance line. Every figure is formatted from the
- * profile, never recomputed here, so the card and the artifact agree by
- * construction. The provenance line says "recorded" on purpose: the
- * browser shows the check_sum the pipeline wrote and cannot recompute it
- * from the CSVs, so claiming "verified" would be a lie (the old report
- * layer recomputes its own checksums, this artifact does not).
+ * gap and the baseline verdict, the edge flags that are set, the
+ * history span, and the recorded provenance line. Every figure is
+ * formatted from the profile, never recomputed here, so the card and
+ * the artifact agree by construction. The provenance line says
+ * "recorded" on purpose: the browser shows the check_sum the pipeline
+ * wrote and cannot recompute it from the CSVs, so claiming "verified"
+ * would be a lie (the old report layer recomputes its own checksums,
+ * this artifact does not).
  */
 
 interface BaselineCardProps {
@@ -34,6 +35,11 @@ export default function BaselineCard({ profile, band }: BaselineCardProps) {
     state: profile.runway_state,
     deciMonths: profile.runway_deci_months,
   }
+
+  // Only the flags this account actually carries are shown, so an
+  // account with one edge prints one chip and an account with none
+  // prints no chip row at all instead of five dimmed placeholders.
+  const setFlags = FLAG_LABELS.filter(([key]) => profile.flags[key])
 
   return (
     <section className="cp-panel" aria-labelledby="baseline-heading">
@@ -85,23 +91,20 @@ export default function BaselineCard({ profile, band }: BaselineCardProps) {
 
       <VerdictBadge band={band} runway={baselineRunway} caption="Baseline" variant="compact" />
 
-      <ul className="cp-flags" aria-label="Edge flags for this account">
-        {FLAG_LABELS.map(([key, label]) => (
-          <li
-            key={key}
-            className={profile.flags[key] ? 'cp-flag cp-flag-on' : 'cp-flag'}
-            data-active={profile.flags[key]}
-          >
-            {label}
-            <span className="rp-sr-only">{profile.flags[key] ? ' set' : ' not set'}</span>
-          </li>
-        ))}
-      </ul>
+      {setFlags.length > 0 ? (
+        <ul className="cp-flags" aria-label="Edge flags for this account">
+          {setFlags.map(([key, label]) => (
+            <li key={key} className="cp-flag cp-flag-on" data-active={true}>
+              {label}
+              <span className="rp-sr-only"> set</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       <p className="cp-provenance">
         Recorded check sum <code>{profile.provenance.check_sum}</code> from{' '}
-        {profile.provenance.source}, written by scripts.engine.build. This page shows the recorded
-        value and does not recompute it.
+        {profile.provenance.source}
       </p>
 
       <ReceiptStamp />

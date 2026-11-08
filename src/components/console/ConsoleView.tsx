@@ -83,7 +83,7 @@ export default function ConsoleView() {
   if (!bundle) {
     return (
       <section className="cp-panel" aria-busy="true">
-        <p className="cp-eyebrow">Resilience Weather Station</p>
+        <p className="cp-eyebrow">Storm Fund Weather Station</p>
         <p className="cp-status" role="status">
           Loading account profiles...
         </p>

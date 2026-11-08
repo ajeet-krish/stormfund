@@ -242,6 +242,10 @@ describe('content rule: dash scan over the surviving app sources', () => {
     expect(files).toContain('src/data/receipts.test.ts')
     expect(files).toContain('src/components/console/ReceiptStamp.tsx')
     expect(files).toContain('src/components/console/ReceiptStamp.test.ts')
+    // The current conditions card and the shock panel tests ride the
+    // same console AUTO_DIRS entry, so the registry sees them too.
+    expect(files).toContain('src/components/console/BaselineCard.test.ts')
+    expect(files).toContain('src/components/console/ShockPanel.test.ts')
     // The surviving data contract (loaders, checksum, types), the typed
     // shock parser, and the entry point are explicit entries too, so the
     // registry matches what actually exists on disk.

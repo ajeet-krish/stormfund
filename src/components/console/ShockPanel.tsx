@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import type { AccountProfile } from '../../data/profiles'
-import { formatCents } from '../../lib/format'
+import { centsToDollars, dollarsToCents, formatCents } from '../../lib/format'
 import { SHOCK_PRESETS, type PresetId } from '../../lib/shockPresets'
 import {
   factorToPercent,
@@ -18,13 +19,17 @@ import TypedShock from './TypedShock'
 import VerdictBadge from './VerdictBadge'
 
 /**
- * Take a shock: four preset cards carrying the judge's twist card
- * sentence, the size sliders, the before and after numbers, and the
- * hero verdict. Everything numeric arrives as props already computed in
- * ConsoleView (applyTwist, verdictBand); this component only formats and
- * forwards slider events to the store, so there is no money math in JSX.
- * Every button is type="button" and presets carry data-preset for the
- * E6 shortcut map.
+ * Simulate a shock: the typed sentence, four preset cards carrying the
+ * judge's twist card sentence, the size sliders with their synced whole
+ * number text fields, the twist card line, the before and after numbers,
+ * and the hero verdict. Everything numeric arrives as props already
+ * computed in ConsoleView (applyTwist, verdictBand); this component only
+ * formats and forwards slider and typed field events to the store, so
+ * there is no money math in JSX. The typed fields are local: they parse
+ * whole numbers, clamp them to the same ranges the sliders hold, and
+ * push them through setTwistField, so no external service is ever in
+ * their path. Every button is type="button" and presets carry
+ * data-preset for the E6 shortcut map.
  */
 
 interface ShockPanelProps {
@@ -35,6 +40,20 @@ interface ShockPanelProps {
   activePresetId: PresetId | null
 }
 
+/**
+ * How one slider row's synced text field reads and writes: the unit
+ * words for its accessible name, the whole number range it accepts
+ * (identical to the slider's own range in the row's unit), and the two
+ * conversions between that unit and the value the slider holds.
+ */
+interface TypedScale {
+  unit: string
+  min: number
+  max: number
+  toSlider: (typed: number) => number
+  fromSlider: (value: number) => string
+}
+
 interface SliderProps {
   id: string
   label: string
@@ -43,30 +62,81 @@ interface SliderProps {
   max: number
   step: number
   display: string
+  typed: TypedScale
   onChange: (value: number) => void
 }
 
-function Slider({ id, label, value, min, max, step, display, onChange }: SliderProps) {
+/**
+ * One slider with its local synced text field. Both controls read the
+ * same value in two units: typing pushes the clamped whole number into
+ * the twist, dragging repaints the text, and a value that arrives from
+ * outside (a preset, a reset) clears any half typed draft so the two
+ * can never disagree. The digits are taken up to the first decimal
+ * point, so "2.5" reads as 2 and an empty field simply holds still
+ * instead of writing a zero into the twist.
+ */
+function Slider({ id, label, value, min, max, step, display, typed, onChange }: SliderProps) {
+  const textId = `${id}-typed`
+  const [draft, setDraft] = useState<string | null>(null)
+
+  useEffect(() => {
+    setDraft(null)
+  }, [value])
+
+  const shown = draft ?? typed.fromSlider(value)
+
+  const handleText = (raw: string): void => {
+    const head = raw.split('.')[0] ?? ''
+    const digits = head.replace(/[^0-9]/g, '')
+    if (digits.length === 0) {
+      setDraft('')
+      return
+    }
+    const clamped = Math.min(typed.max, Math.max(typed.min, Number.parseInt(digits, 10)))
+    setDraft(String(clamped))
+    onChange(typed.toSlider(clamped))
+  }
+
+  const handleSlider = (next: number): void => {
+    setDraft(null)
+    onChange(next)
+  }
+
   return (
     <div className="cp-field">
       <div className="cp-field__head">
         <label className="cp-label" htmlFor={id}>
           {label}
         </label>
-        <output className="cp-field__value" htmlFor={id}>
+        <output className="cp-field__value" htmlFor={id} id={`${id}-out`}>
           {display}
         </output>
       </div>
-      <input
-        className="cp-slider"
-        id={id}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-      />
+      <div className="cp-field__row">
+        <input
+          className="cp-slider"
+          id={id}
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(event) => handleSlider(Number(event.target.value))}
+        />
+        <label className="rp-sr-only" htmlFor={textId}>{`${label} in ${typed.unit}`}</label>
+        <input
+          className="cp-field__num"
+          id={textId}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          autoComplete="off"
+          value={shown}
+          aria-describedby={`${id}-out`}
+          onChange={(event) => handleText(event.target.value)}
+          onBlur={() => setDraft(null)}
+        />
+      </div>
     </div>
   )
 }
@@ -116,15 +186,9 @@ export default function ShockPanel({
   return (
     <section className="cp-panel" aria-labelledby="shock-heading">
       <header className="cp-panel__head">
-        <p className="cp-eyebrow">Take a shock</p>
         <h2 className="cp-title" id="shock-heading">
-          Play a twist card
+          Simulate a Shock Event
         </h2>
-        <p className="cp-twist-card">
-          {activePreset
-            ? activePreset.card
-            : 'No preset yet: move a slider to size a custom shock.'}
-        </p>
       </header>
 
       <TypedShock profile={profile} />
@@ -145,8 +209,6 @@ export default function ShockPanel({
         ))}
       </div>
 
-      <VerdictBadge band={band} runway={result.runway} caption="After the shock" />
-
       <fieldset className="cp-sliders">
         <legend className="cp-eyebrow">Size of the shock</legend>
 
@@ -158,6 +220,13 @@ export default function ShockPanel({
           max={100}
           step={5}
           display={`${factorToPercent(twist.incomeFactor)}% of usual income`}
+          typed={{
+            unit: 'percent',
+            min: 0,
+            max: 100,
+            toSlider: (typed) => typed,
+            fromSlider: (slider) => String(slider),
+          }}
           onChange={(value) =>
             setTwistField({ incomeFactor: percentToFactor(value), jobLoss: value < 100 })
           }
@@ -171,6 +240,13 @@ export default function ShockPanel({
           max={100}
           step={1}
           display={`+${twist.billsDeltaPct}%`}
+          typed={{
+            unit: 'percent',
+            min: 0,
+            max: 100,
+            toSlider: (typed) => typed,
+            fromSlider: (slider) => String(slider),
+          }}
           onChange={(value) => setTwistField({ billsDeltaPct: value })}
         />
 
@@ -182,6 +258,13 @@ export default function ShockPanel({
           max={3}
           step={0.1}
           display={`${tenthsToMonths(twist.oneOffMonthsTenths).toFixed(1)} months of spending`}
+          typed={{
+            unit: 'months of spending',
+            min: 0,
+            max: 3,
+            toSlider: (typed) => typed,
+            fromSlider: (slider) => String(Math.round(slider)),
+          }}
           onChange={(value) => setTwistField({ oneOffMonthsTenths: monthsToTenths(value) })}
         />
 
@@ -193,6 +276,13 @@ export default function ShockPanel({
           max={MAX_EXTRA_MONTHLY_CENTS}
           step={500}
           display={`${formatCents(twist.extraMonthlyCents)} a month`}
+          typed={{
+            unit: 'dollars a month',
+            min: 0,
+            max: centsToDollars(MAX_EXTRA_MONTHLY_CENTS),
+            toSlider: (typed) => dollarsToCents(typed),
+            fromSlider: (slider) => String(centsToDollars(slider)),
+          }}
           onChange={(value) => setTwistField({ extraMonthlyCents: value })}
         />
       </fieldset>
@@ -200,6 +290,14 @@ export default function ShockPanel({
       {twist.durationMonths > 0 && (
         <p className="cp-horizon">Horizon: {twist.durationMonths} months, set by the preset.</p>
       )}
+
+      <p className="cp-twist-card">
+        {activePreset
+          ? activePreset.card
+          : 'No preset yet: move a slider to size a custom shock.'}
+      </p>
+
+      <VerdictBadge band={band} runway={result.runway} caption="After the shock" />
 
       <div className="cp-table-wrap">
         <table className="cp-table">

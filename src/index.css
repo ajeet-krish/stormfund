@@ -5,10 +5,11 @@
 /* ==========================================================================
    Vendored pixel display face: Silkscreen by Jason Kottke, SIL Open Font
    License 1.1, latin subset, served from src/assets/fonts so the booth
-   machine still never reaches the network. It is chrome only: the station
-   title, eyebrows, band names, and button caps. Every number the engine
-   prints stays on the tabular mono stack, because a scoreboard font must
-   never change how a digit lines up.
+   machine still never reaches the network. The full license text ships
+   beside the woff2 files at src/assets/fonts/OFL.txt. It is chrome only:
+   the station title, eyebrows, band names, and button caps. Every number
+   the engine prints stays on the tabular mono stack, because a scoreboard
+   font must never change how a digit lines up.
    ========================================================================== */
 
 @font-face {
@@ -127,23 +128,6 @@ html {
 /* ==========================================================================
    Report shell
    ========================================================================== */
-
-.rp-report {
-  position: relative;
-  color: var(--rp-paper);
-  font-family: var(--rp-font-body);
-  font-size: 1rem;
-  line-height: 1.65;
-  background-color: var(--rp-void);
-  background-image:
-    linear-gradient(var(--rp-gridline) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rp-gridline) 1px, transparent 1px);
-  background-size: 28px 28px;
-  background-position: center top;
-  margin: calc(-1 * var(--rp-s6)) calc(-1 * var(--rp-s5)) calc(-1 * var(--rp-s6));
-  padding: 0 var(--rp-s5) var(--rp-s8);
-  border-top: var(--rp-rule-w) solid var(--rp-rule);
-}
 
 .rp-inner {
   max-width: var(--rp-max);
@@ -1289,319 +1273,6 @@ html {
 }
 
 /* ==========================================================================
-   Money River hero: a landscape painting whose every element is data.
-   One accent only, --rv-drought, and it marks deficit and drought alone.
-   ========================================================================== */
-
-.rv-figure {
-  --rv-sky-ink: #0a1220;
-  --rv-sky-haze: #2a4159;
-  --rv-ridge: #46617c;
-  --rv-water-deep: #10333f;
-  --rv-water-lit: #2f7f7c;
-  --rv-silt: #6f6a58;
-  --rv-earth: #4a4638;
-  --rv-drought: #d97b3f;
-  --rv-parchment: #e9e0c9;
-
-  margin: var(--rp-s6) 0 0;
-  border: 2px solid var(--rv-sky-haze);
-  border-radius: var(--rp-radius);
-  background: var(--rv-sky-ink);
-}
-
-.rv-caption {
-  font-family: var(--rp-font-display);
-  font-weight: 700;
-  font-size: clamp(1rem, 2vw, 1.3125rem);
-  letter-spacing: -0.01em;
-  line-height: 1.4;
-  color: var(--rp-paper);
-  margin: var(--rp-s4) var(--rp-s4) var(--rp-s3);
-}
-
-.rv-hint {
-  display: none;
-}
-
-.rv-scroll {
-  overflow-x: auto;
-}
-
-.rv-canvas {
-  display: block;
-  width: 100%;
-  min-width: 56rem;
-  height: auto;
-  background: var(--rv-sky-ink);
-}
-
-.rv-canvas text {
-  font-family: var(--rp-font-utility);
-  paint-order: stroke fill;
-  stroke: var(--rv-sky-ink);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-
-.rv-ridge {
-  fill: var(--rv-ridge);
-}
-
-.rv-horizon-line {
-  stroke: var(--rv-parchment);
-  stroke-width: 1;
-  opacity: 0.16;
-}
-
-.rv-month {
-  fill: var(--rv-parchment);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  opacity: 0.6;
-}
-
-.rv-note {
-  fill: var(--rv-parchment);
-  font-size: 15px;
-  font-style: italic;
-  letter-spacing: 0.02em;
-  opacity: 0.92;
-}
-
-.rv-note-soft {
-  opacity: 0.68;
-}
-
-.rv-note-accent {
-  fill: var(--rv-drought);
-  opacity: 0.95;
-}
-
-.rv-bed-texture {
-  stroke: var(--rv-earth);
-  stroke-width: 1.5;
-  opacity: 0.45;
-}
-
-.rv-drought-line {
-  stroke: var(--rv-drought);
-  stroke-width: 2;
-  opacity: 0.7;
-}
-
-.rv-stone {
-  fill: var(--rv-drought);
-}
-
-.rv-water-surface {
-  stroke: var(--rv-water-lit);
-  stroke-width: 2.4;
-}
-
-.rv-shimmer {
-  stroke: var(--rv-parchment);
-  stroke-width: 1.4;
-  opacity: 0.15;
-}
-
-.rv-ghost {
-  stroke: var(--rv-parchment);
-  stroke-width: 1.8;
-  stroke-dasharray: 7 6;
-  opacity: 0.5;
-}
-
-.rv-bridge-deck {
-  stroke: var(--rv-parchment);
-  stroke-width: 3;
-  stroke-linecap: round;
-  opacity: 0.9;
-}
-
-.rv-bridge-pier {
-  stroke: var(--rv-parchment);
-  stroke-width: 1.8;
-  opacity: 0.66;
-}
-
-.rv-bridge-reflection {
-  fill: var(--rv-parchment);
-  opacity: 0.1;
-}
-
-.rv-tributary-channel {
-  stroke: var(--rv-water-lit);
-  stroke-linecap: round;
-  opacity: 0.92;
-}
-
-.rv-tributary-core {
-  stroke: var(--rv-parchment);
-  stroke-linecap: round;
-  opacity: 0.28;
-}
-
-.rv-tributary-label {
-  fill: var(--rv-parchment);
-  font-size: 13px;
-  font-style: italic;
-  opacity: 0.85;
-}
-
-.rv-bank {
-  fill: var(--rv-earth);
-  opacity: 0.97;
-}
-
-.rv-mark {
-  stroke: var(--rv-parchment);
-  stroke-width: 3;
-  opacity: 0.82;
-}
-
-.rv-mark-faint {
-  stroke: var(--rv-parchment);
-  stroke-width: 1.5;
-  opacity: 0.26;
-}
-
-.rv-leader {
-  stroke: var(--rv-parchment);
-  stroke-width: 1;
-  opacity: 0.38;
-}
-
-.rv-holiday-bracket {
-  stroke: var(--rv-parchment);
-  stroke-width: 1.5;
-  opacity: 0.5;
-}
-
-.rv-legend {
-  border-top: var(--rp-rule-w) solid var(--rv-sky-haze);
-  background: rgba(233, 239, 250, 0.03);
-  padding: var(--rp-s4) var(--rp-s4) var(--rp-s3);
-  margin: 0;
-}
-
-.rv-legend__title {
-  font-family: var(--rp-font-utility);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--rp-text-faint);
-  margin: 0 0 var(--rp-s3);
-}
-
-.rv-legend__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--rp-s3);
-}
-
-.rv-legend__item {
-  display: grid;
-  grid-template-columns: 11.5rem minmax(0, 1fr);
-  gap: 2px var(--rp-s3);
-  border-left: 2px solid var(--rv-sky-haze);
-  padding-left: var(--rp-s3);
-  font-size: 0.8125rem;
-  line-height: 1.5;
-}
-
-.rv-legend__element {
-  font-family: var(--rp-font-display);
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--rp-paper);
-}
-
-.rv-legend__rule {
-  color: var(--rp-text-dim);
-}
-
-.rv-legend__source {
-  grid-column: 2;
-  font-family: var(--rp-font-utility);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  color: var(--rp-text-faint);
-  overflow-wrap: anywhere;
-}
-
-.rv-legend__foot {
-  font-family: var(--rp-font-utility);
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  color: var(--rp-text-faint);
-  margin: var(--rp-s3) 0 0;
-  line-height: 1.6;
-}
-
-.rv-frame {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 13rem;
-  margin: 0 var(--rp-s4) var(--rp-s4);
-  padding: var(--rp-s5);
-  border: 1px dashed var(--rv-sky-haze);
-  border-radius: var(--rp-radius);
-  background: linear-gradient(180deg, var(--rv-sky-ink), var(--rv-water-deep));
-  font-family: var(--rp-font-utility);
-  font-size: 0.8125rem;
-  letter-spacing: 0.06em;
-  color: var(--rp-text-faint);
-}
-
-.rv-frame--error {
-  border-color: var(--rp-stamp);
-  color: var(--rp-stamp);
-}
-
-.rv-figure--error {
-  border-color: var(--rp-stamp);
-}
-
-@media (max-width: 59.99rem) {
-  .rv-hint {
-    display: block;
-    font-family: var(--rp-font-utility);
-    font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--rp-text-faint);
-    margin: 0 var(--rp-s4) var(--rp-s2);
-  }
-}
-
-@media (max-width: 47.99rem) {
-  .rv-legend__item {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .rv-legend__source {
-    grid-column: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rv-figure,
-  .rv-figure * {
-    animation: none;
-    transition: none;
-  }
-}
-
-/* ==========================================================================
    Console tokens and surfaces (cp): the E2 instrument panel.
    Reuses the rp palette as custom properties, adds one hue per verdict
    band (mirrored in tailwind.config.js as text-cp-* utilities), and keeps
@@ -1765,7 +1436,8 @@ html {
 }
 
 .cp-input:focus-visible,
-.cp-slider:focus-visible {
+.cp-slider:focus-visible,
+.cp-field__num:focus-visible {
   outline: 2px solid var(--rp-paper);
   outline-offset: 2px;
 }
@@ -2133,6 +1805,38 @@ html {
   font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
   color: var(--rp-money);
+}
+
+/* One row per slider: the track and its synced whole number text
+   field side by side, so a judge can type a size instead of dragging.
+   The field is wide enough for four digits, right aligned so the
+   number never jitters as it counts up, and it keeps the 44px target
+   the rest of the console uses. */
+.cp-field__row {
+  display: flex;
+  align-items: center;
+  gap: var(--rp-s3);
+}
+
+.cp-field__row .cp-slider {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cp-field__num {
+  flex: none;
+  width: 5.75rem;
+  min-height: 44px;
+  padding: 0 var(--rp-s2);
+  background: var(--cp-inset);
+  border: 2px solid var(--cp-ink);
+  border-radius: var(--cp-radius);
+  color: var(--cp-ink);
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .cp-slider {

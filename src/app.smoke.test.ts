@@ -102,14 +102,28 @@ async function type(input: HTMLInputElement, value: string): Promise<void> {
 describe('app shell (server rendering)', () => {
   it('names the station and the pipeline while the console loads', () => {
     const html = renderToString(createElement(App))
-    expect(html).toContain('Resilience Weather Station')
-    expect(html).toContain('A weather forecast for personal finance')
+    expect(html).toContain('<h1 class="px-title">Storm Fund Weather Station</h1>')
+    expect(html).toContain('<p class="px-tagline">A weather forecast for personal finance</p>')
     expect(html).toContain('Loading account profiles')
     expect(html).toContain('scripts/engine.build')
     expect(html).toContain('public/data/engine/profiles.json')
+    // The header carries the shipped static art and the mascot plate,
+    // not the live pixel sky band or the retired track line.
+    expect(html).toContain('src="/art/background.jpg"')
+    expect(html).toContain('viewBox="0 0 32 32"')
+    expect(html).not.toContain('px-sky')
+    expect(html).not.toContain('Tangerine track, Sheridan Datathon 2026')
+    expect(html).not.toContain('pick an account, take a shock')
     // The console is the only mounted surface in Phase E2.
     expect(html).not.toContain('FINDINGS')
     expect(html).not.toContain('Balance River')
+  })
+
+  it('crops the shipped header art to the band in the pixel sheet', () => {
+    const css = readFileSync(new NodeURL('./components/sky/sky.css', import.meta.url), 'utf8')
+    expect(css).toContain('object-fit: cover')
+    expect(css).toContain('object-position: center 72%')
+    expect(css).toContain('image-rendering: pixelated')
   })
 })
 

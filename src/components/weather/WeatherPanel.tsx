@@ -11,14 +11,14 @@ import WeatherBands from './WeatherBands'
  * finished from ConsoleView's single derivation pass, and this file
  * only composes the strip, the EI cliff overlay on the strip's own
  * slot grid, the storm front caption, the history honesty note, and
- * the five band legend with month 0's band active.
+ * the five band chips with month 0's band active.
  *
  * The honesty note is mandatory copy: the recorded balances are
  * context only, and the projection anchors on buffer B (the judge
  * definition, mean of the last 6 recorded balances), never on the
  * last recorded balance a judge might read off the muted line. Empty
  * props render the shell with the placeholder strip and the full band
- * key, so the panel is safe to mount before any account is selected.
+ * ladder, so the panel is safe to mount before any account is selected.
  */
 
 interface WeatherPanelProps {
@@ -72,7 +72,6 @@ export default function WeatherPanel({ projection }: WeatherPanelProps) {
         </p>
       ) : null}
 
-      <p className="cp-label wx-bands__title">Band key, lowest runway first</p>
       <WeatherBands activeBandId={activeBandId} />
     </section>
   )

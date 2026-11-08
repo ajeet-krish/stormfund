@@ -131,6 +131,15 @@ describe('AtlasSection: the population under the live twist', () => {
       '1% of accounts have under 3 months of runway at baseline',
     )
 
+    // The outside share gauge is gone: the five band cells already
+    // carry every count the gauge repeated, so no second stat of the
+    // same population is rendered anywhere in the section.
+    expect(container.querySelector('.ax-gauge')).toBeNull()
+    expect(container.textContent).not.toContain(
+      'share of accounts outside critical and storm warning',
+    )
+    expect(container.querySelectorAll('.ax-cell')).toHaveLength(5)
+
     await cleanup()
   })
 

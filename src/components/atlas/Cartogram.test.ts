@@ -21,10 +21,11 @@ import type { AtlasDoc, BandCounts, DistrictRow } from '../../lib/atlasData'
  * severity bins with the counts they were handed); and four real Czech
  * district names, which the geometry does know, so they prove the map
  * paths (shade values, the accessible sentence, the hatch, click and
- * keyboard routing). The legend prints the severity definition and the
- * caveat that belongs to whichever surface rendered. The stylesheet
- * contract (gated motion) is asserted from disk. No test reads the
- * shipped atlas artifact.
+ * keyboard routing) and the detail panel that selection opens with the
+ * district name and its five band counts. The legend prints the
+ * severity definition and the caveat that belongs to whichever
+ * surface rendered. The stylesheet contract (gated motion) is asserted
+ * from disk. No test reads the shipped atlas artifact.
  */
 
 // React's act() refuses to run until the environment declares itself.
@@ -376,7 +377,7 @@ describe('Cartogram map', () => {
     await cleanup(container, root)
   })
 
-  it('routes a path click and the Enter key to onSelectDistrict', async () => {
+  it('routes a path click, Enter, and Space to onSelectDistrict', async () => {
     const onSelectDistrict = vi.fn()
     const { container, root } = await render({
       doc: mapFixture(),
@@ -395,6 +396,12 @@ describe('Cartogram map', () => {
       path?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
     })
     expect(onSelectDistrict).toHaveBeenCalledTimes(2)
+    expect(onSelectDistrict).toHaveBeenLastCalledWith(3)
+
+    await act(async () => {
+      path?.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true }))
+    })
+    expect(onSelectDistrict).toHaveBeenCalledTimes(3)
     expect(onSelectDistrict).toHaveBeenLastCalledWith(3)
 
     await cleanup(container, root)
@@ -445,6 +452,131 @@ describe('Cartogram map', () => {
     expect(container.textContent).toContain(
       'Districts the map geometry does not know are listed as tiles below, arranged by region.',
     )
+
+    await cleanup(container, root)
+  })
+})
+
+describe('Cartogram district detail', () => {
+  it('opens on click with the district name and the five band counts', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+    expect(container.querySelector('.ax-detail')).toBeNull()
+
+    const path = container.querySelector('.ax-map__path[data-district="1"]')
+    await act(async () => {
+      path?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+
+    const detail = container.querySelector('.ax-detail')
+    expect(detail).not.toBeNull()
+    // Announced politely, so a screen reader hears the selection land.
+    expect(detail?.getAttribute('role')).toBe('status')
+    expect(detail?.querySelector('.ax-detail__name')?.textContent).toBe('Hl.m. Praha')
+
+    const labels = [...container.querySelectorAll('.ax-detail__label')].map(
+      (node) => node.textContent,
+    )
+    const counts = [...container.querySelectorAll('.ax-detail__count')].map(
+      (node) => node.textContent,
+    )
+    expect(labels).toEqual(['Critical', 'Storm warning', 'Watch', 'Fair skies', 'Clear'])
+    expect(counts).toEqual(['6', '4', '10', '20', '20'])
+
+    await cleanup(container, root)
+  })
+
+  it('opens on Enter and on Space from the keyboard', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    const enterPath = container.querySelector('.ax-map__path[data-district="3"]')
+    await act(async () => {
+      enterPath?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    })
+    expect(container.querySelector('.ax-detail__name')?.textContent).toBe('Cheb')
+
+    const spacePath = container.querySelector('.ax-map__path[data-district="2"]')
+    await act(async () => {
+      spacePath?.dispatchEvent(
+        new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true }),
+      )
+    })
+    expect(container.querySelector('.ax-detail__name')?.textContent).toBe('Benesov')
+    const counts = [...container.querySelectorAll('.ax-detail__count')].map(
+      (node) => node.textContent,
+    )
+    expect(counts).toEqual(['0', '0', '5', '15', '20'])
+
+    await cleanup(container, root)
+  })
+
+  it('keeps a hatched district honest beside its real counts', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    const path = container.querySelector('.ax-map__path[data-district="4"]')
+    await act(async () => {
+      path?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+
+    const detail = container.querySelector('.ax-detail')
+    expect(detail?.querySelector('.ax-detail__name')?.textContent).toBe('Liberec')
+    const counts = [...container.querySelectorAll('.ax-detail__count')].map(
+      (node) => node.textContent,
+    )
+    expect(counts).toEqual(['1', '1', '8', '15', '20'])
+    expect(detail?.textContent).toContain('Source data incomplete')
+
+    await cleanup(container, root)
+  })
+
+  it('says so when the split never arrived instead of printing zeros', async () => {
+    const { container, root } = await render({
+      doc: mapFixture(),
+      districtCounts: null,
+      scenarioLabel: 'at baseline',
+    })
+
+    const path = container.querySelector('.ax-map__path[data-district="1"]')
+    await act(async () => {
+      path?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+
+    const detail = container.querySelector('.ax-detail')
+    expect(detail?.querySelector('.ax-detail__name')?.textContent).toBe('Hl.m. Praha')
+    expect(container.querySelectorAll('.ax-detail__count')).toHaveLength(0)
+    expect(detail?.textContent).toContain('did not arrive')
+
+    await cleanup(container, root)
+  })
+
+  it('opens from a region tile the map geometry does not know', async () => {
+    const { container, root } = await render({
+      doc: fixture(),
+      districtCounts: BASELINE,
+      scenarioLabel: 'at baseline',
+    })
+
+    const tile = container.querySelector('.ax-tile[data-district="1"]')
+    await act(async () => {
+      tile?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+
+    expect(container.querySelector('.ax-detail__name')?.textContent).toBe('Ashfield')
+    const counts = [...container.querySelectorAll('.ax-detail__count')].map(
+      (node) => node.textContent,
+    )
+    expect(counts).toEqual(['6', '4', '10', '20', '20'])
 
     await cleanup(container, root)
   })

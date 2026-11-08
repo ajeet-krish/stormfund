@@ -87,3 +87,24 @@ describe('WeatherBands', () => {
     expect(sourceOf('WeatherBands.tsx')).not.toContain('flood')
   })
 })
+
+describe('WeatherBands stylesheet: one line at judging widths', () => {
+  it('keeps the five chips on a single flex row with one phone escape', () => {
+    const css = readFileSync(new URL('./weather.css', import.meta.url), 'utf8')
+
+    const ladder = css.match(/\.wx-bands \{[^}]*\}/)?.[0] ?? ''
+    expect(ladder).toContain('display: flex')
+    expect(ladder).toContain('flex-wrap: nowrap')
+
+    // Each chip takes an equal share of the line and may shrink, so
+    // five chips and their threshold sentences never wrap apart.
+    const chip = css.match(/\.wx-band \{[^}]*\}/)?.[0] ?? ''
+    expect(chip).toContain('flex: 1 1 0')
+    expect(chip).toContain('min-width: 0')
+
+    // The only place the line breaks sits under a narrow phone width.
+    expect(css).toMatch(/@media \(max-width: 36rem\) \{\s*\.wx-bands \{[^}]*flex-wrap: wrap/)
+    // The retired caption left the sheet with the markup.
+    expect(css).not.toContain('wx-bands__title')
+  })
+})

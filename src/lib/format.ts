@@ -42,3 +42,22 @@ export function formatDeciMonths(deciMonths: number, state: RunwayState): string
 export function formatMetersPerSecond(value: number): string {
   return `${value.toFixed(1)} m/s`
 }
+
+/**
+ * Whole dollars to integer cents, for the typed shock fields: the text
+ * box a judge types into holds dollars while the twist holds integer
+ * cents, and this is the only place the two units meet. The result is
+ * always an integer count of cents, so the twist math never sees a
+ * fractional cent.
+ */
+export function dollarsToCents(dollars: number): number {
+  return Math.round(dollars * 100)
+}
+
+/**
+ * Integer cents back to whole dollars for the same text boxes: the
+ * slider steps in cents and the typed field reads back whole dollars.
+ */
+export function centsToDollars(cents: number): number {
+  return Math.round(cents / 100)
+}
