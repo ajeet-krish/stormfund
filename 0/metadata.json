@@ -1,0 +1,64 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6WTRCN8XR8C2K6R4FZWJZY1",
+  "session_id": "ses_e4898cf3effentek0j2gyc4aiF",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T05:40:34.419583Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "docs/decisions.md",
+    "docs/reviews.md",
+    "src/App.tsx",
+    "src/components/atlas/AtlasSection.test.ts",
+    "src/components/atlas/AtlasSection.tsx",
+    "src/components/atlas/AtlasStripPlot.test.ts",
+    "src/components/atlas/AtlasStripPlot.tsx",
+    "src/components/atlas/StormAtlas.test.ts",
+    "src/components/atlas/StormAtlas.tsx",
+    "src/components/atlas/atlas.css",
+    "src/dashScan.test.ts",
+    "src/lib/atlasPlot.test.ts",
+    "src/lib/atlasPlot.ts",
+    "src/lib/stormAtlas.test.ts",
+    "src/lib/stormAtlas.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "d1602e05a22d",
+  "checkpoint_transcript_start": 135,
+  "transcript_lines_at_start": 135,
+  "compact_transcript_start": 135,
+  "token_usage": {
+    "input_tokens": 16377,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 1808128,
+    "output_tokens": 5969,
+    "api_call_count": 8,
+    "subagent_tokens": {
+      "input_tokens": 337293,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 17726400,
+      "output_tokens": 58596,
+      "api_call_count": 166
+    }
+  },
+  "redaction": {
+    "replacements": 0,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 14
+  }
+}
