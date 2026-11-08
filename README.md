@@ -65,6 +65,8 @@ The EI cliff overlay appears only under a job loss twist, is labeled "Beyond the
 
 A band key prints all five verdict bands with their thresholds, lowest runway first. Colors are colorblind safe (Okabe-Ito base), severity is carried by color plus icon plus text label together, and every animation respects prefers-reduced-motion.
 
+![Buffer forecast: recorded average balances and the 12 month projection under the combined twist, with the storm front landing at 4.2 months, the EI cliff overlay, and the five band key](forecast.png)
+
 ### Typed shock input
 
 Instead of preset buttons, type the shock in plain language ("they lose their job, EI covers half, and the furnace dies next month"). The Gemini parse maps the sentence to the same structured shock fields the presets use, shows them as confirmation chips you can correct with one click, and prints the dollar arithmetic in a formula strip that delegates to the same shock math, so you can hand verify it before anything applies. The runway never changes until you confirm, and a parse that fails, lacks a key, or times out after 3 seconds falls back to a note while the preset cards stay clickable. The engine runs fully without it. Full details in the Use of Gemini API section.
@@ -76,6 +78,8 @@ Where the station shows one account, the Storm Atlas shows the whole population.
 The distribution renders as a strip plot with one dot per account (4,500 circles) on an axis aligned to the verdict bands, with deterministic jitter seeded from the account id (never random) and a labeled 120+ overflow bin for capped readings. Click any dot to drill straight into the console on that account, which is how the demo moves from one judge-picked account to the population story.
 
 An extension adds a district storm cartogram (77 districts) and a population rain gauge, both rendered from `public/data/engine/atlas.json`, precomputed on the five verdict bands by `scripts/engine/atlas.py`. The summary math lives in pure modules with unit tests, and the components read counts, never recompute them.
+
+![Storm Atlas population page: the laid off twist headline (435 of 4,500 accounts under 3 months of runway against 60 at baseline), the five band cells, and the district storm cartogram](population.png)
 
 ### Solana receipt badge (E7)
 
