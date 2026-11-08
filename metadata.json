@@ -3,7 +3,7 @@
   "checkpoint_id": "01M6WY84ZAEJC5FBTEP0KM1Z46",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 5,
   "files_touched": [
     "docs/competition-day-runbook.md",
     "docs/decisions.md",
@@ -42,31 +42,38 @@
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
       "prompt": ""
+    },
+    {
+      "metadata": "/1/metadata.json",
+      "transcript": "/1/full.jsonl",
+      "compact_transcript": "/1/transcript.jsonl",
+      "content_hash": "/1/content_hash.txt",
+      "prompt": "/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 25876,
+    "input_tokens": 41245,
     "cache_creation_tokens": 0,
-    "cache_read_tokens": 2014336,
-    "output_tokens": 5369,
-    "api_call_count": 8,
+    "cache_read_tokens": 5817984,
+    "output_tokens": 12493,
+    "api_call_count": 17,
     "subagent_tokens": {
-      "input_tokens": 550216,
+      "input_tokens": 768125,
       "cache_creation_tokens": 0,
-      "cache_read_tokens": 16750336,
-      "output_tokens": 94125,
-      "api_call_count": 190
+      "cache_read_tokens": 21799808,
+      "output_tokens": 116948,
+      "api_call_count": 243
     }
   },
   "redaction": {
-    "replacements": 0,
+    "replacements": 8,
     "layers": {
-      "betterleaks": 0,
+      "betterleaks": 4,
       "connection_string": 0,
       "credential_key": 0,
       "credential_value": 0,
       "credentialed_uri": 0,
-      "entropy": 0,
+      "entropy": 4,
       "key_context": 0,
       "provider_token": 0,
       "shell_stdin": 0

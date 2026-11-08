@@ -1,0 +1,77 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6WY84ZAEJC5FBTEP0KM1Z46",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T06:41:40.03723Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    "docs/competition-day-runbook.md",
+    "docs/decisions.md",
+    "docs/reviews.md",
+    "scripts/engine/__init__.py",
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/components/console/ConsoleView.tsx",
+    "src/components/judge/GuardChips.test.ts",
+    "src/components/judge/GuardChips.tsx",
+    "src/components/judge/JudgeBar.test.ts",
+    "src/components/judge/JudgeBar.tsx",
+    "src/components/judge/RehearsalDock.test.ts",
+    "src/components/judge/RehearsalDock.tsx",
+    "src/components/judge/judge.css",
+    "src/components/judge/judgeShortcuts.smoke.test.ts",
+    "src/components/judge/useEdgeGuard.ts",
+    "src/components/judge/useJudgeShortcuts.ts",
+    "src/components/weather/weather.css",
+    "src/dashScan.test.ts",
+    "src/lib/atlasPlot.ts",
+    "src/lib/forecast.ts",
+    "src/lib/judgeMode.test.ts",
+    "src/lib/judgeMode.ts",
+    "src/lib/planText.test.ts",
+    "src/lib/planText.ts",
+    "src/lib/rehearsal.test.ts",
+    "src/lib/rehearsal.ts",
+    "src/state/consoleStore.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "a5231f5f4f9c",
+  "checkpoint_transcript_start": 247,
+  "transcript_lines_at_start": 247,
+  "compact_transcript_start": 247,
+  "token_usage": {
+    "input_tokens": 15369,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 3803648,
+    "output_tokens": 7124,
+    "api_call_count": 9,
+    "subagent_tokens": {
+      "input_tokens": 217909,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 5049472,
+      "output_tokens": 22823,
+      "api_call_count": 53
+    }
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 25
+  }
+}
