@@ -1,11 +1,12 @@
-# Deploy the Ledger Odyssey web app to GitHub Pages.
+# Deploy the Storm Fund web app to GitHub Pages.
 #
 # Pages *project* site: the repository is served from
-# https://<owner>.github.io/<repo>/ and every asset needs that prefix. The
-# build below derives VITE_BASE from the repository name, which
-# vite.config.ts reads, so the base path can never drift from the repo name
-# (and stays correct if the repo is renamed, or if the site is ever published
-# as a user/org page at the root). Adapted from the Talon deploy workflow.
+# https://<owner>.github.io/<repo>/ and every asset needs that prefix, UNLESS
+# a custom domain is attached (a CNAME file at the repository root), in which
+# case GitHub serves the site from the domain root and VITE_BASE must be "/".
+# The build below derives VITE_BASE from those signals, which vite.config.ts
+# reads, so the base path can never drift from the deployed URL. Adapted from
+# the Talon deploy workflow.
 #
 # The repository's Pages source must be "GitHub Actions" (Settings > Pages >
 # Build and deployment > Source). If it is left on "Deploy from a branch",
@@ -32,6 +33,7 @@ on:
       - "tsconfig.build.json"
       - "tailwind.config.js"
       - "postcss.config.js"
+      - "CNAME"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -66,25 +68,37 @@ jobs:
 
       - name: Build
         # Project pages live under /<repo>/; a user/org <name>.github.io page
-        # is served from the root instead. The configure-pages base_path
-        # reaches the script only through env, never interpolated into the
-        # shell block (script injection pattern, docs/reviews.md).
+        # or a custom domain (CNAME file present) is served from the root
+        # instead. The configure-pages base_path and the CNAME check reach
+        # the script only through env or the checked out tree, never
+        # interpolated into the shell block (script injection pattern,
+        # docs/reviews.md).
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: |
           repo="${GITHUB_REPOSITORY#*/}"
-          if [[ "$repo" == *.github.io ]]; then
+          if [[ "$repo" == *.github.io ]] || [[ -f CNAME ]] || [[ "$PAGES_BASE_PATH" == "/" ]]; then
             base="/"
           else
             base="/$repo/"
           fi
-          echo "Building for ${base} (Pages environment: ${PAGES_BASE_PATH})"
+          echo "Building for ${base} (Pages environment: ${PAGES_BASE_PATH}, CNAME: $( [[ -f CNAME ]] && cat CNAME || echo none ))"
           VITE_BASE="$base" npm run build
+          if [[ -f CNAME ]]; then
+            cp CNAME dist/CNAME
+          fi
 
       - name: Confirm the built asset paths carry the base
         run: |
-          grep -q "$(basename "$GITHUB_REPOSITORY")/assets/" dist/index.html \
-            || { echo "dist/index.html does not reference the base-prefixed assets"; grep -o 'src="[^"]*"' dist/index.html; exit 1; }
+          expected="$(grep -o 'src="[^"]*assets/[^"]*"' dist/index.html | head -1 || true)"
+          if [[ -f CNAME ]]; then
+            grep -q 'src="/assets/' dist/index.html \
+              || { echo "custom domain deploy must reference root assets"; grep -o 'src="[^"]*"' dist/index.html; exit 1; }
+          else
+            grep -q "$(basename "$GITHUB_REPOSITORY")/assets/" dist/index.html \
+              || { echo "dist/index.html does not reference the base-prefixed assets"; grep -o 'src="[^"]*"' dist/index.html; exit 1; }
+          fi
+          echo "asset reference: ${expected}"
 
       - uses: actions/upload-pages-artifact@v3
         with:
