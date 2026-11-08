@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6XZ5YWXAGP2P38PERPTSYNT",
+  "session_id": "ses_e48f3805dffelCb6SXODqCu4w7",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-08T16:17:21.855674Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 3,
+  "files_touched": [
+    "docs/decisions.md",
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/components/atlas/AtlasSection.tsx",
+    "src/components/atlas/Cartogram.tsx",
+    "src/components/atlas/RainGauge.test.ts",
+    "src/components/atlas/RainGauge.tsx",
+    "src/components/atlas/atlas.css",
+    "src/components/console/BaselineCard.tsx",
+    "src/components/console/ConsoleView.tsx",
+    "src/components/console/ShockPanel.tsx",
+    "src/components/sky/sky.css",
+    "src/components/weather/WeatherBands.test.ts",
+    "src/components/weather/WeatherPanel.test.ts",
+    "src/components/weather/WeatherPanel.tsx",
+    "src/components/weather/weather.css",
+    "src/index.css",
+    "src/lib/format.ts"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "b6243894d6c1",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 3483,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 961280,
+    "output_tokens": 2276,
+    "api_call_count": 2
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 4,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 4,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 30
+  }
+}
