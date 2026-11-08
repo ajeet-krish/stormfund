@@ -1,7 +1,6 @@
 # Devpost submission draft: Storm Fund (Sheridan Datathon 2026)
 
-Created: Sat Nov 07 2026 (replaces the obsolete Ledger Odyssey draft after the
-pivot to the Resilience Weather Station). Source of truth for every number:
+Created: Sat Nov 07 2026 (replaces the obsolete Ledger Odyssey draft after the pivot to the Resilience Weather Station). Source of truth for every number:
 `public/data/engine/aggregates.json` once frozen (findings freeze Sat 6:00 PM).
 Paste map:
 
@@ -14,8 +13,7 @@ Paste map:
 | 5. Video description | YouTube upload (unlisted), link pasted into Devpost by final deadline |
 | 6. Checklist | Your own runbook, not pasted into Devpost |
 
-Deadlines: draft plus track selection Sat Nov 7 8:00 PM (hard), final
-submission Sun Nov 8 12:00 PM, live demos 12:30 PM.
+Deadlines: draft plus track selection Sat Nov 7 8:00 PM (hard), final submission Sun Nov 8 12:00 PM, live demos 12:30 PM.
 
 ## 1. Track selection
 
@@ -102,6 +100,8 @@ legible, and strangely calming even when the forecast says storm.
 ### Limits we declare up front
 
 Runway uses the answer key's definitions, including flat 55% EI (no weekly maximum, no taxes). Plans are our own declared formulas (goal = 3x spending), permitted by the brief and stated on screen. Correlation, not causation, everywhere. No customer rows leave the browser; the Gemini prompt carries a sentence and aggregate numbers only.
+
+future work: a behavioral score attested on chain could gate a credit line or automate surplus sweeps; not implemented, and the underlying model (F3, AUC 0.590) is not strong enough to gate credit
 
 ### Links
 

@@ -42,3 +42,13 @@ verify.py's drift gate (profiles.json gate stays), and append a
 correction entry to docs/decisions.md noting the misfiled Phase E5
 atlas precompute record. Do not reintroduce clear/cloudy/overcast/
 rain/drought/storm/flood in code, artifacts, or docs.
+
+Two more routing items for the session owning docs/devpost.md:
+(1) paste the approved E7 sentence verbatim into "Limits we declare
+up front": future work: a behavioral score attested on chain could
+gate a credit line or automate surplus sweeps; not implemented, and
+the underlying model (F3, AUC 0.590) is not strong enough to gate
+credit
+(2) `npm run typecheck` is red with 12 TS2532/TS2345 errors in
+src/lib/atlasData.test.ts (your in-progress file); it blocks the repo
+gate and must be fixed before the Devpost draft hard stop.
