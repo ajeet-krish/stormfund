@@ -189,7 +189,7 @@ with sound off before the link goes into Devpost.
 | Placeholder | Replace with |
 |-------------|--------------|
 | [GITHUB REPO URL PLACEHOLDER] | https://github.com/ajeet-krish/stormfund |
-| https://www.stormfund.work/ (fallback: https://ajeet-krish.github.io/stormfund/) |
+| [LIVE SITE URL PLACEHOLDER] | https://www.stormfund.work/ (fallback: https://ajeet-krish.github.io/stormfund/) |
 | [YOUTUBE LINK PLACEHOLDER] | unlisted video URL |
 | [DEVPOST SUBMISSION URL] | own submission URL after the draft is created |
 | [YOUR NAME PLACEHOLDER] | solo team member name as it should appear on Devpost |
