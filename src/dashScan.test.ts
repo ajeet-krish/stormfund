@@ -34,17 +34,23 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/data/profiles.test.ts',
   'src/data/receipts.ts',
   'src/data/receipts.test.ts',
+  'src/lib/atlasData.test.ts',
+  'src/lib/atlasData.ts',
   'src/lib/atlasPlot.test.ts',
   'src/lib/atlasPlot.ts',
   'src/lib/forecast.test.ts',
   'src/lib/forecast.ts',
   'src/lib/format.ts',
+  'src/lib/judgeMode.test.ts',
+  'src/lib/judgeMode.ts',
   'src/lib/metrics.ts',
   'src/lib/planMath.golden.test.ts',
   'src/lib/planMath.test.ts',
   'src/lib/planMath.ts',
   'src/lib/planText.ts',
   'src/lib/planText.test.ts',
+  'src/lib/rehearsal.test.ts',
+  'src/lib/rehearsal.ts',
   'src/lib/shockPresets.ts',
   'src/lib/shocks.golden.test.ts',
   'src/lib/shocks.test.ts',
@@ -60,6 +66,7 @@ const AUTO_DIRS: readonly string[] = [
   'src/state',
   'src/components/atlas',
   'src/components/console',
+  'src/components/judge',
   'src/components/weather',
 ]
 
@@ -67,6 +74,7 @@ const AUTO_DIRS: readonly string[] = [
 const CSS_FILES: readonly string[] = [
   'src/index.css',
   'src/components/atlas/atlas.css',
+  'src/components/judge/judge.css',
   'src/components/weather/weather.css',
   'tailwind.config.js',
 ]
@@ -190,6 +198,19 @@ describe('content rule: dash scan over the Phase E2 through E5 sources', () => {
     expect(files).toContain('src/components/atlas/AtlasStripPlot.test.ts')
     expect(files).toContain('src/components/atlas/AtlasSection.tsx')
     expect(files).toContain('src/components/atlas/AtlasSection.test.ts')
+    // The atlas loader pair and the E6 judge surfaces: the four lib
+    // files ride EXPLICIT_FILES, the judge components and their tests
+    // ride AUTO_DIRS, and judge.css is registered with the stylesheets
+    // in CSS_FILES.
+    expect(files).toContain('src/lib/atlasData.ts')
+    expect(files).toContain('src/lib/atlasData.test.ts')
+    expect(files).toContain('src/lib/judgeMode.ts')
+    expect(files).toContain('src/lib/judgeMode.test.ts')
+    expect(files).toContain('src/lib/rehearsal.ts')
+    expect(files).toContain('src/lib/rehearsal.test.ts')
+    expect(files).toContain('src/components/judge/JudgeBar.tsx')
+    expect(files).toContain('src/components/judge/JudgeBar.test.ts')
+    expect(files).toContain('src/components/judge/judgeShortcuts.smoke.test.ts')
     // The E7 receipts: the data registry and its test are explicit,
     // the stamp component rides the console AUTO_DIRS entry.
     expect(files).toContain('src/data/receipts.ts')

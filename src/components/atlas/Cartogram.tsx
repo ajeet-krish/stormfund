@@ -25,10 +25,11 @@ import { roundHalfUp } from '../../lib/shocks'
  * storm warning count over the district's own account total, the
  * legend prints the severity definition and the region, not geography
  * caveat word for word, and a no_data district shows its hatch and its
- * real account counts together because the hatch marks missing
- * demographics, never missing accounts. A district whose counts did
- * not arrive prints n/a and takes no shade, so absent data can never
- * read as a safe zero.
+ * real account counts together because the hatch marks an incomplete
+ * source row, never missing accounts: the shipped hatched district
+ * still carries populated 2023 demographic cells. A district whose
+ * counts did not arrive prints n/a and takes no shade, so absent data
+ * can never read as a safe zero.
  *
  * Every tile is a focusable button with a full sentence as its
  * accessible name, wired to the optional onSelectDistrict callback and
@@ -65,7 +66,7 @@ function tileAria(row: DistrictRow, counts: BandCounts | null): string {
   const risky = counts.critical + counts.storm_warning
   const suffix = `${formatCount(risky)} of ${formatCount(total)} accounts critical or storm warning`
   if (row.no_data) {
-    return `${row.district_name}, no demographic data, ${suffix}`
+    return `${row.district_name}, source data incomplete, ${suffix}`
   }
   return `${row.district_name}, ${suffix}`
 }
@@ -185,7 +186,7 @@ export default function Cartogram({
         </p>
         <p className="ax-legend__note">{`Severity: ${SEVERITY_DEFINITION}.`}</p>
         <p className="ax-legend__note">
-          Hatched tiles carry no demographic data; their account counts are real.
+          Hatched tiles mark an incomplete source row; their account counts are real.
         </p>
         {note ? <p className="ax-legend__note">{note}</p> : null}
       </div>

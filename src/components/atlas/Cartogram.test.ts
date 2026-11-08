@@ -13,8 +13,9 @@ import type { AtlasDoc, BandCounts, DistrictRow } from '../../lib/atlasData'
 
 /**
  * Cartogram markup and behavior on an inline fixture: seven districts
- * over three regions, one no_data district whose demographics are
- * null while its accounts are real, tiles shaded by the severity bins
+ * over three regions, one no_data district whose source row is
+ * incomplete while its demographic cells and its accounts are both
+ * real (the shipped artifact shape), tiles shaded by the severity bins
  * with the counts they were handed, the legend printing the severity
  * definition and the region, not geography caveat, focusable tiles
  * routed to the optional callback, and safe rendering when the
@@ -68,8 +69,11 @@ function district(
     district_name,
     region,
     inhabitants: 40000 + district_id * 1000,
-    unemployment_rate_2023: no_data ? null : 3.5,
-    average_salary: no_data ? null : 15000,
+    // The no_data row keeps populated demographic cells, the way the
+    // shipped hatched district does: the flag marks an incomplete
+    // source row, not empty demographics.
+    unemployment_rate_2023: 3.5,
+    average_salary: 15000,
     account_count,
     no_data,
   }
@@ -192,8 +196,15 @@ describe('Cartogram tiles', () => {
     expect(flagged.textContent).toContain('10%')
     expect(flagged.textContent).toContain('6 of 60')
     expect(flagged.getAttribute('aria-label')).toBe(
-      'Fairview, no demographic data, 6 of 60 accounts critical or storm warning',
+      'Fairview, source data incomplete, 6 of 60 accounts critical or storm warning',
     )
+    // The hatch marks an incomplete source row: the fixture's hatched
+    // district still ships populated demographic cells, like district
+    // 69 in the artifact.
+    const hatchedRow = fixture().districts.find((row) => row.no_data) as DistrictRow
+    expect(hatchedRow.unemployment_rate_2023).toBe(3.5)
+    expect(hatchedRow.average_salary).toBe(15000)
+    expect(hatchedRow.account_count).toBe(60)
 
     await cleanup(container, root)
   })
@@ -274,7 +285,7 @@ describe('Cartogram legend', () => {
       'Severity: critical plus storm warning share of the district accounts.',
     )
     expect(container.textContent).toContain(
-      'Hatched tiles carry no demographic data; their account counts are real.',
+      'Hatched tiles mark an incomplete source row; their account counts are real.',
     )
 
     await cleanup(container, root)

@@ -17,9 +17,11 @@ import type { BandCounts, DistrictRow } from './atlasData'
  * of src/data/profiles.ts, every rejection naming the field that broke
  * the fixed schema, plus the two cartogram helpers (severity share and
  * shading bin) and the region grouping. The fixture is inline: seven
- * districts, three regions, one no_data district whose demographics
- * are null while its accounts are real, counts summing to every
- * district account_count. No test reads the shipped artifact.
+ * districts, three regions, one no_data district whose source row is
+ * incomplete while its demographic cells and its accounts are both
+ * real (the shipped artifact shape), counts summing to every
+ * district account_count, and all four preset scenario tables the
+ * fixed contract requires. No test reads the shipped artifact.
  */
 
 const SHA = 'a1'.repeat(32)
@@ -47,8 +49,11 @@ function district(
     district_name,
     region,
     inhabitants: 40000 + district_id * 1000,
-    unemployment_rate_2023: no_data ? null : 3.5,
-    average_salary: no_data ? null : 15000,
+    // Populated demographics under no_data, the way the shipped
+    // hatched district ships them: the flag marks an incomplete source
+    // row, not empty demographics.
+    unemployment_rate_2023: 3.5,
+    average_salary: 15000,
     account_count,
     no_data,
   }
@@ -75,11 +80,33 @@ const LAYOFF_SPLITS: Record<number, BandCounts> = {
 }
 
 /**
+ * The other three preset tables: each moves a slice of accounts from
+ * clear into critical on top of one base table, so every district
+ * total still matches its account_count while the four tables stay
+ * distinguishable.
+ */
+function shifted(base: Record<number, BandCounts>, moved: number): Record<number, BandCounts> {
+  const out: Record<number, BandCounts> = {}
+  for (const [districtId, split] of Object.entries(base)) {
+    out[Number(districtId)] = {
+      ...split,
+      critical: split.critical + moved,
+      clear: split.clear - moved,
+    }
+  }
+  return out
+}
+
+const COST_SPIKE_SPLITS = shifted(BASELINE_SPLITS, 2)
+const EMERGENCY_REPAIR_SPLITS = shifted(BASELINE_SPLITS, 4)
+const COMBO_SPLITS = shifted(LAYOFF_SPLITS, 1)
+
+/**
  * A fresh fixture every call so a drift test can mutate its copy:
  * seven districts over three regions (North, Central, South, file
  * order not alphabetical), district 6 the no_data row, 340 accounts
- * mapped one each, and only the layoff scenario precomputed, which the
- * loader accepts as a valid subset of the preset ids.
+ * mapped one each, and all four preset scenario tables the fixed
+ * contract requires.
  */
 function fixture(): Record<string, unknown> {
   const districts = [
@@ -107,7 +134,12 @@ function fixture(): Record<string, unknown> {
     districts,
     account_district,
     baseline: structuredClone(BASELINE_SPLITS),
-    scenarios: { layoff: structuredClone(LAYOFF_SPLITS) },
+    scenarios: {
+      layoff: structuredClone(LAYOFF_SPLITS),
+      cost_spike: structuredClone(COST_SPIKE_SPLITS),
+      emergency_repair: structuredClone(EMERGENCY_REPAIR_SPLITS),
+      combo: structuredClone(COMBO_SPLITS),
+    },
   }
 }
 
@@ -125,7 +157,12 @@ describe('parseAtlasDoc: the contract it accepts', () => {
     expect(doc.districts).toHaveLength(7)
     expect(doc.sources).toHaveLength(1)
     expect(Object.keys(doc.baseline)).toHaveLength(7)
-    expect(Object.keys(doc.scenarios)).toEqual(['layoff'])
+    expect(Object.keys(doc.scenarios)).toEqual([
+      'layoff',
+      'cost_spike',
+      'emergency_repair',
+      'combo',
+    ])
     expect(Object.keys(doc.account_district)).toHaveLength(340)
   })
 
@@ -138,14 +175,25 @@ describe('parseAtlasDoc: the contract it accepts', () => {
     expect(doc.verdict_bands).toEqual(['critical', 'storm_warning', 'watch', 'fair_skies', 'clear'])
   })
 
-  it('keeps the no_data district honest: null demographics, real accounts', () => {
+  it('keeps the no_data district honest: populated demographics, real accounts', () => {
     const doc = parsed()
     const flagged = doc.districts.find((row) => row.no_data) as DistrictRow
     expect(flagged.district_name).toBe('Fairview')
-    expect(flagged.unemployment_rate_2023).toBeNull()
-    expect(flagged.average_salary).toBeNull()
+    // The flag marks an incomplete source row, not empty demographics:
+    // the shipped hatched district carries its 2023 cells the same way.
+    expect(flagged.unemployment_rate_2023).toBe(3.5)
+    expect(flagged.average_salary).toBe(15000)
     expect(flagged.account_count).toBe(60)
     expect(bandTotal(doc.baseline['6']!)).toBe(flagged.account_count)
+  })
+
+  it('still accepts a null demographic cell', () => {
+    const raw = fixture()
+    const rows = raw.districts as Record<string, unknown>[]
+    rows[0]!.unemployment_rate_2023 = null
+    const doc = parseAtlasDoc(raw)
+    expect(doc.districts[0]!.unemployment_rate_2023).toBeNull()
+    expect(doc.districts[0]!.average_salary).toBe(15000)
   })
 
   it('maps every account exactly once per district', () => {
@@ -228,6 +276,20 @@ describe('parseAtlasDoc: refusals that name the field', () => {
     scenarios.overtime = scenarios.layoff
     delete scenarios.layoff
     expect(() => parseAtlasDoc(raw)).toThrow(/not a shipped shock preset id/)
+  })
+
+  it('refuses a scenarios block that is not exactly the four preset tables', () => {
+    const subset = fixture()
+    delete (subset.scenarios as Record<string, unknown>).combo
+    expect(() => parseAtlasDoc(subset)).toThrow(
+      /all four shipped preset tables, missing combo/,
+    )
+
+    const trimmed = fixture()
+    const scenarios = trimmed.scenarios as Record<string, unknown>
+    delete scenarios.cost_spike
+    delete scenarios.emergency_repair
+    expect(() => parseAtlasDoc(trimmed)).toThrow(/missing cost_spike, emergency_repair/)
   })
 
   it('refuses an account mapped to a district that does not exist', () => {

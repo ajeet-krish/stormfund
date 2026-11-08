@@ -10,8 +10,8 @@ import { VERDICT_BANDS, type VerdictBandId } from './verdict'
  * field named, instead of feeding a wrong number into a judge facing
  * map. The fixed contract (docs, Phase E5 record) is: schema_version 1,
  * a five band list, provenance sources, one row per district, an
- * account to district map, a baseline split, and per preset scenario
- * splits. Two cross checks make silent drift impossible: every band
+ * account to district map, a baseline split, and the four preset
+ * scenario splits. Two cross checks make silent drift impossible: every band
  * counts object must sum to its district account_count, and the
  * account map must agree with every district account_count.
  *
@@ -39,8 +39,11 @@ export interface AtlasSource {
   rows: number
 }
 
-/** One district row. Demographic cells are nullable (district 69 has
- * real accounts with only demographics missing, which no_data flags). */
+/** One district row. Demographic cells are nullable, and no_data flags
+ * an incomplete source row rather than empty demographics: the shipped
+ * hatched district (69) carries populated unemployment_rate_2023 and
+ * average_salary with real accounts, while the source cells it is
+ * missing (the 2022 columns) are ones this artifact never carries. */
 export interface DistrictRow {
   district_id: number
   district_name: string
@@ -84,7 +87,11 @@ type RawRecord = Record<string, unknown>
 
 const SHA256_PATTERN = /^[0-9a-f]{64}$/
 const ACCOUNT_ID_PATTERN = /^\d+$/
-const PRESET_IDS: ReadonlySet<string> = new Set(SHOCK_PRESETS.map((preset) => preset.id))
+/** The four preset tables the artifact must carry, in contract order,
+ * read from the same shock preset contract the console renders. */
+const PRESET_ID_LIST: readonly string[] = SHOCK_PRESETS.map((preset) => preset.id)
+
+const PRESET_IDS: ReadonlySet<string> = new Set(PRESET_ID_LIST)
 
 const DISTRICT_KEYS: readonly string[] = [
   'district_id',
@@ -179,9 +186,12 @@ function requireExactKeys(record: RawRecord, expected: readonly string[], name: 
 
 /**
  * The band list key is the one spelling the loader tolerates in two
- * forms: verdict_bands or states. Every refusal below is written so
- * the message never echoes the received band names back, which keeps
- * retired vocabulary out of code, logs, and docs.
+ * forms: verdict_bands or states. Every refusal in this function and
+ * in parseBandList below is written so its message never echoes the
+ * received band names back, which keeps retired vocabulary out of
+ * code, logs, and docs. The guarantee is scoped to the band list
+ * path: count object refusals do name the offending key through
+ * requireExactKeys.
  */
 function pickBandListKey(root: RawRecord): 'verdict_bands' | 'states' {
   const hasVerdictBands = Object.prototype.hasOwnProperty.call(root, 'verdict_bands')
@@ -327,16 +337,32 @@ function parseDistrictCounts(
   return out
 }
 
+/**
+ * Exactly the four shipped preset tables: the module doc and both
+ * Python gates (verify.py, test_atlas.py) treat the full set as fixed
+ * contract, so a trimmed artifact is refused here with the missing
+ * ids named instead of silently falling back to baseline tiles, and an
+ * invented preset id keeps its own refusal.
+ */
 function parseScenarios(
   raw: unknown,
   districts: readonly DistrictRow[],
 ): Record<string, Record<string, BandCounts>> {
   const record = asRecord(raw, 'scenarios')
-  const out: Record<string, Record<string, BandCounts>> = {}
-  for (const [presetId, value] of Object.entries(record)) {
+  const actual = new Set(Object.keys(record))
+  for (const presetId of actual) {
     if (!PRESET_IDS.has(presetId)) {
       throw new Error(`scenarios key "${presetId}" is not a shipped shock preset id`)
     }
+  }
+  const missing = PRESET_ID_LIST.filter((presetId) => !actual.has(presetId))
+  if (missing.length > 0) {
+    throw new Error(
+      `scenarios must carry all four shipped preset tables, missing ${missing.join(', ')}`,
+    )
+  }
+  const out: Record<string, Record<string, BandCounts>> = {}
+  for (const [presetId, value] of Object.entries(record)) {
     out[presetId] = parseDistrictCounts(value, `scenarios[${presetId}]`, districts)
   }
   return out

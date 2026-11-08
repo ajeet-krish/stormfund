@@ -69,9 +69,11 @@ interface DistrictScenario {
  * twists. The label is the scenarioLabel contract in every branch:
  * the summary's own label when those exact counts ran under it, and
  * the contract's baseline wording when the tiles show baseline
- * instead of the live custom twist.
+ * instead of the live custom twist. Exported so the routing itself is
+ * pinned by test: every branch, including the fallback when the atlas
+ * carries no table for the active preset.
  */
-function districtScenarioFor(
+export function districtScenarioFor(
   doc: AtlasDoc,
   twist: Twist,
   activePresetId: string | null,
@@ -88,7 +90,7 @@ function districtScenarioFor(
     return {
       counts: doc.baseline,
       label: DEFAULT_SCENARIO_LABEL,
-      note: `District tiles show the baseline split; atlas.json holds no district detail for ${liveLabel}.`,
+      note: 'District tiles show the baseline split; atlas.json holds no district detail under this twist.',
     }
   }
   return {

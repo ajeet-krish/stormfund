@@ -6,11 +6,31 @@ import { readFileSync } from 'node:fs'
 import { URL as NodeURL } from 'node:url'
 import { act, createElement } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import { describe, expect, it, vi } from 'vitest'
-import AtlasSection from './AtlasSection'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import AtlasSection, { districtScenarioFor } from './AtlasSection'
 import { parseProfilesArtifact } from '../../data/profiles'
-import { IDLE_TWIST } from '../../lib/shocks'
+import type { AtlasDoc, BandCounts } from '../../lib/atlasData'
+import { DEFAULT_SCENARIO_LABEL } from '../../lib/stormAtlas'
+import { IDLE_TWIST, normalizeTwist } from '../../lib/shocks'
 import { useConsole } from '../../state/consoleStore'
+
+// The shared atlas load is routed by hand here: the missing artifact
+// test forces one refusal, every other case delegates to the real
+// loader so the mounts behave exactly as they did without this seam.
+const atlasControl = vi.hoisted(() => ({ failLoad: false }))
+
+vi.mock('../../lib/atlasData', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../lib/atlasData')>()
+  return {
+    ...actual,
+    loadSharedAtlas: async () => {
+      if (atlasControl.failLoad) {
+        throw new Error('atlas.json fetch failed with status 404')
+      }
+      return actual.loadSharedAtlas()
+    },
+  }
+})
 
 /**
  * The Storm Atlas section wiring: it counts the shipped population at
@@ -18,8 +38,12 @@ import { useConsole } from '../../state/consoleStore'
  * twist lands (the label and the numbers come from the same atlas
  * run), drills a dot into the store's existing selectAccount action
  * and scrolls the console into view, and stays slim when the bundle is
- * loading or failed. The last block is scope discipline: the E2 to E4
- * sources and the console store must not learn the word atlas.
+ * loading or failed. The districtScenarioFor block pins the four
+ * routing branches of the honesty seam (idle, matched preset, preset
+ * table missing from the atlas, custom twist) and the documented
+ * note when the artifact never loads. The last block is scope
+ * discipline: the E2 to E4 sources and the console store must not
+ * learn the word atlas.
  */
 
 // React's act() refuses to run until the environment declares itself.
@@ -276,5 +300,117 @@ describe('AtlasSection: scope discipline', () => {
     const text = readFileSync(new NodeURL('../../state/consoleStore.ts', import.meta.url), 'utf8')
     expect(text).not.toContain('atlas')
     expect(text).not.toContain('Atlas')
+  })
+})
+
+describe('AtlasSection: districtScenarioFor routes the live twist', () => {
+  const SPLIT: BandCounts = { critical: 1, storm_warning: 1, watch: 2, fair_skies: 3, clear: 4 }
+
+  /** A small but complete artifact shape with all four preset tables. */
+  function districtDoc(): AtlasDoc {
+    return {
+      schema_version: 1,
+      generated_by: 'scripts.engine.build',
+      verdict_bands: ['critical', 'storm_warning', 'watch', 'fair_skies', 'clear'],
+      sources: [],
+      districts: [
+        {
+          district_id: 1,
+          district_name: 'Ashfield',
+          region: 'North',
+          inhabitants: 41000,
+          unemployment_rate_2023: 3.5,
+          average_salary: 15000,
+          account_count: 11,
+          no_data: false,
+        },
+      ],
+      account_district: {},
+      baseline: { '1': { ...SPLIT } },
+      scenarios: {
+        layoff: { '1': { ...SPLIT } },
+        cost_spike: { '1': { ...SPLIT } },
+        emergency_repair: { '1': { ...SPLIT } },
+        combo: { '1': { ...SPLIT } },
+      },
+    }
+  }
+
+  it('shows the baseline table under the untouched console', () => {
+    const doc = districtDoc()
+    const result = districtScenarioFor(doc, IDLE_TWIST, null, DEFAULT_SCENARIO_LABEL)
+    expect(result.counts).toBe(doc.baseline)
+    expect(result.label).toBe(DEFAULT_SCENARIO_LABEL)
+    expect(result.note).toBeNull()
+  })
+
+  it('shows the matched preset table with the live label', () => {
+    const doc = districtDoc()
+    const layoff = normalizeTwist({ jobLoss: true, incomeFactor: 0.55, durationMonths: 6 })
+    const liveLabel = 'under the laid off twist'
+    const result = districtScenarioFor(doc, layoff, 'layoff', liveLabel)
+    expect(result.counts).toBe(doc.scenarios['layoff']!)
+    expect(result.label).toBe(liveLabel)
+    expect(result.note).toBeNull()
+  })
+
+  it('falls back to baseline when the atlas carries no table for the active preset', () => {
+    const doc = districtDoc()
+    delete doc.scenarios.cost_spike
+    const bills = normalizeTwist({ billsDeltaPct: 15 })
+    const result = districtScenarioFor(doc, bills, 'cost_spike', 'under the bills up 15% twist')
+    expect(result.counts).toBe(doc.baseline)
+    expect(result.label).toBe(DEFAULT_SCENARIO_LABEL)
+    expect(result.note).toBe(
+      'District tiles show the baseline split; atlas.json holds no district detail under this twist.',
+    )
+  })
+
+  it('falls back to baseline with the honesty note on a custom twist', () => {
+    const doc = districtDoc()
+    const custom = normalizeTwist({ oneOffMonthsTenths: 5 })
+    const result = districtScenarioFor(doc, custom, null, 'under the custom twist')
+    expect(result.counts).toBe(doc.baseline)
+    expect(result.label).toBe(DEFAULT_SCENARIO_LABEL)
+    expect(result.note).toBe(
+      'District tiles show the baseline split; a custom twist has no precomputed district detail in atlas.json.',
+    )
+  })
+})
+
+describe('AtlasSection: the missing artifact fallback', () => {
+  afterEach(() => {
+    atlasControl.failLoad = false
+  })
+
+  it('slims the cartogram to the documented note and shows no tiles', async () => {
+    useConsole.setState({
+      status: 'ready',
+      error: null,
+      bundle: artifact,
+      selectedId: null,
+      twist: IDLE_TWIST,
+      activePresetId: null,
+    })
+    atlasControl.failLoad = true
+
+    const container = await renderSection()
+    await settle()
+    // One tick so the refused load has flushed its state update.
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10))
+    })
+
+    expect(container.textContent).toContain(
+      'The atlas artifact did not load, so the district tiles are not shown.',
+    )
+    expect(container.querySelectorAll('.ax-tile')).toHaveLength(0)
+    // The headline and the dot field are untouched by a missing artifact.
+    expect(container.textContent).toContain(
+      '1% of accounts have under 3 months of runway at baseline',
+    )
+    expect(container.querySelectorAll('circle.ax-dot')).toHaveLength(4500)
+
+    await cleanup()
   })
 })
