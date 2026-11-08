@@ -230,3 +230,368 @@
   color: var(--cp-ink-dim);
   max-width: 60ch;
 }
+
+/* ==========================================================================
+   District cartogram and rain gauge (E5 extension).
+
+   The header at the top of this file said nothing animates, which was
+   true until this block. The two motions below are the cascade
+   moment: a twist lands and every tile shade plus the gauge fill step
+   together over 600ms ease-out, and both live only inside
+   prefers-reduced-motion: no-preference, so a judge who asked for
+   reduced motion gets an instant swap (the global reduce block in
+   src/index.css zeroes durations again as a second gate). Band hue
+   still never arrives as a literal: the five mapping rules repeat at
+   the end of this block so each new component resolves its band color
+   even when mounted outside the atlas shell.
+   ========================================================================== */
+
+/* Headline row: the panel, then the gauge beside it ---------------- */
+
+.ax-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--rp-s4);
+  align-items: start;
+  min-width: 0;
+}
+
+@media (min-width: 760px) {
+  .ax-lead {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+/* Cartogram: one tile per district, grouped into region bands ------ */
+
+.ax-cartogram {
+  display: grid;
+  gap: var(--rp-s3);
+  min-width: 0;
+}
+
+.ax-cartogram__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--rp-s2) var(--rp-s4);
+}
+
+.ax-cartogram__title {
+  margin: 0;
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  color: var(--cp-ink);
+}
+
+.ax-cartogram__scenario {
+  margin: 0;
+  font-family: var(--rp-font-utility);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink-dim);
+}
+
+.ax-cartogram__regions {
+  display: grid;
+  gap: var(--rp-s4);
+}
+
+.ax-region {
+  display: grid;
+  gap: var(--rp-s2);
+  min-width: 0;
+}
+
+.ax-region__label {
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--cp-rule);
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cp-ink-dim);
+}
+
+.ax-region__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.25rem, 1fr));
+  gap: var(--rp-s2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Tiles: shade by severity bin, count in tabular numerals ---------- */
+
+.ax-tile {
+  --ax-band: var(--cp-ink-faint);
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  justify-items: start;
+  min-height: 44px;
+  min-width: 0;
+  width: 100%;
+  padding: 8px 10px;
+  text-align: left;
+  font: inherit;
+  color: var(--cp-ink);
+  cursor: pointer;
+  background-color: var(--cp-inset);
+  background-color: color-mix(in srgb, var(--ax-band) 22%, var(--cp-surface));
+  border: 1px solid var(--cp-rule);
+  border-left: 3px solid var(--ax-band);
+  border-radius: var(--cp-radius);
+}
+
+.ax-tile__name {
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  line-height: 1.25;
+  color: var(--cp-ink-dim);
+  overflow-wrap: anywhere;
+}
+
+.ax-tile__value {
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink);
+}
+
+.ax-tile__raw {
+  display: block;
+  font-family: var(--rp-font-utility);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--cp-ink-faint);
+}
+
+.ax-tile__value-muted {
+  color: var(--cp-ink-faint);
+  font-size: 0.875rem;
+}
+
+.ax-tile__flag {
+  font-family: var(--rp-font-utility);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cp-ink-faint);
+  border: 1px solid var(--cp-rule);
+  border-radius: 999px;
+  padding: 0 6px;
+}
+
+/* A no_data tile keeps its shade and its counts: the hatch prints
+   missing demographics, never missing accounts. */
+.ax-tile-no-data {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 5px,
+    var(--cp-rule) 5px 6.5px
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ax-tile {
+    transition:
+      background-color 600ms ease-out,
+      border-color 600ms ease-out;
+  }
+}
+
+/* Larger tiles and labels on wide viewports ------------------------ */
+
+@media (min-width: 900px) {
+  .ax-region__grid {
+    grid-template-columns: repeat(auto-fit, minmax(9.75rem, 1fr));
+  }
+
+  .ax-tile__name {
+    font-size: 0.75rem;
+  }
+
+  .ax-tile__value {
+    font-size: 1.25rem;
+  }
+}
+
+/* Legend: the five bins, the severity definition, the caveat ------- */
+
+.ax-legend {
+  display: grid;
+  gap: var(--rp-s2);
+  padding-top: var(--rp-s3);
+  border-top: 1px solid var(--cp-rule);
+}
+
+.ax-legend__bins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--rp-s2) var(--rp-s4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ax-legend__bin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink-dim);
+}
+
+.ax-legend__swatch {
+  --ax-band: var(--cp-ink-faint);
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--ax-band);
+  border: 1px solid var(--cp-rule);
+}
+
+.ax-legend__note {
+  margin: 0;
+  max-width: 72ch;
+  font-family: var(--rp-font-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--cp-ink-faint);
+}
+
+/* Rain gauge: the share outside the two risk bands ----------------- */
+
+.ax-gauge {
+  --ax-band: var(--cp-band-clear);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  margin: 0;
+  min-width: 0;
+  padding: var(--rp-s3);
+  background: var(--cp-inset);
+  border: 1px solid var(--cp-rule);
+  border-radius: var(--cp-radius);
+}
+
+.ax-gauge__pct {
+  margin: 0;
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 4vw, 2.375rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink);
+}
+
+.ax-gauge__count {
+  margin: 0;
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink-dim);
+}
+
+.ax-gauge__svg {
+  display: block;
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  margin-top: 2px;
+}
+
+.ax-gauge__tube {
+  fill: var(--cp-surface);
+  stroke: var(--cp-rule);
+  stroke-width: 1;
+}
+
+.ax-gauge__fill {
+  --ax-band: var(--cp-ink-faint);
+  fill: var(--ax-band);
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
+
+.ax-gauge__ref {
+  stroke: var(--cp-ink-dim);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.ax-gauge__ref-label {
+  font-family: var(--rp-font-utility);
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  fill: var(--cp-ink-dim);
+}
+
+.ax-gauge__face {
+  margin: 2px 0 0;
+  max-width: 16ch;
+  text-align: center;
+  font-family: var(--rp-font-utility);
+  font-size: 0.625rem;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cp-ink-faint);
+}
+
+.ax-gauge__scenario {
+  margin: 0;
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink-dim);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ax-gauge__fill {
+    transition: transform 600ms ease-out;
+  }
+}
+
+/* The five mapping rules again, scoped to the two new roots so a
+   cartogram or gauge still resolves band color from tokens when it is
+   mounted outside .ax-shell (tests, future surfaces). */
+
+.ax-cartogram [data-band='critical'],
+.ax-gauge [data-band='critical'] {
+  --ax-band: var(--cp-band-critical);
+}
+
+.ax-cartogram [data-band='storm_warning'],
+.ax-gauge [data-band='storm_warning'] {
+  --ax-band: var(--cp-band-storm);
+}
+
+.ax-cartogram [data-band='watch'],
+.ax-gauge [data-band='watch'] {
+  --ax-band: var(--cp-band-watch);
+}
+
+.ax-cartogram [data-band='fair_skies'],
+.ax-gauge [data-band='fair_skies'] {
+  --ax-band: var(--cp-band-fair);
+}
+
+.ax-cartogram [data-band='clear'],
+.ax-gauge [data-band='clear'] {
+  --ax-band: var(--cp-band-clear);
+}
