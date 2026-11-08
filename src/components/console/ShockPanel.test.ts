@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
 /**
  * Shock panel contracts on the real console: the panel is named
- * Simulate a Shock Event in one heading, the twist card line sits
+ * Simulate a Shock Event in one heading, the typed sentence row is not
+ * rendered (the preset cards lead the panel), the twist card line sits
  * below every control and right above the After the shock verdict,
  * and each slider carries a local synced whole number text field.
- * The typed fields push into the store only, so they never touch the
+ * The number fields push into the store only, so they never touch the
  * Gemini path, and their parsing rules (whole numbers, decimals
  * stripped, clamped to the slider range, empty field holds still) are
  * pinned here. The bundled profiles.json is served from disk exactly
@@ -170,13 +171,16 @@ describe('ShockPanel heading and order', () => {
     const shock = sectionOf(container, 'shock-heading')
     expect(shock).not.toBeNull()
 
-    const typed = shock?.querySelector('#shock-sentence') as Element
+    // The typed sentence row is unmounted for the demo, so the preset
+    // cards lead the panel with no typed input above them.
+    expect(shock?.querySelector('#shock-sentence')).toBeNull()
+    expect(shock?.querySelector('.cp-typed')).toBeNull()
+
     const presets = shock?.querySelector('.cp-presets') as Element
     const sliders = shock?.querySelector('.cp-sliders') as Element
     const card = shock?.querySelector('.cp-twist-card') as Element
     const verdict = shock?.querySelector('.cp-verdict') as Element
 
-    expect(comesBefore(typed, presets)).toBe(true)
     expect(comesBefore(presets, sliders)).toBe(true)
     expect(comesBefore(sliders, card)).toBe(true)
     expect(comesBefore(card, verdict)).toBe(true)
@@ -290,7 +294,9 @@ describe('ShockPanel synced number fields', () => {
     expect(useConsole.getState().typedStatus).toBe('idle')
     expect(useConsole.getState().shockMode).toBe('preset')
     expect(useConsole.getState().pendingShock).toBeNull()
+    // No typed input, mode badge, or chip gate renders in the panel.
+    expect(container.querySelector('.cp-typed')).toBeNull()
+    expect(container.querySelector('.cp-mode-badge')).toBeNull()
     expect(container.querySelector('.cp-chips')).toBeNull()
-    expect(container.querySelector('.cp-mode-badge')?.textContent).toBe('preset cards')
   })
 })

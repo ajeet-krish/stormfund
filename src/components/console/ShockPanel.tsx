@@ -15,17 +15,16 @@ import {
 } from '../../lib/shocks'
 import type { VerdictBand } from '../../lib/verdict'
 import { useConsole } from '../../state/consoleStore'
-import TypedShock from './TypedShock'
 import VerdictBadge from './VerdictBadge'
 
 /**
- * Simulate a shock: the typed sentence, four preset cards carrying the
- * judge's twist card sentence, the size sliders with their synced whole
- * number text fields, the twist card line, the before and after numbers,
- * and the hero verdict. Everything numeric arrives as props already
- * computed in ConsoleView (applyTwist, verdictBand); this component only
- * formats and forwards slider and typed field events to the store, so
- * there is no money math in JSX. The typed fields are local: they parse
+ * Simulate a shock: four preset cards carrying the judge's twist card
+ * sentence, the size sliders with their synced whole number text fields,
+ * the twist card line, the before and after numbers, and the hero
+ * verdict. Everything numeric arrives as props already computed in
+ * ConsoleView (applyTwist, verdictBand); this component only formats
+ * and forwards slider and number field events to the store, so there is
+ * no money math in JSX. The number fields are local: they parse
  * whole numbers, clamp them to the same ranges the sliders hold, and
  * push them through setTwistField, so no external service is ever in
  * their path. Every button is type="button" and presets carry
@@ -190,8 +189,6 @@ export default function ShockPanel({
           Simulate a Shock Event
         </h2>
       </header>
-
-      <TypedShock profile={profile} />
 
       <div className="cp-presets" role="group" aria-label="Shock presets">
         {SHOCK_PRESETS.map((preset) => (
