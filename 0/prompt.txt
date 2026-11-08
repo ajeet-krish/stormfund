@@ -1,0 +1,3 @@
+run the acceptance gate
+
+i got my domain on godaddy/porkbun. how do we deploy to pages and point it to the new custom domain?
