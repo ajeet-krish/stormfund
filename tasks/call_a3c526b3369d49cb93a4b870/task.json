@@ -1,0 +1,39 @@
+{
+  "tool_use_id": "call_a3c526b3369d49cb93a4b870",
+  "agent_id": "ses_e4448b5a9ffeEEDbw2RbMz2QiM",
+  "subagent_type": "11-frontend-dev",
+  "task_description": "UI fix batch: header, panels, atlas",
+  "files": [
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/assets/fonts/OFL.txt",
+    "src/components/atlas/AtlasSection.test.ts",
+    "src/components/atlas/AtlasSection.tsx",
+    "src/components/atlas/Cartogram.test.ts",
+    "src/components/atlas/Cartogram.tsx",
+    "src/components/atlas/StormAtlas.test.ts",
+    "src/components/atlas/atlas.css",
+    "src/components/console/BaselineCard.test.ts",
+    "src/components/console/BaselineCard.tsx",
+    "src/components/console/ConsoleView.tsx",
+    "src/components/console/ShockPanel.test.ts",
+    "src/components/console/ShockPanel.tsx",
+    "src/components/sky/sky.css",
+    "src/components/weather/WeatherBands.test.ts",
+    "src/components/weather/WeatherPanel.test.ts",
+    "src/components/weather/WeatherPanel.tsx",
+    "src/components/weather/weather.css",
+    "src/dashScan.test.ts",
+    "src/index.css",
+    "src/lib/format.ts"
+  ],
+  "token_usage": {
+    "input_tokens": 350426,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 19946304,
+    "output_tokens": 37211,
+    "api_call_count": 133
+  },
+  "started_at": "2026-11-08T10:11:53.937-05:00",
+  "completed_at": "2026-11-08T11:07:59.507525-05:00"
+}

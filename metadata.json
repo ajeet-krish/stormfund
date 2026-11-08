@@ -1,0 +1,72 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M6XZ5YWXAGP2P38PERPTSYNT",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "docs/decisions.md",
+    "public/art/background.jpg",
+    "src/App.tsx",
+    "src/app.smoke.test.ts",
+    "src/assets/fonts/OFL.txt",
+    "src/components/atlas/AtlasSection.test.ts",
+    "src/components/atlas/AtlasSection.tsx",
+    "src/components/atlas/Cartogram.test.ts",
+    "src/components/atlas/Cartogram.tsx",
+    "src/components/atlas/RainGauge.test.ts",
+    "src/components/atlas/RainGauge.tsx",
+    "src/components/atlas/StormAtlas.test.ts",
+    "src/components/atlas/atlas.css",
+    "src/components/console/BaselineCard.test.ts",
+    "src/components/console/BaselineCard.tsx",
+    "src/components/console/ConsoleView.tsx",
+    "src/components/console/ShockPanel.test.ts",
+    "src/components/console/ShockPanel.tsx",
+    "src/components/sky/sky.css",
+    "src/components/weather/WeatherBands.test.ts",
+    "src/components/weather/WeatherPanel.test.ts",
+    "src/components/weather/WeatherPanel.tsx",
+    "src/components/weather/weather.css",
+    "src/dashScan.test.ts",
+    "src/index.css",
+    "src/lib/format.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 23323,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 5780032,
+    "output_tokens": 7551,
+    "api_call_count": 15,
+    "subagent_tokens": {
+      "input_tokens": 430242,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 20428224,
+      "output_tokens": 45221,
+      "api_call_count": 167
+    }
+  },
+  "redaction": {
+    "replacements": 23118,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 23118,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}

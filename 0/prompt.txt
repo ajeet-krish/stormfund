@@ -1,0 +1,46 @@
+UI notes:
+- where is the 2d terraria/stardew valley style art. the background is fully black and it just looks like a normal dashboard
+- I want district cartogram to look like an actual map
+- Move Know the Customer, Current conditions, Take a shock to the top, forecast. this is the first thing a judge must easily see to enter an account number
+- gemini chat is there, but says key not configured
+- lets change visual style to a light background based color scheme, this will be easier to read my screen during the demo
+
+---
+
+Make a plan section:
+- add ability to select different levers and see how much runway i gain/lose for each one, seeing how different levers impact the plan
+- Backup: If the shock lands is not a useful section, since we get this information from the forecast
+
+---
+
+UI fixes:
+- Top navbar: Change title to Storm Fund Weather Station
+-- fix subtitle: A weather forecast for personal finance (remove everything after)
+-- Remove "Tangerine track, Sheridan Datathon 2026"
+- remove Pensionernot set
+Thin historynot set
+Zero incomenot set
+Defaulted loannot set
+Negative buffer
+- in CUrrent conditions, check sum remove second half of sentence", written by scripts.engine.build. This page shows the recorded value and does not recompute it."
+- change "Take a Shock, Play a twist card" to "Simulate a Shock Event"
+-- move shock description to below input and preset buttons, right above the After the Shock
+-- add text input for shock selector as additional input with slider
+- FOrecast: remove "Band key, lowest runway first"
+-- put verdict band all on one line horizontally, better showing the lowest to highest scale
+
+---
+
+use this image as the site top header background (replacing the current pixelated art [Image 1]
+
+---
+
+continue adding this static image, pause dev on live art images, there is not time to work on that
+
+---
+
+Gemini not working, remove from UI just focus on presets and slider/manual input
+
+---
+
+review current frontend background task, we are running short on time. move on if not important for demo
