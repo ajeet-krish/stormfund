@@ -1,16 +1,17 @@
 /**
  * Typed contract for public/data/world.json and public/data/transactions.json.
  *
- * The Python generator (scripts/build_world.py) is the source of truth: these
- * interfaces mirror its emitted JSON field for field, including the
- * snake_case top level keys (income_events, monthly_balance_series,
- * debt_horizon), the snake_case entity fields (annualSpendCents,
- * monthlyAmountCents, balanceCents), integer CAD cents, and string row ids.
- * Field-by-field documentation lives in src/data/schema.md.
+ * The committed artifacts are frozen at the engine pivot (the builder
+ * scripts retired with the pre-pivot pipeline): these interfaces mirror the
+ * shipped JSON field for field, including the snake_case top level keys
+ * (income_events, monthly_balance_series, debt_horizon), the snake_case
+ * entity fields (annualSpendCents, monthlyAmountCents, balanceCents),
+ * integer CAD cents, and string row ids. Field-by-field documentation
+ * lives in src/data/schema.md.
  *
- * Every entity carries Provenance so the report's provenance stamps can
- * resolve it back to source transaction rows: that link is the honesty
- * anchor of the project.
+ * Every entity carries Provenance so provenance verification can resolve
+ * it back to source transaction rows: that link is the honesty anchor of
+ * the project.
  */
 
 /** Value columns a Provenance aggregation may announce (see checksum.ts). */
@@ -18,9 +19,9 @@ export type ValueField = 'amountCents' | 'balanceCents' | 'monthlyIncomeCents'
 
 /**
  * Value columns that exist on a TransactionRow. monthlyIncomeCents is a
- * player value column emitted by scripts/build_players.py for
- * public/data/players.json, so it verifies through the shared recipe but
- * never resolves against the transaction table.
+ * player value column from the retired player pipeline, so it verifies
+ * through the shared recipe but never resolves against the transaction
+ * table.
  */
 export type TransactionValueField = 'amountCents' | 'balanceCents'
 
@@ -110,7 +111,7 @@ export interface BalancePoint {
 
 /**
  * Debt horizon: the minimum month end balance minus a fixed buffer. Nothing
- * in the report reads it today: the cancelled galaxy game used savings minus
+ * shipped reads it today: the cancelled galaxy game used savings minus
  * this horizon as its loss line, and the value stays in the data contract.
  */
 export interface DebtHorizon {
@@ -140,7 +141,7 @@ export interface WorldMeta {
   }
 }
 
-/** Everything the report and its loaders need from the data layer, as emitted. */
+/** Everything the loaders need from the data layer, as emitted. */
 export interface World {
   meta: WorldMeta
   categories: Category[]
@@ -154,8 +155,7 @@ export interface World {
 /**
  * One transaction row. The file on disk is column oriented
  * ({columns, rows} with rows as arrays); the loader materializes this
- * object form so the provenance stamps and the report charts work with
- * named fields.
+ * object form so callers work with named fields.
  */
 export interface TransactionRow {
   /** Stable string row id referenced by Provenance.rowIds (for example TAN-000001). */
@@ -200,11 +200,10 @@ export function worldEntities(world: World): WorldEntity[] {
 }
 
 /**
- * Deterministic layout seed derived from the source checksum: the generator
+ * Deterministic layout seed derived from the source checksum: the builder
  * emits no seed field, so the first 8 hex digits of meta.sourceSha256 stand
  * in for it (stable across rebuilds of an unchanged CSV). No shipped surface
- * reads it since src/game was removed; the Balance River layout next phase
- * is its next consumer.
+ * reads it; it stayed behind with the cancelled game layouts.
  */
 export function worldSeed(world: World): number {
   return parseInt(world.meta.sourceSha256.slice(0, 8), 16)

@@ -1,8 +1,8 @@
 """Generate a seeded synthetic Tangerine style ledger for one full year.
 
 Writes data/mock/tangerine_transactions.csv with 5000 to 15000 rows covering
-START_DATE to END_DATE, then feeds scripts/build_world.py. Run from the
-repository root:
+START_DATE to END_DATE (the retired pre-pivot world builder consumed it).
+Run from the repository root:
 
     uv run python -m scripts.generate_mock_ledger [--seed 20261107]
 
@@ -23,9 +23,10 @@ Realism rules enforced by construction:
   subscription charges post between 01:00 and 04:00, utility bills between
   04:00 and 06:00, salary posts on the 25th at 06:00.
 * Recurring charges add 28 to 31 days per cycle, which always falls inside
-  the 25 to 35 day subscription detection window of build_world.py.
+  the 25 to 35 day subscription detection window of the retired builder.
 * Category amount ranges are tight enough that only the forced splurge rows
-  exceed 3 times their category median (see build_world.py DERIVATION RULES).
+  exceed 3 times their category median (see the retired builder's
+  DERIVATION RULES).
 """
 
 from __future__ import annotations

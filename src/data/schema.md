@@ -1,9 +1,10 @@
 # Ledger Odyssey data schema
 
-Source of truth: `scripts/build_world.py` (and `scripts/pipeline_lib.py` for
-provenance). This file documents what the Python pipeline emits and what the
-TypeScript loaders (`src/data/loaders.ts`) validate on the way in. If the two
-ever disagree, Python wins and the loader changes.
+Source of truth: the committed artifacts themselves (the builder scripts
+retired with the pre-pivot pipeline; `scripts/pipeline_lib.py` keeps the
+provenance recipe). This file documents what the pipeline emitted and what
+the TypeScript loaders (`src/data/loaders.ts`) validate on the way in. If
+the two ever disagree, the artifacts win and the loader changes.
 
 Last updated: Nov 04 2026 (schemaVersion 1).
 
@@ -73,9 +74,9 @@ year requires a loader decision first; this is that documented seam.
   series and the debt horizon.
 - `checkSum` is SHA256 of the LF joined `{rowId}:{valueCents}` lines sorted
   ascending by row id (recipe echoed in `meta.checksumRecipe`). The
-  TypeScript side reproduces it byte for byte in `src/data/checksum.ts` and
-  verifies it live in the report's provenance stamps through
-  `src/data/resolveRows.ts`.
+  TypeScript side reproduces it byte for byte in `src/data/checksum.ts`
+  (the same mirror `docs/profiles-schema.md` cites for the engine
+  artifacts).
 
 ## transactions.json
 
@@ -93,7 +94,7 @@ Column oriented row table:
   column.
 - `parseTransactions` validates the column list, the value types, and id
   uniqueness, then materializes each row into the `TransactionRow` object
-  form the provenance stamps and loaders use.
+  form the loaders use.
 
 ## Fields the app derives (not in world.json)
 
@@ -101,9 +102,9 @@ Python emits data only; the app derives one value in TypeScript:
 
 - Layout seed: `worldSeed()` in `src/data/types.ts` takes the first 8 hex
   digits of `meta.sourceSha256` (stable for an unchanged CSV). No shipped
-  surface reads it right now: it stayed behind when `src/game` was removed,
-  ready for the Balance River layout next phase. `fnv1a32()` in
-  `src/data/checksum.ts` is its hashing helper and is in the same position.
+  surface reads it; it stayed behind with the cancelled game layouts.
+  `fnv1a32()` in `src/data/checksum.ts` is its hashing helper and is in
+  the same position.
 
 The galaxy game's `FUEL_RATE` tuning (`src/game/types.ts`) left with the
 cancelled game; `src/game` was removed in the Balance River pivot (see

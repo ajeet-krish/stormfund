@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { provenanceCheckSum, sha256Hex, valueFieldFromAgg } from './checksum'
 
 /**
- * Player provenance (public/data/players.json, scripts/build_players.py)
- * announces the monthlyIncomeCents value column. This suite proves the
- * TypeScript recipe verifies it exactly like pipeline_lib.checksum: a fixed
- * fixture with the digest computed by the Python pipeline.
+ * The player provenance recipe announces the monthlyIncomeCents value
+ * column. This suite proves the TypeScript recipe verifies it exactly like
+ * pipeline_lib.checksum: a fixed fixture with the digest computed by the
+ * Python pipeline.
  */
 
 const PLAYERS_AGG =

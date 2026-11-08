@@ -15,10 +15,9 @@ import { useJudgeDispatcher, useJudgeShortcuts } from './components/judge/useJud
  * E6 adds the judge layer: the key listener and the dispatcher wire
  * JUDGE_SHORTCUTS to the store, the sticky bar renders the keys with
  * the live guard report, the paper sheet link, and the rehearsal
- * toggle that opens the five step dock under the console. The old
- * findings report and game views stay in the tree as files but are
- * not mounted here; their own tests keep them honest until the pivot
- * fully retires them.
+ * toggle that opens the five step dock under the console. The
+ * findings report and game views are gone: the Tier B cleanup
+ * removed their files and tests, so this shell is the whole app.
  */
 
 export default function App() {

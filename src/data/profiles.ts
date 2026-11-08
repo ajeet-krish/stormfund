@@ -506,9 +506,9 @@ export async function loadProfiles(): Promise<ProfilesArtifact> {
 /**
  * The bundled artifact, fetched once for the whole shell: the console
  * renders it and any other consumer reads the same parsed object, so the
- * 4.7 MB file stays one request with one parse (the pattern of
- * loadSharedFindingsReport). A failed load clears the memo so the next
- * boot retries instead of inheriting the rejection forever.
+ * 4.7 MB file stays one request with one parse. A failed load clears the
+ * memo so the next boot retries instead of inheriting the rejection
+ * forever.
  */
 let profilesLoad: Promise<ProfilesArtifact> | null = null
 

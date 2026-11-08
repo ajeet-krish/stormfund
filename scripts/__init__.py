@@ -2,5 +2,5 @@
 
 Run every module from the repository root with uv, for example:
 
-    uv run python -m scripts.build_world
+    uv run python -m scripts.analysis.verify_findings
 """

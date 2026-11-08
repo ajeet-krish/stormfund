@@ -3,9 +3,9 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
- * Content rule scan for the Phase E2 through E5 sources
+ * Content rule scan for the surviving app sources
  * (docs/architecture.md): no em dash, en dash, minus sign, double
- * hyphen, or spaced hyphen may appear in anything these phases write
+ * hyphen, or spaced hyphen may appear in anything these sources write
  * (UI copy, comments, JSX text). The three dash code points are checked
  * across the whole file because they can never be valid TypeScript; the
  * hyphen patterns are checked only in prose (comments, string and
@@ -25,15 +25,20 @@ const SPACED_HYPHEN = [' ', '-', ' '].join('')
 /** Prose characters a JSX text node may hold before we read it as copy. */
 const PROSE = /^[\p{L}\p{N} .,:()'"/!?&+%-]+$/u
 
-/** E2 through E5 files that do not live in an auto scanned directory. */
+/** Surviving source files that do not live in an auto scanned directory. */
 const EXPLICIT_FILES: readonly string[] = [
   'src/App.tsx',
   'src/app.smoke.test.ts',
   'src/dashScan.test.ts',
+  'src/data/checksum.test.ts',
+  'src/data/checksum.ts',
+  'src/data/loaders.test.ts',
+  'src/data/loaders.ts',
   'src/data/profiles.ts',
   'src/data/profiles.test.ts',
   'src/data/receipts.ts',
   'src/data/receipts.test.ts',
+  'src/data/types.ts',
   'src/lib/atlasData.test.ts',
   'src/lib/atlasData.ts',
   'src/lib/atlasPlot.test.ts',
@@ -51,6 +56,9 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/lib/planText.test.ts',
   'src/lib/rehearsal.test.ts',
   'src/lib/rehearsal.ts',
+  'src/lib/shockParse.dash.test.ts',
+  'src/lib/shockParse.test.ts',
+  'src/lib/shockParse.ts',
   'src/lib/shockPresets.ts',
   'src/lib/shocks.golden.test.ts',
   'src/lib/shocks.test.ts',
@@ -59,6 +67,7 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/lib/stormAtlas.ts',
   'src/lib/verdict.ts',
   'src/lib/verdict.test.ts',
+  'src/main.tsx',
 ]
 
 /** Directories whose every source file is part of these phases. */
@@ -114,10 +123,21 @@ function lineOf(text: string, index: number): number {
 /** Pull every piece of prose out of one source file. */
 function proseOf(file: string, text: string): Prose[] {
   const prose: Prose[] = []
-  let rest = text
+  // Mask URL scheme separators first: "https://" inside a string would
+  // otherwise read as a line comment and eat the closing quote or
+  // backtick, shifting every later string match and reporting code as
+  // prose (the GEMINI_URL template in src/lib/shockParse.ts exposed
+  // this). The mask keeps the character count so line numbers hold.
+  const URL_MASK = '\u0000\u0000\u0000'
+  let rest = text.split('://').join(URL_MASK)
 
   const push = (chunk: string, index: number, where: string): void => {
-    prose.push({ file, line: lineOf(text, index), chunk, where })
+    prose.push({
+      file,
+      line: lineOf(text, index),
+      chunk: chunk.split(URL_MASK).join('://'),
+      where,
+    })
   }
 
   // Block comments first, then line comments, so an apostrophe inside a
@@ -172,7 +192,7 @@ function violationsIn(chunk: string): string[] {
   return problems
 }
 
-describe('content rule: dash scan over the Phase E2 through E5 sources', () => {
+describe('content rule: dash scan over the surviving app sources', () => {
   const files = targetFiles()
 
   it('covers every file these phases wrote', () => {
@@ -217,7 +237,19 @@ describe('content rule: dash scan over the Phase E2 through E5 sources', () => {
     expect(files).toContain('src/data/receipts.test.ts')
     expect(files).toContain('src/components/console/ReceiptStamp.tsx')
     expect(files).toContain('src/components/console/ReceiptStamp.test.ts')
-    expect(files.length).toBeGreaterThanOrEqual(40)
+    // The surviving data contract (loaders, checksum, types), the typed
+    // shock parser, and the entry point are explicit entries too, so the
+    // registry matches what actually exists on disk.
+    expect(files).toContain('src/data/loaders.ts')
+    expect(files).toContain('src/data/loaders.test.ts')
+    expect(files).toContain('src/data/checksum.ts')
+    expect(files).toContain('src/data/checksum.test.ts')
+    expect(files).toContain('src/data/types.ts')
+    expect(files).toContain('src/lib/shockParse.ts')
+    expect(files).toContain('src/lib/shockParse.test.ts')
+    expect(files).toContain('src/lib/shockParse.dash.test.ts')
+    expect(files).toContain('src/main.tsx')
+    expect(files.length).toBeGreaterThanOrEqual(85)
   })
 
   it('keeps dash code points and dash copy out of every file', () => {

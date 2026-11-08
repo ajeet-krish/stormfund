@@ -16,13 +16,13 @@ import { valueFieldFromAgg } from './checksum'
 /**
  * Typed loaders for public/data/world.json and public/data/transactions.json.
  *
- * scripts/build_world.py is the source of truth for both files (snake_case
- * keys, integer CAD cents, string row ids, SHA256 provenance checksums, and
- * the column oriented transactions table). The files are bundled for offline
- * booths (no external network), fetched relative to the Pages base URL, and
- * validated on the way in: schema drift between the Python generator and this
- * app fails loudly here instead of feeding corrupt rows into the report.
- * See src/data/schema.md for the field-by-field contract.
+ * The shipped files are frozen artifacts of the retired pre-pivot pipeline
+ * (snake_case keys, integer CAD cents, string row ids, SHA256 provenance
+ * checksums, and the column oriented transactions table). They are bundled
+ * for offline booths (no external network), fetched relative to the Pages
+ * base URL, and validated on the way in: schema drift between the committed
+ * artifacts and this app fails loudly here instead of feeding corrupt rows
+ * downstream. See src/data/schema.md for the field-by-field contract.
  */
 
 type RawRecord = Record<string, unknown>
@@ -293,7 +293,7 @@ export function parseWorld(raw: unknown): World {
   }
 }
 
-/** Column order emitted by scripts/build_world.py (TRANSACTION_COLUMNS). */
+/** Canonical column order of the bundled transactions table. */
 export const TRANSACTION_COLUMNS: readonly string[] = [
   'id',
   'date',

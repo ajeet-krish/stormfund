@@ -4,11 +4,12 @@
 # pytest suite, and recomputes the findings artifacts with verify_findings
 # so findings.json, model_card.json, and docs/findings.md cannot drift.
 #
-# Layout: the pure game core lives in src/game (no renderer imports), the
-# data contract lives in src/data (mirrors scripts/build_world.py, see
-# src/data/schema.md), and the Python pipeline lives in scripts/ (shared
-# checksum recipe in scripts/pipeline_lib.py). See AGENTS.md for
-# conventions and the map.
+# Layout: the mounted surfaces live in src/components (console, atlas,
+# weather, judge) with their engines in src/lib and src/state, the data
+# contract lives in src/data (mirrors the committed fixture artifacts,
+# see src/data/schema.md), and the Python pipeline lives in scripts/
+# (shared checksum recipe in scripts/pipeline_lib.py). See AGENTS.md
+# for conventions and the map.
 
 name: CI
 
@@ -43,8 +44,8 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Run unit tests
-        # Data loaders, provenance checksums, reducer, store, and orbit math
-        # against the committed fixture world (npx vitest run).
+        # Engine profiles, console store, atlas, weather, judge, and
+        # receipt suites plus the content rule scan (npx vitest run).
         run: npx vitest run
 
       - name: Typecheck

@@ -1,21 +1,21 @@
 import type { TransactionRow, TransactionValueField, ValueField } from './types'
 
 /**
- * Checksums for provenance verification (the provenance stamp's honesty
- * anchor), byte for byte identical to scripts/pipeline_lib.py:
+ * Checksums for provenance verification (the honesty anchor of the
+ * verification story), byte for byte identical to scripts/pipeline_lib.py:
  *
  * 1. Pair every provenance row id with its value in integer cents. The value
  *    column is announced by the aggregation text suffix "checksum value =
  *    <field>" (amountCents for transaction entities, balanceCents for the
  *    balance series and the debt horizon, monthlyIncomeCents for player
- *    entities in public/data/players.json).
+ *    entities).
  * 2. Sort the pairs ascending by row id (plain code point order; row ids are
  *    ASCII, see provenanceCheckSum for the ordering note).
  * 3. Join the "{rowId}:{valueCents}" lines with a single LF character.
  * 4. SHA256 the UTF-8 bytes and return the lowercase hex digest.
  *
  * The SHA256 implementation below is dependency free and runs identically in
- * Node (vitest) and the browser (the provenance stamps at the booth).
+ * Node (vitest) and in the browser.
  */
 
 const CHECKSUM_VALUE_SUFFIX = 'checksum value = '
@@ -152,8 +152,8 @@ export function provenanceCheckSum(
 
 /**
  * Checksum over resolved rows for one transaction value column
- * (default amountCents). Player value columns (monthlyIncomeCents) live on
- * players.json rows and verify through provenanceCheckSum directly.
+ * (default amountCents). Player value columns (monthlyIncomeCents) verify
+ * through provenanceCheckSum directly.
  */
 export function computeCheckSum(
   rows: readonly TransactionRow[],

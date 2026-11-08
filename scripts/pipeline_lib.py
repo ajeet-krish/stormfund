@@ -1,7 +1,7 @@
 """Shared helpers for the Ledger Odyssey offline data pipeline.
 
-Used by scripts/build_world.py, scripts/build_players.py, and both mock
-generators. Every helper is deterministic and seed free.
+Used by the engine builder, the frozen findings analysis, the ingest probe,
+and the mock ledger generator. Every helper is deterministic and seed free.
 
 Checksum recipe (mirrored by the TypeScript Inspector, see the traceability
 section of docs/architecture.md):
