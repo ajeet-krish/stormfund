@@ -19,9 +19,7 @@ submission Sun Nov 8 12:00 PM, live demos 12:30 PM.
 
 ## 1. Track selection
 
-**Recommendation: select Best Data Visualization and Storytelling as primary,
-plus Tangerine (the real dataset is in and used), plus any MLH row whose
-condition has cleared.**
+**Recommendation: select Best Data Visualization and Storytelling as primary, plus Tangerine (the real dataset is in and used), plus any MLH row whose condition has cleared.**
 
 | Track | Select? | One sentence rationale |
 |-------|---------|------------------------|
@@ -36,22 +34,13 @@ condition has cleared.**
 | IBM, Best Hardware, Best Beginner | No | We use none of that hardware or infrastructure. |
 | MLH other rows | Recheck Saturday | Confirm each checkbox against the published MLH list at draft time. |
 
-## 2. Project name
+## Project Details
 
-```text
+##### Project Title:
 Storm Fund: A resilience weather station for bank customers
-```
 
-Domain candidates (runbook rules: never "tangerine", no hyphens, no digits, no
-.io, speakable in one breath, about 15 CAD): `stormfund.site` first choice,
-then `rainyday.site`, `levee.fund`, `raincoat.site`. Recheck availability at
-registration; RDAP is point in time.
-
-## 3. Elevator pitch (168 characters, max 200)
-
-```text
-Your rainy day fund, as weather. Storm Fund turns any bank account into a pixel sky where runway, buffer, and shocks are visible at a glance.
-```
+##### Elevator Pitch:
+See your money move like weather. Storm Fund visualizes a bank account as a weather forecast. Anonymized bank data maps runway and buffer to a pixel sky. Inject a shock and watch the forecast change.
 
 ## 4. About the project
 
@@ -95,61 +84,36 @@ legible, and strangely calming even when the forecast says storm.
 
 ### How we built it
 
-- **Data:** the real anonymized bank dataset (4,500 accounts, 1.06M
-  transactions, 185K monthly summaries, 682 loans), credited to the PKDD'99
-  Financial dataset via the CTU Prague Relational Dataset Repository.
-- **Pipeline:** Python with pandas and numpy, fully vectorized (groupby, no
-  per-account loops), integer cents throughout, `uv` for pinned dependencies.
-  One pass produces profiles.json with the six judge metrics (I, F, S, B, H, P)
-  plus provenance for every number, then a verifier independently recomputes a
-  seeded sample straight from the raw CSVs and diffs against the artifact.
-- **Frontend:** React, Vite, TypeScript, Tailwind. A pure `weatherState`
+- **Data:** the real anonymized bank dataset (4,500 accounts, 1.06M transactions, 185K monthly summaries, 682 loans), credited to the PKDD'99 Financial dataset via the CTU Prague Relational Dataset Repository.
+- **Pipeline:** Python with pandas and numpy, fully vectorized (groupby, no per-account loops), integer cents throughout, `uv` for pinned dependencies. One pass produces profiles.json with the six judge metrics (I, F, S, B, H, P) plus provenance for every number, then a verifier independently recomputes a seeded sample straight from the raw CSVs and diffs against the artifact.
+- **Frontend:** React,Vite, TypeScript, Tailwind. A pure `weatherState`
   function maps metrics to seven weather states; the forecast strip, bands, and
   EI-cliff overlay are hand-rolled SVG. All data bundled as JSON: zero runtime
   network calls, so the booth demo survives bad wifi.
-- **Gemini (gated add-on):** a judge can type the shock in their own words
-  ("EI covers half and the furnace dies"). Structured JSON output with a strict
-  schema, clamped and percent-corrected in TypeScript, shown as confirmation
-  chips with a formula strip. One click applies. Three second timeout, then
-  preset cards. The mode is always visible on screen.
+- **Gemini (gated add-on):** a judge can type the shock in their own words("EI covers half and the furnace dies"). Structured JSON output with a strict schema, clamped and percent-corrected in TypeScript, shown as confirmation chips with a formula strip. One click applies. Three second timeout, then preset cards. The mode is always visible on screen.
 
 ### Challenges we faced
 
-- **The dataset was nine relational tables, not the single CSV our pipeline
-  assumed.** We rebuilt the ingest around `monthly_summary.csv` (the judges'
-  actual source) and kept `transactions.csv` at 98MB out of the critical path
-  with chunked reads.
-- **Two implementations of one formula.** Python computes, TypeScript mirrors.
-  Golden fixtures hand-computed in a spreadsheet keep them honest, and a
-  verifier recomputes from raw data so drift fails the build, not the demo.
-- **Live judging is unforgiving.** A judge picks an account_id you have never
-  seen and reads a twist card you cannot rehearse. Edge guards flag thin
-  history, negative buffer, zero bills, and missing loans before the judge
-  finds them; preset cards are always one click away if the network hiccups.
-- **Scope under a 48 hour clock.** Weather particles are data-driven or they
-  do not ship. The cut order is written down, and the findings report, the
-  video, and the write-up are never on it.
+- **The dataset was nine relational tables, not the single CSV our pipeline assumed.** We rebuilt the ingest around `monthly_summary.csv` (the judges' actual source) and kept `transactions.csv` at 98MB out of the critical path with chunked reads.
+- **Two implementations of one formula.** Python computes, TypeScript mirrors. Golden fixtures hand-computed in a spreadsheet keep them honest, and a verifier recomputes from raw data so drift fails the build, not the demo.
+- **Live judging is unforgiving.** A judge picks an account_id you have never seen and reads a twist card you cannot rehearse. Edge guards flag thin history, negative buffer, zero bills, and missing loans before the judge finds them; preset cards are always one click away if the network hiccups.
+- **Scope under a 48 hour clock.** Weather particles are data-driven or they do not ship. The cut order is written down, and the findings report, the video, and the write-up are never on it.
 
 ### Limits we declare up front
 
-Runway uses the answer key's definitions, including flat 55% EI (no weekly
-maximum, no taxes). Plans are our own declared formulas (goal = 3x spending),
-permitted by the brief and stated on screen. Correlation, not causation,
-everywhere. No customer rows leave the browser; the Gemini prompt carries a
-sentence and aggregate numbers only.
+Runway uses the answer key's definitions, including flat 55% EI (no weekly maximum, no taxes). Plans are our own declared formulas (goal = 3x spending), permitted by the brief and stated on screen. Correlation, not causation, everywhere. No customer rows leave the browser; the Gemini prompt carries a sentence and aggregate numbers only.
 
 ### Links
 
 - Code and reproduction steps: [GITHUB REPO URL PLACEHOLDER]
-- Live site: [LIVE SITE URL PLACEHOLDER]
+- Live site: https://www.stormfund.work/
 - 2 minute demo video: [YOUTUBE LINK PLACEHOLDER, unlisted]
 - Reproduce: `uv sync`, then `uv run python -m scripts.engine.build`,
   `uv run python -m scripts.engine.verify`, then `uv run pytest`
 
 ## 5. YouTube video description (public unlisted)
 
-Visibility: **Unlisted** (anyone with the link can watch). Do not use Private,
-judges cannot open it.
+Visibility: **Unlisted** (anyone with the link can watch). Do not use Private judges cannot open it.
 
 Title draft:
 
@@ -200,7 +164,7 @@ with sound off before the link goes into Devpost.
 
 - [ ] Public GitHub repo pushed with code, findings, and reproduction steps:
       [GITHUB REPO URL PLACEHOLDER]
-- [ ] Live site deployed and linked: [LIVE SITE URL PLACEHOLDER]
+- [ ] Live site deployed and linked: https://www.stormfund.work/
 - [ ] 2 minute demo video link pasted (at most 120.000s, YouTube unlisted):
       [YOUTUBE LINK PLACEHOLDER]
 - [ ] Short write-up in the required structure: what inspired, what we
@@ -225,7 +189,7 @@ with sound off before the link goes into Devpost.
 | Placeholder | Replace with |
 |-------------|--------------|
 | [GITHUB REPO URL PLACEHOLDER] | https://github.com/ajeet-krish/stormfund |
-| [LIVE SITE URL PLACEHOLDER] | GitHub Pages URL (deploy workflow builds `/<repo>/`) or the registered domain |
+| https://www.stormfund.work/ https://www.stormfund.work/ (fallback: https://ajeet-krish.github.io/stormfund/) |
 | [YOUTUBE LINK PLACEHOLDER] | unlisted video URL |
 | [DEVPOST SUBMISSION URL] | own submission URL after the draft is created |
 | [YOUR NAME PLACEHOLDER] | solo team member name as it should appear on Devpost |
