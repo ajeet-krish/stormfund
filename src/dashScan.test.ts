@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /**
- * Content rule scan for the Phase E2, E3, and E4 sources
+ * Content rule scan for the Phase E2 through E5 sources
  * (docs/architecture.md): no em dash, en dash, minus sign, double
  * hyphen, or spaced hyphen may appear in anything these phases write
  * (UI copy, comments, JSX text). The three dash code points are checked
@@ -25,13 +25,15 @@ const SPACED_HYPHEN = [' ', '-', ' '].join('')
 /** Prose characters a JSX text node may hold before we read it as copy. */
 const PROSE = /^[\p{L}\p{N} .,:()'"/!?&+%-]+$/u
 
-/** E2 through E4 files that do not live in an auto scanned directory. */
+/** E2 through E5 files that do not live in an auto scanned directory. */
 const EXPLICIT_FILES: readonly string[] = [
   'src/App.tsx',
   'src/app.smoke.test.ts',
   'src/dashScan.test.ts',
   'src/data/profiles.ts',
   'src/data/profiles.test.ts',
+  'src/lib/atlasPlot.test.ts',
+  'src/lib/atlasPlot.ts',
   'src/lib/forecast.test.ts',
   'src/lib/forecast.ts',
   'src/lib/format.ts',
@@ -45,6 +47,8 @@ const EXPLICIT_FILES: readonly string[] = [
   'src/lib/shocks.golden.test.ts',
   'src/lib/shocks.test.ts',
   'src/lib/shocks.ts',
+  'src/lib/stormAtlas.test.ts',
+  'src/lib/stormAtlas.ts',
   'src/lib/verdict.ts',
   'src/lib/verdict.test.ts',
 ]
@@ -52,12 +56,13 @@ const EXPLICIT_FILES: readonly string[] = [
 /** Directories whose every source file is part of these phases. */
 const AUTO_DIRS: readonly string[] = [
   'src/state',
+  'src/components/atlas',
   'src/components/console',
   'src/components/weather',
 ]
 
 /** Stylesheets written this phase, scanned without the double hyphen rule. */
-const CSS_FILES: readonly string[] = ['src/index.css']
+const CSS_FILES: readonly string[] = ['src/index.css', 'src/components/atlas/atlas.css']
 
 function listDir(directory: string): string[] {
   const out: string[] = []
@@ -152,7 +157,7 @@ function violationsIn(chunk: string): string[] {
   return problems
 }
 
-describe('content rule: dash scan over the Phase E2, E3, and E4 sources', () => {
+describe('content rule: dash scan over the Phase E2 through E5 sources', () => {
   const files = targetFiles()
 
   it('covers every file these phases wrote', () => {
@@ -167,7 +172,18 @@ describe('content rule: dash scan over the Phase E2, E3, and E4 sources', () => 
     expect(files).toContain('src/lib/planMath.golden.test.ts')
     expect(files).toContain('src/lib/planText.ts')
     expect(files).toContain('src/components/console/PlanCard.tsx')
-    expect(files.length).toBeGreaterThanOrEqual(20)
+    // The E5 atlas: both lib modules with their tests, and the whole
+    // component directory through AUTO_DIRS.
+    expect(files).toContain('src/lib/stormAtlas.ts')
+    expect(files).toContain('src/lib/stormAtlas.test.ts')
+    expect(files).toContain('src/lib/atlasPlot.ts')
+    expect(files).toContain('src/lib/atlasPlot.test.ts')
+    expect(files).toContain('src/components/atlas/StormAtlas.tsx')
+    expect(files).toContain('src/components/atlas/AtlasStripPlot.tsx')
+    expect(files).toContain('src/components/atlas/AtlasStripPlot.test.ts')
+    expect(files).toContain('src/components/atlas/AtlasSection.tsx')
+    expect(files).toContain('src/components/atlas/AtlasSection.test.ts')
+    expect(files.length).toBeGreaterThanOrEqual(40)
   })
 
   it('keeps dash code points and dash copy out of every file', () => {
@@ -192,7 +208,7 @@ describe('content rule: dash scan over the Phase E2, E3, and E4 sources', () => 
     expect(found).toEqual([])
   })
 
-  it('keeps the console stylesheet free of dash copy', () => {
+  it('keeps the stylesheets free of dash copy', () => {
     // CSS is scanned too, with one exception: a custom property name
     // begins with two hyphens, which is syntax rather than copy, and CSS
     // holds no user facing copy beyond the comments checked here.

@@ -1,135 +1,203 @@
-import { roundHalfUp } from './shocks'
+import type { AccountProfile } from '../data/profiles'
+import { SHOCK_PRESETS } from './shockPresets'
 import {
-  SEVERITY_ORDER,
-  WEATHER_META,
-  WEATHER_STATES,
-  weatherState,
-  type WeatherMetrics,
-  type WeatherState,
-} from './weatherState'
+  IDLE_TWIST,
+  RUNWAY_CAP_DECI_MONTHS,
+  applyTwist,
+  normalizeTwist,
+  roundHalfUp,
+  sameTwist,
+  type RunwayState,
+  type Twist,
+} from './shocks'
+import { VERDICT_BANDS, verdictBand, type VerdictBandId } from './verdict'
 
 /**
- * Phase E5 Storm Atlas aggregation: count every profile's weather state
- * and build the population headline the pitch opens with, for example
- * "1 in 5 accounts hits storm warning under the standard EI twist".
+ * Phase E5 Storm Atlas aggregation: count a population of accounts by
+ * verdict band under one twist, and build the headline the pitch opens
+ * with, for example "10% of accounts would have under 3 months of
+ * runway under the laid off twist".
  *
- * The counting is fully implemented because it is simple integer work:
- * each entry's state comes from the same weatherState ladder the
- * forecast strip draws (one vocabulary, one parity contract), counts are
- * integers, and whole percents are integer divisions rounded half up.
- * The headline sentence is a working template: callers that pass
- * baseline metrics get the honest "at baseline" wording, and callers
- * that pass metrics already shocked by applyTwist pass the matching
- * scenario label, so the sentence can never claim a twist the numbers
- * did not run.
+ * The fold is done in this file: the seven state ladder in
+ * src/lib/weatherState.ts is deleted, and verdict.ts owns every band
+ * id, label, glyph, and threshold. The atlas counts, the console
+ * badge, and the forecast strip therefore read one vocabulary and can
+ * never disagree about where a band boundary sits.
  *
- * Pure module: no React, no fetch, no artifact reads. The E5 view feeds
- * it the profiles the loader already parsed.
+ * Honesty rule, structural: scenario wording enters a summary only
+ * through shockedAtlasScenario, the same call that ran applyTwist over
+ * every profile, so a sentence can never claim a twist the numbers did
+ * not run. AtlasSection is the production caller and passes the pair
+ * together.
+ *
+ * Pure module: no React, no fetch, no artifact reads. Counts are
+ * integers, whole percents come from roundHalfUp and may not sum to
+ * 100, and no float ever decides a branch.
  */
 
-/** One atlas row: a profile id plus the metrics the ladder reads. */
-export interface AtlasEntry extends WeatherMetrics {
+/** One atlas row: an account id plus the runway answer it lands on. */
+export interface AtlasEntry {
   account_id: string
+  runway_state: RunwayState
+  runway_deci_months: number
 }
 
-/** Count or percent per state, keyed by the canonical state union. */
-export type WeatherCounts = Record<WeatherState, number>
+/** Count or percent per band, keyed by the canonical band union. */
+export type BandCounts = Record<VerdictBandId, number>
+
+export type BandPercents = Record<VerdictBandId, number>
+
+/** Ladder order, lowest runway first, straight from verdict.ts. */
+export const ATLAS_BAND_ORDER: readonly VerdictBandId[] = VERDICT_BANDS.map((band) => band.id)
+
+/** The headline counts the two bands under the confirmed threshold. */
+export const DEFAULT_HEADLINE_BANDS: readonly VerdictBandId[] = ['critical', 'storm_warning']
+
+/** The user confirmed headline threshold, in plain words (docs/decisions.md). */
+export const DEFAULT_HEADLINE_THRESHOLD_WORDS = '3 months'
+
+/** Default scenario wording: only a caller that ran a twist says otherwise. */
+export const DEFAULT_SCENARIO_LABEL = 'at baseline'
 
 export interface StormAtlasSummary {
-  /** Entries counted (the population under the caller's scenario). */
+  /** Entries counted, the population under the caller's scenario. */
   total: number
-  /** Accounts per weather state, integers. */
-  counts: WeatherCounts
-  /** Whole percent per state (rounding may drift a point across states). */
-  percents: WeatherPercents
-  /** The state the headline speaks about. */
-  headlineState: WeatherState
-  /** Accounts in that state. */
+  /** Accounts per band, integers. */
+  counts: BandCounts
+  /** Whole percent per band, roundHalfUp, may not sum to 100. */
+  percents: BandPercents
+  /** The bands the headline speaks about. */
+  headlineBands: readonly VerdictBandId[]
+  /** The threshold sentence the headline quotes, for example 3 months. */
+  headlineThresholdWords: string
+  /** Accounts across those bands. */
   headlineCount: number
-  /** "1 in N" divisor over the whole population, null when the count is 0. */
+  /** Whole percent of the population in those bands. */
+  headlinePercent: number
+  /** "1 in N" over the whole population, null when the count is 0. */
   oneInN: number | null
-  /** The working template sentence, ready to render. */
+  /** The working sentence, ready to render. */
   headline: string
   /** What the numbers ran under, printed at the end of the headline. */
   scenarioLabel: string
 }
 
-export type WeatherPercents = Record<WeatherState, number>
-
 export interface StormAtlasOptions {
-  /** State the headline reports, default storm (the warning vocabulary). */
-  headlineState?: WeatherState
-  /** Scenario suffix, default honest baseline wording. */
+  /** Bands the headline reports, default the two under 3 months. */
+  headlineBands?: readonly VerdictBandId[]
+  /** Threshold words the headline quotes, default 3 months. */
+  headlineThresholdWords?: string
+  /**
+   * Scenario suffix, default the honest baseline wording. Callers pass
+   * scenario.scenarioLabel from shockedAtlasScenario, never prose of
+   * their own, which is what keeps the sentence honest by construction.
+   */
   scenarioLabel?: string
 }
 
-/** Default headline state: the storm warning the pitch quotes. */
-export const DEFAULT_HEADLINE_STATE: WeatherState = 'storm'
-
-/** Default scenario wording: only a caller that ran a twist says otherwise. */
-export const DEFAULT_SCENARIO_LABEL = 'at baseline'
-
-/** All zero counts, in canonical key order. */
-export function emptyCounts(): WeatherCounts {
-  const counts = {} as WeatherCounts
-  for (const state of WEATHER_STATES) {
-    counts[state] = 0
+/** All zero counts, in canonical ladder order. */
+export function emptyBandCounts(): BandCounts {
+  const counts = {} as BandCounts
+  for (const band of ATLAS_BAND_ORDER) {
+    counts[band] = 0
   }
   return counts
 }
 
-function emptyPercents(): WeatherPercents {
-  const percents = {} as WeatherPercents
-  for (const state of WEATHER_STATES) {
-    percents[state] = 0
+function emptyBandPercents(): BandPercents {
+  const percents = {} as BandPercents
+  for (const band of ATLAS_BAND_ORDER) {
+    percents[band] = 0
   }
   return percents
 }
 
 /**
- * Count every entry's weather state once. Null, undefined, and empty
- * arrays aggregate to a zero summary with an honest placeholder
- * headline, so the atlas grid can mount before the loader resolves.
+ * Clamp one runway reading to the artifact range the E1 loader
+ * enforces (0 to 1200 tenths). A non finite reading reads 0, which
+ * lands on Critical: unknown data must never render as clear skies.
+ */
+export function clampDeciMonths(raw: number): number {
+  if (!Number.isFinite(raw)) {
+    return 0
+  }
+  return Math.min(RUNWAY_CAP_DECI_MONTHS, Math.max(0, raw))
+}
+
+/**
+ * One entry's band through the single verdict vocabulary: the two
+ * special runway states are decided before any threshold, exactly as
+ * verdictBand reads a RunwayAnswer, so an atlas count can never
+ * disagree with the badge next to it.
+ */
+export function entryBand(entry: AtlasEntry): VerdictBandId {
+  return verdictBand({
+    state: entry.runway_state,
+    deciMonths: clampDeciMonths(entry.runway_deci_months),
+  }).id
+}
+
+/**
+ * Count a population once. Null, undefined, and empty arrays
+ * aggregate to a zero summary with an honest placeholder headline, so
+ * the atlas can mount before the loader resolves.
  */
 export function summarizeStormAtlas(
   entries: readonly AtlasEntry[] | null | undefined,
   options: StormAtlasOptions = {},
 ): StormAtlasSummary {
   const list = entries ?? []
-  const headlineState = options.headlineState ?? DEFAULT_HEADLINE_STATE
+  const headlineBands = options.headlineBands ?? DEFAULT_HEADLINE_BANDS
+  const headlineThresholdWords = options.headlineThresholdWords ?? DEFAULT_HEADLINE_THRESHOLD_WORDS
   const scenarioLabel = options.scenarioLabel ?? DEFAULT_SCENARIO_LABEL
 
-  const counts = emptyCounts()
+  const counts = emptyBandCounts()
   for (const entry of list) {
     if (!entry || typeof entry !== 'object') {
       continue
     }
-    counts[weatherState(entry)] += 1
+    counts[entryBand(entry)] += 1
   }
 
-  // Total is the sum of the counts, so a defensively skipped entry can
+  // Total is the sum of the counts, so a defensively skipped row can
   // never inflate the population the percents divide by.
   let total = 0
-  for (const state of WEATHER_STATES) {
-    total += counts[state]
+  for (const band of ATLAS_BAND_ORDER) {
+    total += counts[band]
   }
-  const percents = emptyPercents()
+
+  const percents = emptyBandPercents()
   if (total > 0) {
-    for (const state of WEATHER_STATES) {
-      percents[state] = roundHalfUp(counts[state] * 100, total)
+    for (const band of ATLAS_BAND_ORDER) {
+      percents[band] = roundHalfUp(counts[band] * 100, total)
     }
   }
 
-  const headlineCount = counts[headlineState]
+  let headlineCount = 0
+  for (const band of headlineBands) {
+    if (ATLAS_BAND_ORDER.includes(band)) {
+      headlineCount += counts[band]
+    }
+  }
+  const headlinePercent =
+    total > 0 && headlineCount > 0 ? roundHalfUp(headlineCount * 100, total) : 0
   const oneInN = headlineCount > 0 ? roundHalfUp(total, headlineCount) : null
-  const headline = headlineSentence(total, headlineState, headlineCount, oneInN, scenarioLabel)
+  const headline = headlineSentence(
+    total,
+    headlineCount,
+    headlinePercent,
+    headlineThresholdWords,
+    scenarioLabel,
+  )
 
   return {
     total,
     counts,
     percents,
-    headlineState,
+    headlineBands,
+    headlineThresholdWords,
     headlineCount,
+    headlinePercent,
     oneInN,
     headline,
     scenarioLabel,
@@ -137,42 +205,98 @@ export function summarizeStormAtlas(
 }
 
 /**
- * The working headline template: "1 in N accounts hits storm warning
- * under the standard EI twist", with honest fallbacks for an empty
- * population and a state that never fires in the data.
+ * The working sentence, word for word. Empty population reads as not
+ * wired yet, a band that never fires reports an honest zero instead of
+ * a ratio, and the verb swaps to "would have" the moment the numbers
+ * ran under a twist instead of at baseline.
  */
 function headlineSentence(
   total: number,
-  state: WeatherState,
-  count: number,
-  oneInN: number | null,
+  headlineCount: number,
+  headlinePercent: number,
+  headlineThresholdWords: string,
   scenarioLabel: string,
 ): string {
-  const label = WEATHER_META[state].label.toLowerCase()
   if (total === 0) {
     return 'No accounts in the atlas yet'
   }
-  if (count === 0 || oneInN === null) {
-    return `No accounts hit ${label} ${scenarioLabel}`
+  const verb = scenarioLabel === DEFAULT_SCENARIO_LABEL ? 'have' : 'would have'
+  const threshold = `under ${headlineThresholdWords} of runway`
+  if (headlineCount === 0) {
+    return `No accounts ${verb} ${threshold} ${scenarioLabel}`
   }
-  return `1 in ${oneInN} accounts hits ${label} ${scenarioLabel}`
+  return `${headlinePercent}% of accounts ${verb} ${threshold} ${scenarioLabel}`
 }
 
 /**
- * Drill down helper: the account ids behind one state's cell, in the
- * order the caller passed them. The atlas cell click hands its state
- * here, and the view decides what to render with the list (this module
- * never navigates).
+ * Drill down helper: the account ids behind one band, in the order
+ * the caller passed them. The atlas never navigates, it only reports
+ * which ids sit in a band; the view owns what a click means.
  */
-export function accountsInState(
+export function accountsInBand(
   entries: readonly AtlasEntry[] | null | undefined,
-  state: WeatherState,
+  band: VerdictBandId,
 ): readonly string[] {
   const list = entries ?? []
-  return list
-    .filter((entry) => entry && typeof entry === 'object' && weatherState(entry) === state)
-    .map((entry) => entry.account_id)
+  const ids: string[] = []
+  for (const entry of list) {
+    if (entry && typeof entry === 'object' && entryBand(entry) === band) {
+      ids.push(entry.account_id)
+    }
+  }
+  return ids
 }
 
-/** Severity ordered state list for atlas grids and legends. */
-export const ATLAS_ORDER: readonly WeatherState[] = SEVERITY_ORDER
+/** One scenario: the shocked rows plus the wording that describes them. */
+export interface AtlasScenario {
+  entries: readonly AtlasEntry[]
+  scenarioLabel: string
+}
+
+/**
+ * Run one twist over every profile and hand back the rows and the
+ * wording as one object. This is the only source of scenario wording
+ * in the atlas: the label is derived from the same twist whose
+ * applyTwist results are in entries, so the sentence and the numbers
+ * cannot drift apart.
+ */
+export function shockedAtlasScenario(
+  profiles: readonly AccountProfile[] | null | undefined,
+  twist: Twist,
+): AtlasScenario {
+  const list = profiles ?? []
+  const entries: AtlasEntry[] = new Array(list.length)
+  for (let index = 0; index < list.length; index += 1) {
+    const profile = list[index]
+    if (!profile) {
+      continue
+    }
+    const answer = applyTwist(profile, twist).runway
+    entries[index] = {
+      account_id: profile.account_id,
+      runway_state: answer.state,
+      runway_deci_months: answer.deciMonths,
+    }
+  }
+  return { entries, scenarioLabel: atlasScenarioLabel(twist) }
+}
+
+/**
+ * The wording for one twist, in priority order: untouched console
+ * reads as baseline, a field for field preset match quotes that
+ * preset's own label, and anything else is honestly called custom.
+ * Deliberately not exported: prose about a scenario enters the atlas
+ * only through shockedAtlasScenario.
+ */
+function atlasScenarioLabel(twist: Twist): string {
+  if (sameTwist(twist, IDLE_TWIST)) {
+    return DEFAULT_SCENARIO_LABEL
+  }
+  const normalized = normalizeTwist(twist)
+  for (const preset of SHOCK_PRESETS) {
+    if (sameTwist(normalizeTwist(preset.twist), normalized)) {
+      return `under the ${preset.label.toLowerCase()} twist`
+    }
+  }
+  return 'under the custom twist'
+}

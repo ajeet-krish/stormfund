@@ -342,3 +342,52 @@ includes median loan_payments) and is explainable rather than exact;
 depleted-buffer accounts show +0.0 for every lever (honest, surfaced as
 copy); every plan rule change now needs a TS and a Python edit, with a
 missed edit failing pytest.
+
+## Nov 07 2026, Phase E6: Judge mode key map, guard contract, rehearsal, paper fallback
+
+**Context**: the judgeMode scaffold registry (1 to 3, 0, arrows)
+contradicted the E2 reserved key map, its GUARD_MIN_ROWS = 6 guard
+could never fire on real data (minimum 12 rows, E1 defines thin_history
+below 18), and rehearsal plus paper fallback were missing. Esc
+semantics differed between the store comment (clear query) and the
+plan (clear selection).
+
+**Decision**: JUDGE_SHORTCUTS in src/lib/judgeMode.ts is the single key
+table (1 to 4 presets, r reset twist, Shift + R reset all, slash focus
+lookup, Esc layered dismiss: typed gate, then query, then resetAll, N
+pseudo-random safe account); the consoleStore comment points to it.
+Layered Esc is user confirmed. Guards read profile.flags directly
+(five E1 flags plus no_loan, zero_household_bills, and a pensioner
+variant under a live layoff twist), copy per flag is fixed in the
+guard table, guards inform and never gate. Rehearsal is a five step
+timed dry run over golden fixture accounts (68257, 23838, 98952,
+49900, 42988) covering every flag and preset, shipped as an in-app
+dock (user confirmed; the printed script ships in the paper sheet
+either way and the dock UI is the named cut line). N draws from a safe
+demo pool (no flags, income and bills above zero, finite runway) with
+an injectable rng. Paper fallback is public/judge-sheet.html, a
+standalone one page print sheet linked from the runbook.
+
+**Rationale**: one table removes the drift class entirely; reading E1
+flags keeps one verified source for the thresholds and kills the dead
+guard; fixture-frozen rehearsal ids are pinned by tests on both sides
+of the language boundary; the printed sheet answers the runbook
+offline booth rule.
+
+**Trade-offs**: arrow key account walking is dropped (lookup and N
+cover the ritual); Caps Lock R also fires reset all (documented); the
+confirm gate suppression means shortcuts are dead while typed chips
+are open (only Esc works); RehearsalDock UI is the cut line if time
+runs short.
+
+## Nov 07 2026, Phase E4 amendment: 6x stretch named in the definition line
+
+**Context**: the E4 review (PASS) flagged that the Goal Plan
+definition strip named only the 3x starter cushion while the 6x
+stretch rode on the stretch chip alone.
+
+**Decision** (user confirmed): the cushion definition line names both
+the 3x starter and the 6x stretch target, so a judge reading only the
+small print sees the full range. The chips continue to highlight both.
+Applied in the E6 implementation pass as a one line planText.ts change
+with its test expectation updated.

@@ -1,0 +1,232 @@
+/* ==========================================================================
+   Phase E5 Storm Atlas (ax): the population panel and its strip plot.
+
+   Band hue never arrives as a literal in this file. Every element that
+   colors itself carries a data-band attribute read straight from the
+   verdict vocabulary, and the five mapping rules below resolve it
+   against the --cp-band tokens in src/index.css, so the atlas, the
+   console badge, and the forecast strip stay one palette with one
+   source of truth.
+
+   Nothing here animates. The field re-counts itself on every twist,
+   and a population that changes must not also move on its own; the
+   only motion this phase owns is the scroll into the console, which
+   steps instead of glides under prefers-reduced-motion.
+   ========================================================================== */
+
+.ax-shell {
+  display: grid;
+  gap: var(--rp-s4);
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-rule);
+  border-radius: var(--cp-radius);
+  padding: var(--rp-s5);
+  min-width: 0;
+}
+
+/* Headline panel ---------------------------------------------------------- */
+
+.ax-atlas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rp-s3);
+  min-width: 0;
+}
+
+.ax-headline {
+  margin: 0;
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: clamp(1.625rem, 3.4vw, 2.375rem);
+  line-height: 1.2;
+  color: var(--cp-ink);
+  overflow-wrap: anywhere;
+}
+
+.ax-subline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--rp-s2) var(--rp-s4);
+  margin: 0;
+  font-family: var(--rp-font-utility);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink-dim);
+}
+
+.ax-subline__count {
+  color: var(--cp-ink);
+  font-weight: 600;
+}
+
+.ax-compare {
+  color: var(--rp-verified);
+}
+
+.ax-track {
+  padding: 2px var(--rp-s3);
+  border: 1px solid var(--cp-rule);
+  border-radius: 999px;
+  color: var(--cp-ink-faint);
+}
+
+/* Band cells: glyph, label, count, percent, all on one hue --------------- */
+
+.ax-cells {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: var(--rp-s2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ax-cell {
+  --ax-band: var(--cp-ink-faint);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px var(--rp-s2);
+  align-content: start;
+  min-height: 44px;
+  padding: var(--rp-s3);
+  background: var(--cp-inset);
+  border: 1px solid var(--cp-rule);
+  border-top: 4px solid var(--ax-band);
+  border-radius: var(--cp-radius);
+}
+
+.ax-cell__glyph {
+  color: var(--ax-band);
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+
+.ax-cell__label {
+  font-family: var(--rp-font-utility);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cp-ink-dim);
+}
+
+.ax-cell__count {
+  grid-column: 1 / -1;
+  font-family: var(--rp-font-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ax-band);
+}
+
+.ax-cell__percent {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-ink-faint);
+}
+
+/* One mapping rule per band, scoped to the shell -------------------------- */
+
+.ax-shell [data-band='critical'] {
+  --ax-band: var(--cp-band-critical);
+}
+
+.ax-shell [data-band='storm_warning'] {
+  --ax-band: var(--cp-band-storm);
+}
+
+.ax-shell [data-band='watch'] {
+  --ax-band: var(--cp-band-watch);
+}
+
+.ax-shell [data-band='fair_skies'] {
+  --ax-band: var(--cp-band-fair);
+}
+
+.ax-shell [data-band='clear'] {
+  --ax-band: var(--cp-band-clear);
+}
+
+/* Strip plot -------------------------------------------------------------- */
+
+.ax-figure {
+  display: grid;
+  gap: var(--rp-s2);
+  margin: 0;
+  min-width: 0;
+}
+
+.ax-plot__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ax-seg {
+  --ax-band: var(--cp-ink-faint);
+  fill: var(--ax-band);
+  opacity: 0.09;
+}
+
+.ax-bar {
+  --ax-band: var(--cp-ink-faint);
+  fill: var(--ax-band);
+  opacity: 0.4;
+}
+
+.ax-dot {
+  --ax-band: var(--cp-ink-faint);
+  fill: var(--ax-band);
+  opacity: 0.75;
+}
+
+.ax-axis {
+  stroke: var(--cp-rule);
+  stroke-width: 1;
+}
+
+.ax-tick,
+.ax-unit {
+  font-family: var(--rp-font-utility);
+  font-size: 14px;
+  fill: var(--cp-ink-faint);
+}
+
+.ax-unit {
+  font-size: 13px;
+}
+
+.ax-ring {
+  fill: none;
+  stroke: var(--rp-paper);
+  stroke-width: 1.5;
+}
+
+.ax-ring__label {
+  font-family: var(--rp-font-utility);
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--rp-paper);
+  text-anchor: middle;
+}
+
+.ax-caption {
+  font-family: var(--rp-font-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--cp-ink-faint);
+}
+
+/* Loading and failure notes ------------------------------------------------ */
+
+.ax-note {
+  margin: 0;
+  font-family: var(--rp-font-body);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--cp-ink-dim);
+  max-width: 60ch;
+}

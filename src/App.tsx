@@ -1,13 +1,15 @@
+import AtlasSection from './components/atlas/AtlasSection'
 import ConsoleView from './components/console/ConsoleView'
 
 /**
- * App shell (Phase E2, docs/decisions.md): the engine console is the
- * only mounted surface. The header names the instrument, the main slot
- * mounts ConsoleView (boot, lookup, baseline, shock, verdict, plan), and
- * the footer cites the pipeline that wrote the bundled artifact. The old
- * findings report and game views stay in the tree as files but are not
- * mounted here; their own tests keep them honest until the pivot fully
- * retires them.
+ * App shell (Phase E2, docs/decisions.md): the engine owns the page.
+ * The header names the instrument, the main slot mounts the Storm
+ * Atlas section directly above the console (E5: the population
+ * headline and strip plot, then the account cards it drills into),
+ * and the footer cites the pipeline that wrote the bundled artifact.
+ * The old findings report and game views stay in the tree as files but
+ * are not mounted here; their own tests keep them honest until the
+ * pivot fully retires them.
  */
 
 export default function App() {
@@ -37,8 +39,13 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">
-        <ConsoleView />
+      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 sm:px-6">
+        <section id="atlas">
+          <AtlasSection />
+        </section>
+        <div id="console">
+          <ConsoleView />
+        </div>
       </main>
 
       <footer className="border-t border-grid px-4 py-3 text-center text-xs text-ink-dim sm:px-6">

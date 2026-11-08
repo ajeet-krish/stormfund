@@ -1,104 +1,79 @@
-import { useMemo } from 'react'
-import '../weather/weather.css'
-import { SEVERITY_ORDER, WEATHER_META, type WeatherState } from '../../lib/weatherState'
-import {
-  summarizeStormAtlas,
-  type AtlasEntry,
-  type StormAtlasOptions,
-} from '../../lib/stormAtlas'
+import './atlas.css'
+import { ATLAS_BAND_ORDER, type StormAtlasSummary } from '../../lib/stormAtlas'
+import { verdictBandById } from '../../lib/verdict'
 
 /**
- * The Storm Atlas surface (E5): the population headline over seven
- * state cells, each colored by state and showing its count and whole
- * percent, plus a typed click callback for the drill down. Clicking a
- * cell never navigates here: the view owns what a click means, this
- * component only reports which state was picked.
+ * The Storm Atlas headline panel (E5): the population sentence at the
+ * largest type in the section, the honest subline under it, and five
+ * band cells that repeat the same numbers with redundant encoding
+ * (glyph plus label plus color plus count plus percent), so the strip
+ * reads from two metres across a judging table.
  *
- * The profiles prop is the wiring seam. Until the E5 view passes the
- * loaded profiles the grid renders zero counts and an honest note, so
- * the surface is safe to mount in any wiring state. Counts come from
- * summarizeStormAtlas, which runs the same weatherState ladder the
- * forecast strip draws, and useMemo keeps the 4500 entry aggregation to
- * one pass per props change.
+ * The component renders finished sentences only: the headline and the
+ * counts arrive from summarizeStormAtlas, which counted the very
+ * entries the same scenario label describes, so no wording about a
+ * twist is ever written here. A baselineSummary only arrives when the
+ * live twist differs from the untouched console, which is why the
+ * comparison line appears exactly when the numbers really moved.
  *
- * Text sits on the soft state tints from weather.css, so every label
- * keeps measured WCAG AA contrast whatever the state color is.
+ * Text sits on the console tokens from src/index.css, so every label
+ * keeps measured WCAG AA contrast whatever the band color is.
  */
 
-export interface StormAtlasProps extends StormAtlasOptions {
-  /** Loaded profiles in AtlasEntry shape; null renders the placeholder. */
-  profiles?: readonly AtlasEntry[] | null
-  /** Cell the view currently has selected, outlined in the grid. */
-  selectedState?: WeatherState | null
-  /** Typed drill down callback, one state per click. */
-  onSelectState?: (state: WeatherState) => void
+export interface StormAtlasProps {
+  /** The finished summary for the live twist, from one atlas run. */
+  summary: StormAtlasSummary
+  /** The same population at baseline; present only under a twist. */
+  baselineSummary?: StormAtlasSummary | null
+  /** The account the strip plot has selected, echoed as a chip. */
+  selectedId?: string | null
 }
 
-export default function StormAtlas(props: StormAtlasProps) {
-  const profiles = props.profiles ?? null
-  const selected = props.selectedState ?? null
-  const onSelectState = props.onSelectState
+/** Grouped digits for every count this panel prints. */
+function formatCount(count: number): string {
+  return count.toLocaleString('en-CA')
+}
 
-  const summary = useMemo(
-    () =>
-      summarizeStormAtlas(profiles, {
-        headlineState: props.headlineState,
-        scenarioLabel: props.scenarioLabel,
-      }),
-    [profiles, props.headlineState, props.scenarioLabel],
-  )
+export default function StormAtlas({ summary, baselineSummary, selectedId }: StormAtlasProps) {
+  const total = formatCount(summary.total)
 
   return (
-    <section className="wx-atlas" aria-label="Storm Atlas">
-      <h2 className="wx-atlas__headline">{summary.headline}</h2>
+    <div className="ax-atlas">
+      <h2 className="ax-headline">{summary.headline}</h2>
 
-      {summary.total === 0 ? (
-        <p className="wx-atlas__note">
-          Atlas data not wired yet: pass the loaded profiles to see the population counts.
-        </p>
-      ) : null}
+      <p className="ax-subline">
+        <span className="ax-subline__count">
+          {`${formatCount(summary.headlineCount)} of ${total} accounts`}
+        </span>
+        {baselineSummary ? (
+          <span className="ax-compare">
+            {`At baseline: ${baselineSummary.headlinePercent}% (${formatCount(
+              baselineSummary.headlineCount,
+            )} of ${formatCount(baselineSummary.total)})`}
+          </span>
+        ) : null}
+        {selectedId ? (
+          <span className="ax-track">{`Tracking account ${selectedId}`}</span>
+        ) : null}
+      </p>
 
-      <ul className="wx-atlas__grid">
-        {SEVERITY_ORDER.map((state) => {
-          const meta = WEATHER_META[state]
-          const count = summary.counts[state]
-          const percent = summary.percents[state]
-          const isSelected = selected === state
-          const cellClass = `wx-atlas__cell wx-atlas__cell-${state}${
-            isSelected ? ' wx-atlas__cell-selected' : ''
-          }`
-          const content = (
-            <>
-              <span className="wx-atlas__state">
-                <span aria-hidden="true">{meta.glyph} </span>
-                {meta.label}
-              </span>
-              <span className="wx-atlas__count">{count.toLocaleString('en-CA')}</span>
-              <span className="wx-atlas__percent">{`${percent}% of ${summary.total.toLocaleString(
-                'en-CA',
-              )}`}</span>
-            </>
-          )
-
+      <ul className="ax-cells">
+        {ATLAS_BAND_ORDER.map((bandId) => {
+          const band = verdictBandById(bandId)
+          const count = summary.counts[bandId]
+          const percent = summary.percents[bandId]
           return (
-            <li key={state}>
-              {onSelectState ? (
-                <button
-                  type="button"
-                  className={cellClass}
-                  aria-pressed={isSelected}
-                  aria-label={`${meta.label}: ${count} accounts, ${percent} percent. Drill into this state.`}
-                  onClick={() => onSelectState(state)}
-                >
-                  {content}
-                </button>
-              ) : (
-                <div className={cellClass}>{content}</div>
-              )}
+            <li key={bandId} className="ax-cell" data-band={bandId}>
+              <span className="ax-cell__glyph" aria-hidden="true">
+                {band.glyph}
+              </span>
+              <span className="ax-cell__label">{band.label}</span>
+              <span className="ax-cell__count">{formatCount(count)}</span>
+              <span className="ax-cell__percent">{`${percent}% of ${total}`}</span>
             </li>
           )
         })}
       </ul>
-    </section>
+    </div>
   )
 }
