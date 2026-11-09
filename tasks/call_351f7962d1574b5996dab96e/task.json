@@ -1,0 +1,8 @@
+{
+  "tool_use_id": "call_351f7962d1574b5996dab96e",
+  "agent_id": "ses_e3d7e997bffeo9RzMiGA35EMRu",
+  "subagent_type": "10-git",
+  "task_description": "Commit Tangerine sponsor line",
+  "started_at": "2026-11-09T17:50:22.723-05:00",
+  "transcript_unavailable_reason": "transcript path unresolvable"
+}
