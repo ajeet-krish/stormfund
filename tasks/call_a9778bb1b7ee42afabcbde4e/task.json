@@ -1,0 +1,8 @@
+{
+  "tool_use_id": "call_a9778bb1b7ee42afabcbde4e",
+  "agent_id": "ses_e3d8bf688ffeGovBMx5YKeu2Fk",
+  "subagent_type": "10-git",
+  "task_description": "Checkpoint user LinkedIn edits",
+  "started_at": "2026-11-09T17:35:46.934-05:00",
+  "transcript_unavailable_reason": "transcript path unresolvable"
+}

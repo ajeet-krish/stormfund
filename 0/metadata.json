@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M717882DM162N9166CSHH928",
+  "session_id": "ses_e3db8ece6ffeka4coTZJ9DTc47",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-09T22:35:53.690723Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "docs/LINKEDIN_POST.md"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "b0821809aee6",
+  "checkpoint_transcript_start": 33,
+  "transcript_lines_at_start": 33,
+  "compact_transcript_start": 33,
+  "token_usage": {
+    "input_tokens": 2664,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 295680,
+    "output_tokens": 757,
+    "api_call_count": 5,
+    "subagent_tokens": {
+      "input_tokens": 8043,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 24320,
+      "output_tokens": 676,
+      "api_call_count": 4
+    }
+  },
+  "redaction": {
+    "replacements": 12,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 12,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 4
+  }
+}
