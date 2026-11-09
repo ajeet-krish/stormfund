@@ -1,0 +1,8 @@
+{
+  "tool_use_id": "call_d14964ed0016409fa67368d5",
+  "agent_id": "ses_e3da8bb52ffeJzz3Sg4Ib6C6gY",
+  "subagent_type": "10-git",
+  "task_description": "Commit LinkedIn post draft",
+  "started_at": "2026-11-09T17:04:21.547-05:00",
+  "transcript_unavailable_reason": "transcript path unresolvable"
+}
