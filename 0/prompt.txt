@@ -1,0 +1,7 @@
+simplify this paragraph even further:
+reduce the length, 2/3 brief paragraphs. discu
+
+---
+
+ignore prev request. simplify this paragraph:
+Three memo transactions on devnet anchor SHA256 digests (hashes) of the frozen results: the findings file root, the model card hash, and an aggregate fingerprint. This makes sure the analysis is tamper-evident: anyone can run shasum on the repo files and compare to the Solana explorer link to prove the numbers shown. The receipt badge on screen renders from bundled evidence files with zero runtime network calls.

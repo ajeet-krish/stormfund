@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "call_d14964ed0016409fa67368d5",
+  "agent_id": "ses_e3da8bb52ffeJzz3Sg4Ib6C6gY",
+  "subagent_type": "10-git",
+  "task_description": "Commit LinkedIn post draft",
+  "token_usage": {
+    "input_tokens": 2496,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 45184,
+    "output_tokens": 765,
+    "api_call_count": 6
+  },
+  "started_at": "2026-11-09T17:04:21.547-05:00",
+  "completed_at": "2026-11-09T17:04:55.837127-05:00"
+}
