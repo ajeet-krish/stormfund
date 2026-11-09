@@ -8,6 +8,8 @@ Solana is a fast, low cost blockchain that powers many payments and finance apps
 
 It was fun working with financial data and blockchain platforms despite coming from a mechanical engineering background, and I'd love to continue experimenting with more blockchain applications. It would be cool to see if behavioural or credit scores could be attested on chain and influence credit lines. If you're working in this space, I'd love to connect!
 
+A big thank you to Tangerine for sponsoring the Resilience Rewired track and for providing the real anonymized dataset behind this project.
+
 Check out Storm Fund: https://github.com/ajeet-krish/stormfund
 
 (Attach prize picture)
