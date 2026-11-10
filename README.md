@@ -4,7 +4,7 @@
 
 See your money move like weather.
 
-Storm Fund is a resilience financial engine that visualizes a bank account as a real-time weather forecast. Anonymized bank data maps runway and buffer to a pixel sky. Inject a shock and watch the forecast change.
+Storm Fund is a financial resilience engine visualized as a weather station. Simulate shock events to see how they impact an entire population, or analyze individual accounts and see their runway forecast.
 
 ## Screenshots
 
