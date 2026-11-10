@@ -2,7 +2,7 @@
 
 This past weekend I took part in the Sheridan Datathon, sponsored by Tangerine and IBM, and won the Best Use of Solana award.
 
-I built Storm Fund, a resilience weather forecast for bank customers. It takes an anonymized bank dataset (4,500 accounts, 1.06 million transactions from Tangerine) and shows each account's financial weather: runway in months, buffer, and an account status stated as a weather warning. Simulate a shock event (job loss with EI at 55 percent, bills up 15 percent, a furnace repair) and the forecast changes live. Using this data, we can build an emergency fund plan to better prepare for a rainy day.
+I built Storm Fund, a financial resilience engine visualized as a weather forecast. It turns an anonymized bank dataset (4,500 accounts, 1.06 million transactions from Tangerine) into financial weather anyone can read at a glance. Simulate a shock (job loss with EI at 55 percent, bills up 15 percent, a furnace repair) and the forecast changes live, showing your buffer in an emergency. It then builds an emergency fund plan to prepare for a rainy day.
 
 Solana is a fast, low cost blockchain that powers many payments and finance apps. I used its devnet, a free test network with no real money, to give the analysis a tamper-proof seal. Only fingerprints of the results go on chain, never the account data itself, so no sensitive financial information is exposed. Anyone can check those fingerprints to confirm the numbers were not changed after computing them, and the badge on screen shows the verification.
 
