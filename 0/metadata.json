@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.13.1",
+  "checkpoint_id": "01M73A0327Q6530AJBC7BR76Z3",
+  "session_id": "ses_e3db8ece6ffeka4coTZJ9DTc47",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-10T18:02:21.490228Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md"
+  ],
+  "agent": "OpenCode",
+  "model": "mimo-v2.6-flash",
+  "turn_id": "eddcbe4430b3",
+  "checkpoint_transcript_start": 94,
+  "transcript_lines_at_start": 94,
+  "compact_transcript_start": 94,
+  "token_usage": {
+    "input_tokens": 119533,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 522752,
+    "output_tokens": 1057,
+    "api_call_count": 5
+  },
+  "redaction": {
+    "replacements": 18,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 18,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 13
+  }
+}
