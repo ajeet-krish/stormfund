@@ -1,6 +1,6 @@
 # LinkedIn Post: Storm Fund at Sheridan Datathon 2026
 
-This past weekend I took part in Sheridan Datathon 2026, a Major League Hacking event, and won the Best Use of Solana award.
+This past weekend I took part in the Sheridan Datathon, sponsored by Tangerine and IBM, and won the Best Use of Solana award.
 
 I built Storm Fund, a resilience weather forecast for bank customers. It takes an anonymized bank dataset (4,500 accounts, 1.06 million transactions from Tangerine) and shows each account's financial weather: runway in months, buffer, and an account status stated as a weather warning. Simulate a shock event (job loss with EI at 55 percent, bills up 15 percent, a furnace repair) and the forecast changes live. Using this data, we can build an emergency fund plan to better prepare for a rainy day.
 
